@@ -75,20 +75,32 @@
         // !! WARNING: These credentials are hardcoded and visible in the browser's source code. !!
         // !! This method offers NO SECURITY and is easily bypassed. !!
         // !! Do NOT use for sensitive content or real user data. !!
-        const VALID_USERNAME = "user"; // You can change this username
-        const VALID_PASSWORD = "password"; // You can change this password
+
+        const USERS = [
+            { username: "user1", password: "password1" },
+            { username: "john", password: "doe" },
+            { username: "admin", password: "adminpass" }
+            // Add more user objects here as needed
+        ];
 
         function attemptLogin() {
             const username = document.getElementById('usernameInput').value;
             const password = document.getElementById('passwordInput').value;
             const errorMessage = document.getElementById('errorMessage');
 
-            if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+            let isAuthenticated = false;
+            for (let i = 0; i < USERS.length; i++) {
+                if (username === USERS[i].username && password === USERS[i].password) {
+                    isAuthenticated = true;
+                    break; // Exit the loop once a match is found
+                }
+            }
+
+            if (isAuthenticated) {
                 // If credentials match, set an item in localStorage to indicate login status
                 localStorage.setItem('loggedIn', 'true');
-                // Redirect to the main OSCE Page index (OSCE Page/index.html)
-                // This path is relative to the root of your GitHub Pages site.
-                window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; 
+                // Redirect to the main OSCE Page index
+                window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; // Adjust this path if your main page is elsewhere
             } else {
                 errorMessage.style.display = 'block'; // Show error message
             }

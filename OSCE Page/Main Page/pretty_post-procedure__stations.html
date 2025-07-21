@@ -313,7 +313,7 @@ p {
    Accent: #ce93d8 (Lighter Purple)
    Background: #f3e5f5 (Very Light Purple) */
 .theme-purple header, .theme-purple h1, .theme-purple h2, .theme-purple a {
-    color: #4a148c;
+    color: #4a148c; /* Default for theme-purple, overridden for h1 below */
 }
 
 .theme-purple .section-box {
@@ -335,6 +335,11 @@ p {
 /* For cards on main page */
 .theme-purple .toggle-label.active, .theme-purple .toggle-container .switch.active {
     background-color: #ab47bc;
+}
+
+/* Specific override for h1 within theme-purple header for readability */
+.theme-purple header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on purple background */
 }
 
 
@@ -454,7 +459,7 @@ p {
 }
 /* For cards on main page */
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f06292;
+    background-color: #f48fb1;
 }
 
 
@@ -619,11 +624,16 @@ body.dark-mode {
 </style>
 </head>
 <body class="theme-purple">
-<h1>🔁 Post-Procedure Stations</h1>
-<div class="container">
-    <div class="card"><a href="pretty_post-procedure__stations/post_stroke_counselling.html">Post-stroke Counselling</a></div>
-    <div class="card"><a href="pretty_post-procedure__stations/post_stemi_counselling.html">Post-STEMI Counselling</a></div>
-</div>
+<main>
+
+    <header>
+        <h1>🔁 Post-Procedure Stations</h1>
+    </header>
+
+    <div class="container">
+        <div class="card"><a href="pretty_post-procedure__stations/post_stroke_counselling.html">Post-stroke Counselling</a></div>
+        <div class="card"><a href="pretty_post-procedure__stations/post_stemi_counselling.html">Post-STEMI Counselling</a></div>
+    </div>
     
     
     

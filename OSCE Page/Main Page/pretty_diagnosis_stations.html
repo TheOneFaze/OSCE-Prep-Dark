@@ -223,7 +223,7 @@ p {
    Accent: #42a5f5 (Lighter Blue)
    Background: #e3f2fd (Very Light Blue) */
 .theme-blue header, .theme-blue h1, .theme-blue h2, .theme-blue a {
-    color: #0d47a1;
+    color: #0d47a1; /* Default for theme-blue, overridden for h1 below */
 }
 
 .theme-blue .section-box {
@@ -245,6 +245,11 @@ p {
 /* For cards on main page */
 .theme-blue .toggle-label.active, .theme-blue .toggle-container .switch.active {
     background-color: #42a5f5;
+}
+
+/* Specific override for h1 within theme-blue header for readability */
+.theme-blue header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on blue background */
 }
 
 
@@ -397,6 +402,11 @@ p {
     background-color: #ff7043;
 }
 
+/* Specific override for h1 within theme-terracotta header for readability */
+.theme-terracotta header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
+}
+
 
 /* Teal Theme (Respiratory)
    Primary: #004d40 (Dark Teal)
@@ -454,7 +464,7 @@ p {
 }
 /* For cards on main page */
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f06292;
+    background-color: #f48fb1;
 }
 
 
@@ -619,7 +629,12 @@ body.dark-mode {
 </style>
 </head>
 <body class="theme-blue">
-    <h1>&#129504; Diagnosis Counselling Stations</h1>
+<main>
+
+    <header>
+        <h1>&#129504; Diagnosis Counselling Stations</h1>
+    </header>
+
     <div class="container">
         <div class="card"><a href="pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html">Explaining a Diagnosis of Asthma</a></div>
         <div class="card"><a href="pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html">Explaining a Diagnosis of Fibroadenoma</a></div>

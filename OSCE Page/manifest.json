@@ -1,6 +1,6 @@
 {
-  "name": "OSCE Prep Dark",
-  "short_name": "OSCE Prep",
+  "name": "OSCE Spark",
+  "short_name": "OSCE Spark",
   "description": "Your comprehensive OSCE preparation checklist app.",
   "start_url": "/OSCE-Prep-Dark/OSCE%20Page/index.html",
   "display": "standalone",

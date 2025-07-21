@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
-    
-    
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Community Stations</title>
-
-    <style>
+<style>
 /* --- MASTER INLINE STYLES --- */
 
 /* --- 0. Base HTML and Body Setup (Crucial for full background) --- */
@@ -373,7 +369,7 @@ p {
    Accent: #ffab91 (Lighter Terracotta)
    Background: #fff3e0 (Very Light Peach) */
 .theme-terracotta header, .theme-terracotta h1, .theme-terracotta h2, .theme-terracotta a {
-    color: #bf360c;
+    color: #bf360c; /* Default for theme-terracotta, overridden for h1 below */
 }
 
 .theme-terracotta .section-box {
@@ -395,6 +391,11 @@ p {
 /* For cards on main page */
 .theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active {
     background-color: #ff7043;
+}
+
+/* Specific override for h1 within theme-terracotta header for readability */
+.theme-terracotta header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
 }
 
 
@@ -454,7 +455,7 @@ p {
 }
 /* For cards on main page */
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f06292;
+    background-color: #f48fb1;
 }
 
 
@@ -619,18 +620,23 @@ body.dark-mode {
 </style>
 </head>
 <body class="theme-terracotta">
-<h1>🏘️ Community Stations</h1>
-<div class="container">
-  <div class="card"><a href="pretty_community_stations/community_blood_pressure_check.html">Community Blood Pressure Check</a></div>
-  <div class="card"><a href="pretty_community_stations/hypertension_counselling.html">Hypertension Counselling</a></div>
-  <div class="card"><a href="pretty_community_stations/inhaler_technique_counselling.html">Inhaler Technique Counselling</a></div>
-  <div class="card"><a href="pretty_community_stations/smoking_cessation_counselling.html">Smoking Cessation Counselling</a></div>
-  <div class="card"><a href="pretty_community_stations/alcohol_cessation_counselling.html">Alcohol Cessation Counselling</a></div>
-  <div class="card"><a href="pretty_community_stations/dnacpr_counselling.html">DNACPR Counselling</a></div>
-  <div class="card"><a href="pretty_community_stations/bowel_cancer_screening_counselling.html">Bowel Cancer Screening</a></div>
-  <div class="card"><a href="pretty_community_stations/peak_flow_counselling.html">Peak Flow (PEFR) Technique</a></div>
-  <div class="card"><a href="pretty_community_stations/weight_loss_counselling.html">Weight Loss Counselling</a></div>
-</div>
+<main>
+
+    <header>
+        <h1>🏘️ Community Stations</h1>
+    </header>
+
+    <div class="container">
+        <div class="card"><a href="pretty_community_stations/community_blood_pressure_check.html">Community Blood Pressure Check</a></div>
+        <div class="card"><a href="pretty_community_stations/hypertension_counselling.html">Hypertension Counselling</a></div>
+        <div class="card"><a href="pretty_community_stations/inhaler_technique_counselling.html">Inhaler Technique Counselling</a></div>
+        <div class="card"><a href="pretty_community_stations/smoking_cessation_counselling.html">Smoking Cessation Counselling</a></div>
+        <div class="card"><a href="pretty_community_stations/alcohol_cessation_counselling.html">Alcohol Cessation Counselling</a></div>
+        <div class="card"><a href="pretty_community_stations/dnacpr_counselling.html">DNACPR Counselling</a></div>
+        <div class="card"><a href="pretty_community_stations/bowel_cancer_screening_counselling.html">Bowel Cancer Screening</a></div>
+        <div class="card"><a href="pretty_community_stations/peak_flow_counselling.html">Peak Flow (PEFR) Technique</a></div>
+        <div class="card"><a href="pretty_community_stations/weight_loss_counselling.html">Weight Loss Counselling</a></div>
+    </div>
     
     
     

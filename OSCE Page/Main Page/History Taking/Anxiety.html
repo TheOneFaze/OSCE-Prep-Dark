@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+          <script>
+        // Check if the user is NOT authenticated for the current session.
+        // This must run before any content is rendered to prevent flicker.
+        if (sessionStorage.getItem('isAuthenticated') !== 'true') {
+            // Redirect to the login page.
+            // Ensure this path is correct relative to the root of your GitHub Pages site.
+            window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/login.html';
+        }
+        // *** REMOVED: sessionStorage.removeItem('isAuthenticated'); ***
+        // Removing this line fixes the refresh loop.
+        // The 'isAuthenticated' flag will now persist in sessionStorage until the tab/PWA is closed.
+    </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🧠 Anxiety History OSCE Checklist</title>

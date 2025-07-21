@@ -343,7 +343,7 @@ p {
    Accent: #ef5350 (Medium Red)
    Background: #ffebee (Very Light Red) */
 .theme-red header, .theme-red h1, .theme-red h2, .theme-red a {
-    color: #b71c1c;
+    color: #b71c1c; /* Default for theme-red, overridden for h1 below */
 }
 
 .theme-red .section-box {
@@ -365,6 +365,11 @@ p {
 /* For cards on main page */
 .theme-red .toggle-label.active, .theme-red .toggle-container .switch.active {
     background-color: #ef5350;
+}
+
+/* Specific override for h1 within theme-red header for readability */
+.theme-red header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on red background */
 }
 
 
@@ -395,6 +400,11 @@ p {
 /* For cards on main page */
 .theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active {
     background-color: #ff7043;
+}
+
+/* Specific override for h1 within theme-terracotta header for readability */
+.theme-terracotta header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
 }
 
 
@@ -454,7 +464,7 @@ p {
 }
 /* For cards on main page */
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f06292;
+    background-color: #f48fb1;
 }
 
 
@@ -619,13 +629,18 @@ body.dark-mode {
 </style>
 </head>
 <body class="theme-red">
-<h1>⚕️ Surgery Stations</h1>
-<div class="container">
-    <div class="card"><a href="pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
-    <div class="card"><a href="pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
-    <div class="card"><a href="pretty_surgery_stations/appendicectomy_counselling.html">Appendicectomy Counselling</a></div>
-    <div class="card"><a href="pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
-</div>
+<main>
+
+    <header>
+        <h1>⚕️ Surgery Stations</h1>
+    </header>
+
+    <div class="container">
+        <div class="card"><a href="pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
+        <div class="card"><a href="pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
+        <div class="card"><a href="pretty_surgery_stations/appendicectomy_counselling.html">Appendicectomy Counselling</a></div>
+        <div class="card"><a href="pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
+    </div>
     
     
     

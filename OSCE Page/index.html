@@ -129,32 +129,41 @@ footer {
     height: 0;
 }
 
-.slider:before {
+.slider {
     position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Grey when off in light mode */
     -webkit-transition: .4s;
     transition: .4s;
-    border-radius: 50%; /* Circular handle */
+    border-radius: 34px; /* Rounded slider */
 }
 
+/* This rule applies when the input is checked (dark mode active) */
 input:checked + .slider {
-    background-color: #2196F3; /* Blue when checked (dark mode) */
+    background-color: #03a9f4; /* Blue when checked (dark mode) */
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #03a9f4; /* Match the checked background color */
 }
 
 input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
+    /* The circle itself remains white as it provides good contrast */
 }
+
+/* Optional: Styling for the slider's "off" state when the body is in dark mode
+   to make it visually consistent with the dark theme when the switch is off. */
+body.dark-mode .theme-switch input:not(:checked) + .slider {
+    background-color: #555; /* A darker grey for "off" in dark mode, more subtle */
+}
+
 
 /* Content Page Specific Styles (for sections like Benefits, Risks, etc.) */
 .content-section {

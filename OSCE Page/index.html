@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
     <script>
-        // This must be run on EVERY protected page.
-        // It checks if the "isAuthenticated" flag is set in sessionStorage.
-        // If it's NOT set, it means they haven't just successfully logged in
-        // during this session, so redirect them to the login page.
+        // Check if the user is NOT authenticated for the current session.
+        // This must run before any content is rendered to prevent flicker.
         if (sessionStorage.getItem('isAuthenticated') !== 'true') {
+            // Redirect to the login page.
+            // Ensure this path is correct relative to the root of your GitHub Pages site.
             window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/login.html';
         }
-        // IMPORTANT: Clear the sessionStorage flag as soon as it's checked and the page loads.
-        // This makes sure that navigating to another protected page (or even refreshing this one)
-        // will require re-login unless the login process sets the flag again.
-        sessionStorage.removeItem('isAuthenticated');
+        // *** REMOVED: sessionStorage.removeItem('isAuthenticated'); ***
+        // Removing this line fixes the refresh loop.
+        // The 'isAuthenticated' flag will now persist in sessionStorage until the tab/PWA is closed.
     </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -128,19 +127,6 @@ footer {
     opacity: 0;
     width: 0;
     height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 34px; /* Rounded slider */
 }
 
 .slider:before {

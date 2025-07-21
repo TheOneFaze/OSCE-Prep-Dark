@@ -4,8 +4,8 @@
   "description": "Your comprehensive OSCE preparation checklist app.",
   "start_url": "/OSCE-Prep-Dark/OSCE%20Page/index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4a637a",
+  "background_color": "#f4f4f9",
+  "theme_color": "#42a5f5",
   "icons": [
     {
       "src": "/OSCE-Prep-Dark/icons/icon-192x192.png",
@@ -16,6 +16,18 @@
       "src": "/OSCE-Prep-Dark/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/OSCE-Prep-Dark/OSCE%20Page/Icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/OSCE-Prep-Dark/OSCE%20Page/OSCE%20SPARK.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "orientation": "portrait-primary"

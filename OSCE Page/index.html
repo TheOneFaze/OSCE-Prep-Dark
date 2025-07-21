@@ -83,7 +83,74 @@ footer {
     text-align: center;
     font-size: 14px;
     color: #777; /* Default footer text color in light mode */
-    transition: color 0.3s;
+    padding: 20px;
+    width: 100%;
+    display: flex; /* Use flexbox for footer content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: 10px; /* Space between items */
+}
+
+/* Dark Mode Toggle Slider Styles */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the switch within its wrapper */
+    margin-bottom: 0; /* Remove previous margin */
+}
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px; /* Rounded slider */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%; /* Circular handle */
+}
+
+input:checked + .slider {
+    background-color: #2196F3; /* Blue when checked (dark mode) */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
 }
 
 /* Content Page Specific Styles (for sections like Benefits, Risks, etc.) */
@@ -220,6 +287,7 @@ p {
    Primary: #0d47a1 (Dark Blue)
    Accent: #42a5f5 (Lighter Blue)
    Background: #e3f2fd (Very Light Blue) */
+/* Modified for homepage to be the default blue theme */
 .theme-blue header, .theme-blue h1, .theme-blue h2, .theme-blue a {
     color: #0d47a1;
 }
@@ -243,6 +311,11 @@ p {
 /* For cards on main page */
 .theme-blue .toggle-label.active, .theme-blue .toggle-container .switch.active {
     background-color: #42a5f5;
+}
+
+/* Specific override for h1 within theme-blue header for readability */
+.theme-blue header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on blue background */
 }
 
 
@@ -273,6 +346,11 @@ p {
 /* For cards on main page */
 .theme-green .toggle-label.active, .theme-green .toggle-container .switch.active {
     background-color: #66bb6a;
+}
+
+/* Specific override for h1 within theme-green header for readability */
+.theme-green header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on green background */
 }
 
 
@@ -365,6 +443,11 @@ p {
     background-color: #ef5350;
 }
 
+/* Specific override for h1 within theme-red header for readability */
+.theme-red header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on red background */
+}
+
 
 /* Terracotta Theme (Community)
    Primary: #bf360c (Dark Terracotta)
@@ -393,6 +476,11 @@ p {
 /* For cards on main page */
 .theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active {
     background-color: #ff7043;
+}
+
+/* Specific override for h1 within theme-terracotta header for readability */
+.theme-terracotta header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
 }
 
 
@@ -452,7 +540,7 @@ p {
 }
 /* For cards on main page */
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f06292;
+    background-color: #f48fb1;
 }
 
 
@@ -616,7 +704,7 @@ body.dark-mode {
 }
 </style>
 </head>
-<body>
+<body class="theme-blue">
 <main>
 
     <div class="header-container">
@@ -624,7 +712,9 @@ body.dark-mode {
     </div>
 
     <div class="container">
-        <div class="card diagnosis"><a href="Main Page/pretty_diagnosis_stations.html">🧠 Diagnosis Stations</a></div>
+        <!-- Added History Taking Card -->
+        <div class="card history-taking"><a href="Main Page/pretty_history_taking.html">🧠 History Taking</a></div>
+        <div class="card diagnosis"><a href="Main Page/pretty_diagnosis_stations.html">💡 Diagnosis Stations</a></div>
         <div class="card medication"><a href="Main Page/pretty_medication_stations.html">💊 Medication Stations</a></div>
         <div class="card procedure"><a href="Main Page/pretty_procedure_stations.html">🔧 Procedure Stations</a></div>
         <div class="card post-procedure"><a href="Main Page/pretty_post-procedure__stations.html">🔁 Post-Procedure Stations</a></div>

@@ -75,8 +75,8 @@
         // !! WARNING: These credentials are hardcoded and visible in the browser's source code. !!
         // !! This method offers NO SECURITY and is easily bypassed. !!
         // !! Do NOT use for sensitive content or real user data. !!
-        const VALID_USERNAME = "user";
-        const VALID_PASSWORD = "password"; // Choose your desired password here
+        const VALID_USERNAME = "user"; // You can change this username
+        const VALID_PASSWORD = "password"; // You can change this password
 
         function attemptLogin() {
             const username = document.getElementById('usernameInput').value;
@@ -86,16 +86,18 @@
             if (username === VALID_USERNAME && password === VALID_PASSWORD) {
                 // If credentials match, set an item in localStorage to indicate login status
                 localStorage.setItem('loggedIn', 'true');
-                // Redirect to the main OSCE Page index
-                window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; // Adjust this path if your main page is elsewhere
+                // Redirect to the main OSCE Page index (OSCE Page/index.html)
+                // This path is relative to the root of your GitHub Pages site.
+                window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; 
             } else {
                 errorMessage.style.display = 'block'; // Show error message
             }
         }
 
-        // Check if already logged in on page load (for direct access to login.html)
+        // Check if already logged in on page load for the login.html itself
+        // If the user tries to go directly to login.html but is already logged in, redirect them
         if (localStorage.getItem('loggedIn') === 'true') {
-            window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; // Adjust this path
+            window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; // Redirect to main page
         }
     </script>
 </body>

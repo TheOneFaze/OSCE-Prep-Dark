@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSCE Spark</title>
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    
-    <link rel="manifest" href="/OSCE-Prep-Dark/manifest.json">
 
+    <link rel="apple-touch-icon" href="apple-touch-icon.png"> 
+    <link rel="manifest" href="/OSCE-Prep-Dark/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-     <script>
+
+    <script>
         // Check if the user is NOT authenticated for the current session.
         // This must run before any content is rendered to prevent flicker.
         if (sessionStorage.getItem('isAuthenticated') !== 'true') {
@@ -19,10 +18,9 @@
             // Ensure this path is correct relative to the root of your GitHub Pages site.
             window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/login.html';
         }
-        // *** REMOVED: sessionStorage.removeItem('isAuthenticated'); ***
-        // Removing this line fixes the refresh loop.
-        // The 'isAuthenticated' flag will now persist in sessionStorage until the tab/PWA is closed.
+        // The 'isAuthenticated' flag will persist in sessionStorage until the tab/PWA is closed.
     </script>
+    
     <style>
 /* --- MASTER INLINE STYLES --- */
 
@@ -145,7 +143,7 @@ footer {
 
 /* This rule applies when the input is checked (dark mode active) */
 input:checked + .slider {
-    background-color: #03a9f4; /* Blue when checked (dark mode) */
+    background-color: #03a9f4; /* Blue when checked (dark mode)*/
 }
 
 input:focus + .slider {

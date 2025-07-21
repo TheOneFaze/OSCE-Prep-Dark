@@ -97,9 +97,9 @@
             }
 
             if (isAuthenticated) {
-                // Set 'isAuthenticated' flag in sessionStorage
+                // Set 'isAuthenticated' flag in sessionStorage.
                 // This flag WILL be cleared when the browser tab/PWA is closed.
-                sessionStorage.setItem('isAuthenticated', 'true'); // <--- CORRECTED LINE
+                sessionStorage.setItem('isAuthenticated', 'true');
                 // Redirect to the main OSCE Page index
                 window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; // Adjust this path if your main page is elsewhere
             } else {

@@ -97,16 +97,19 @@
             }
 
             if (isAuthenticated) {
-                // *** REMOVED: localStorage.setItem('loggedIn', 'true'); ***
-                // Instead, we just redirect directly to the main page.
+                // Set 'isAuthenticated' flag in sessionStorage
+                // This flag WILL be cleared when the browser tab/PWA is closed.
+                sessionStorage.setItem('isAuthenticated', 'true'); // <--- CORRECTED LINE
+                // Redirect to the main OSCE Page index
                 window.location.href = '/OSCE-Prep-Dark/OSCE%20Page/index.html'; // Adjust this path if your main page is elsewhere
             } else {
                 errorMessage.style.display = 'block'; // Show error message
             }
         }
 
-        // *** REMOVED: The check for localStorage.getItem('loggedIn') === 'true' on login.html itself. ***
-        // This page will now always display the login form.
+        // Removed the previous check on login.html itself to prevent it from redirecting if isAuthenticated is true.
+        // This page will always display the login form as the entry point.
+        // No additional code here for persistent login.
     </script>
 </body>
 </html>

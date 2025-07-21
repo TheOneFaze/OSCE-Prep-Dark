@@ -283,7 +283,7 @@ p {
    Accent: #ffb74d (Lighter Orange)
    Background: #fff3e0 (Very Light Orange) */
 .theme-orange header, .theme-orange h1, .theme-orange h2, .theme-orange a {
-    color: #e65100;
+    color: #e65100; /* Default for theme-orange, overridden for h1 below */
 }
 
 .theme-orange .section-box {
@@ -305,6 +305,11 @@ p {
 /* For cards on main page */
 .theme-orange .toggle-label.active, .theme-orange .toggle-container .switch.active {
     background-color: #ffa726;
+}
+
+/* Specific override for h1 within theme-orange header for readability */
+.theme-orange header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on orange background */
 }
 
 
@@ -367,6 +372,11 @@ p {
     background-color: #ef5350;
 }
 
+/* Specific override for h1 within theme-red header for readability */
+.theme-red header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on red background */
+}
+
 
 /* Terracotta Theme (Community)
    Primary: #bf360c (Dark Terracotta)
@@ -395,6 +405,11 @@ p {
 /* For cards on main page */
 .theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active {
     background-color: #ff7043;
+}
+
+/* Specific override for h1 within theme-terracotta header for readability */
+.theme-terracotta header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
 }
 
 
@@ -454,7 +469,7 @@ p {
 }
 /* For cards on main page */
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f06292;
+    background-color: #f48fb1;
 }
 
 
@@ -619,7 +634,12 @@ body.dark-mode {
 </style>
 </head>
 <body class="theme-orange">
-    <h1>&#128736; Procedure Counselling Stations</h1>
+<main>
+
+    <header>
+        <h1>&#128736; Procedure Counselling Stations</h1>
+    </header>
+
     <div class="container">
         <div class="card"><a href="pretty_procedure_stations/ascitic_drain_explanation.html">Ascitic drain explanation</a></div>
         <div class="card"><a href="pretty_procedure_stations/blood_transfusion_counselling.html">Blood transfusion counselling</a></div>

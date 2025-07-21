@@ -253,7 +253,7 @@ p {
    Accent: #66bb6a (Medium Green)
    Background: #e8f5e9 (Very Light Green) */
 .theme-green header, .theme-green h1, .theme-green h2, .theme-green a {
-    color: #1b5e20;
+    color: #1b5e20; /* Default for theme-green, overridden for h1 below */
 }
 
 .theme-green .section-box {
@@ -275,6 +275,11 @@ p {
 /* For cards on main page */
 .theme-green .toggle-label.active, .theme-green .toggle-container .switch.active {
     background-color: #66bb6a;
+}
+
+/* Specific override for h1 within theme-green header for readability */
+.theme-green header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on green background */
 }
 
 
@@ -367,6 +372,11 @@ p {
     background-color: #ef5350;
 }
 
+/* Specific override for h1 within theme-red header for readability */
+.theme-red header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on red background */
+}
+
 
 /* Terracotta Theme (Community)
    Primary: #bf360c (Dark Terracotta)
@@ -395,6 +405,11 @@ p {
 /* For cards on main page */
 .theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active {
     background-color: #ff7043;
+}
+
+/* Specific override for h1 within theme-terracotta header for readability */
+.theme-terracotta header h1 {
+    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
 }
 
 
@@ -454,7 +469,7 @@ p {
 }
 /* For cards on main page */
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f06292;
+    background-color: #f48fb1;
 }
 
 
@@ -619,7 +634,12 @@ body.dark-mode {
 </style>
 </head>
 <body class="theme-green">
-    <h1>&#128138; Medication Counselling Stations</h1>
+<main>
+
+    <header>
+        <h1>&#128138; Medication Counselling Stations</h1>
+    </header>
+
     <div class="container">
         <div class="card"><a href="pretty_medication_stations/warfarin_counselling.html">Warfarin Counselling</a></div>
         <div class="card"><a href="pretty_medication_stations/gtn_spray_counselling.html">GTN Spray Counselling</a></div>

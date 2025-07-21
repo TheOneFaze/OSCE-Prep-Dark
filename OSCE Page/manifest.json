@@ -8,23 +8,23 @@
   "theme_color": "#42a5f5",
   "icons": [
     {
-      "src": "/OSCE-Prep-Dark/icons/icon-192x192.png",
+      "src": "/OSCE-Prep-Dark/OSCE%20Page/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/OSCE-Prep-Dark/icons/icon-512x512.png",
+      "src": "/OSCE-Prep-Dark/OSCE%20Page/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/OSCE-Prep-Dark/OSCE%20Page/Icon.png",
+      "src": "/OSCE-Prep-Dark/OSCE%20Page/icons/Icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/OSCE-Prep-Dark/OSCE%20Page/OSCE%20SPARK.png",
+      "src": "/OSCE-Prep-Dark/OSCE%20Page/icons/OSCE%20SPARK.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

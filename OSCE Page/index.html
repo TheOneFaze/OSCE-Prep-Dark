@@ -489,11 +489,6 @@ p {
     background-color: #ff7043;
 }
 
-/* Specific override for h1 within theme-terracotta header for readability */
-.theme-terracotta header h1 {
-    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
-}
-
 
 /* Teal Theme (Respiratory)
    Primary: #004d40 (Dark Teal)
@@ -722,6 +717,11 @@ body.dark-mode {
         <img src="OSCE SPARK.png" alt="OSCE Spark Logo" class="logo">
     </div>
 
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search OSCE topics...">
+        <div id="searchResults"></div>
+    </div>
+
     <div class="container">
         <div class="card history-taking"><a href="Main Page/pretty_history_taking.html">🧠 History Taking</a></div>
         <div class="card diagnosis"><a href="Main Page/pretty_diagnosis_stations.html">💡 Diagnosis Stations</a></div>
@@ -807,6 +807,131 @@ document.addEventListener('DOMContentLoaded', () => {
             switchEl.classList.add('active');
         }
     }
+
+    // --- Search Functionality ---
+    const searchInput = document.getElementById('searchInput');
+    const searchResultsDiv = document.getElementById('searchResults');
+    const allCards = document.querySelectorAll('.container .card'); // Get all main category cards
+
+    const allSubtopics = [
+        // History Taking [cite: 1]
+        { title: "Abdominal Pain", url: "Main Page/History Taking/Abdominal Pain.html" },
+        { title: "Anxiety", url: "Main Page/History Taking/Anxiety.html" },
+        { title: "Breast Lump", url: "Main Page/History Taking/Breast Lump.html" },
+        { title: "Cardiovascular", url: "Main Page/History Taking/Cardiovascular.html" },
+        { title: "Chest Pain", url: "Main Page/History Taking/Chest Pain.html" },
+        { title: "Cough", url: "Main Page/History Taking/Cough.html" },
+        { title: "Depression", url: "Main Page/History Taking/Depression.html" },
+        { title: "Dizziness History", url: "Main Page/History Taking/Dizziness History.html" },
+        { title: "Dysphagia", url: "Main Page/History Taking/Dysphagia.html" },
+        { title: "Dyspnoea", url: "Main Page/History Taking/Dyspnoea.html" },
+        { title: "Falls", url: "Main Page/History Taking/Falls.html" },
+        { title: "Female LUTS", url: "Main Page/History Taking/Female LUTS.html" },
+        { title: "Headache", url: "Main Page/History Taking/Headache.html" },
+        { title: "Leg Swelling", url: "Main Page/History Taking/Leg Swelling.html" },
+        { title: "Loss of Consciousness", url: "Main Page/History Taking/Loss of Consciousness.html" },
+        { title: "Male LUTS", url: "Main Page/History Taking/Male LUTS.html" },
+        { title: "Ophthalmic", url: "Main Page/History Taking/Ophthalmic.html" },
+        { title: "Palpitations", url: "Main Page/History Taking/Palpitations.html" },
+        { title: "Respiratory", url: "Main Page/History Taking/Respiratory.html" },
+        { title: "Seizure", url: "Main Page/History Taking/Seizure.html" },
+        { title: "Stroke-TIA", url: "Main Page/History Taking/Stroke-TIA.html" },
+        { title: "Tiredness", url: "Main Page/History Taking/Tiredness.html" },
+        { title: "Unintentional Weight Loss", url: "Main Page/History Taking/Unintentional Weight Loss.html" },
+        { title: "Urological", url: "Main Page/History Taking/Urological.html" },
+        // Community Stations 
+        { title: "Alcohol Cessation Counselling", url: "Main Page/pretty_community_stations/alcohol_cessation_counselling.html" },
+        { title: "Bowel Cancer Screening", url: "Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html" },
+        { title: "Community Blood Pressure Check", url: "Main Page/pretty_community_stations/community_blood_pressure_check.html" },
+        { title: "DNACPR Counselling", url: "Main Page/pretty_community_stations/dnacpr_counselling.html" },
+        { title: "Hypertension Counselling", url: "Main Page/pretty_community_stations/hypertension_counselling.html" },
+        { title: "Inhaler Technique Counselling", url: "Main Page/pretty_community_stations/inhaler_technique_counselling.html" },
+        { title: "Peak Flow (PEFR) Technique", url: "Main Page/pretty_community_stations/peak_flow_counselling.html" },
+        { title: "Smoking Cessation Counselling", url: "Main Page/pretty_community_stations/smoking_cessation_counselling.html" },
+        { title: "Weight Loss Counselling", url: "Main Page/pretty_community_stations/weight_loss_counselling.html" },
+        // Diagnosis Stations [cite: 2]
+        { title: "Atrial Fibrillation Counselling", url: "Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html" },
+        { title: "Bacterial Vaginosis Counselling", url: "Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html" },
+        { title: "Chronic Kidney Disease Counselling", url: "Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html" },
+        { title: "Explaining a Diagnosis of Asthma", url: "Main Page/pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html" },
+        { title: "Explaining a Diagnosis of COPD", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_copd.html" },
+        { title: "Explaining a Diagnosis of Eczema", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_eczema.html" },
+        { title: "Explaining a Diagnosis of Fibroadenoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html" },
+        { title: "Explaining a Diagnosis of Glaucoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html" },
+        { title: "Explaining a Diagnosis of Type 1 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html" },
+        { title: "Explaining a Diagnosis of Type 2 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html" },
+        // Medication Stations [cite: 2]
+        { title: "ACE-Inhibitor Counselling", url: "Main Page/pretty_medication_stations/ace_inhibitor_counselling.html" },
+        { title: "Amitriptyline Counselling", url: "Main Page/pretty_medication_stations/amitriptyline_counselling.html" },
+        { title: "Anticoagulant Counselling | Pharmacy", url: "Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html" },
+        { title: "Asthma Spacer Explanation", url: "Main Page/pretty_medication_stations/asthma_spacer_explanation.html" },
+        { title: "Direct Oral Anticoagulant Counselling", url: "Main Page/pretty_medication_stations/direct_oral_anticoagulant_counselling.html" },
+        { title: "Gliclazide Counselling", url: "Main Page/pretty_medication_stations/gliclazide_counselling.html" },
+        { title: "GTN Spray Counselling", url: "Main Page/pretty_medication_stations/gtn_spray_counselling.html" },
+        { title: "Inhaler Counselling 01 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_01_pharmacy.html" },
+        { title: "Inhaler Counselling 02 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_02_pharmacy.html" },
+        { title: "Insulin Counselling", url: "Main Page/pretty_medication_stations/insulin_counselling.html" },
+        { title: "Iron Supplementation Counselling", url: "Main Page/pretty_medication_stations/iron_supplementation_counselling.html" },
+        { title: "Metformin Counselling", url: "Main Page/pretty_medication_stations/metformin_counselling.html" },
+        { title: "Opioid Analgesia Counselling", url: "Main Page/pretty_medication_stations/opioid_analgesia_counselling.html" },
+        { title: "SSRI Counselling", url: "Main Page/pretty_medication_stations/ssri_counselling.html" },
+        { title: "Statin Counselling", url: "Main Page/pretty_medication_stations/statin_counselling.html" },
+        { title: "Warfarin Counselling", url: "Main Page/pretty_medication_stations/warfarin_counselling.html" },
+        // Post-Procedure Stations [cite: 2]
+        { title: "Post-STEMI Counselling", url: "Main Page/pretty_post-procedure__stations/post_stemi_counselling.html" },
+        { title: "Post-stroke Counselling", url: "Main Page/pretty_post-procedure__stations/post_stroke_counselling.html" },
+        // Procedure Stations [cite: 2]
+        { title: "Ascitic drain explanation", url: "Main Page/pretty_procedure_stations/ascitic_drain_explanation.html" },
+        { title: "Blood transfusion counselling", url: "Main Page/pretty_procedure_stations/blood_transfusion_counselling.html" },
+        { title: "Bronchoscopy Counselling", url: "Main Page/pretty_procedure_stations/bronchoscopy_counselling.html" },
+        { title: "Chest drain explanation", url: "Main Page/pretty_procedure_stations/chest_drain_explanation.html" },
+        { title: "Colonoscopy explanation", url: "Main Page/pretty_procedure_stations/colonoscopy_explanation.html" },
+        { title: "Echocardiogram explanation", url: "Main Page/pretty_procedure_stations/echocardiogram_explanation.html" },
+        { title: "Endoscopy counselling", url: "Main Page/pretty_procedure_stations/endoscopy_counselling.html" },
+        { title: "ERCP explanation", url: "Main Page/pretty_procedure_stations/ercp_explanation.html" },
+        { title: "Haemodialysis Counselling", url: "Main Page/pretty_procedure_stations/haemodialysis_counselling.html" },
+        { title: "Tuberculosis treatment counselling", url: "Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html" },
+        // Surgery Stations [cite: 2]
+        { title: "Appendicectomy Counselling", url: "Main Page/pretty_surgery_stations/appendicectomy_counselling.html" },
+        { title: "Coronary Artery Bypass Graft (CABG) Counselling", url: "Main Page/pretty_surgery_stations/cabg_counselling.html" },
+        { title: "Cholecystectomy Counselling", url: "Main Page/pretty_surgery_stations/cholecystectomy_counselling.html" },
+        { title: "Gastrectomy Counselling", url: "Main Page/pretty_surgery_stations/gastrectomy_counselling.html" }
+    ];
+
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        searchResultsDiv.innerHTML = ''; // Clear previous results
+
+        if (searchTerm.length > 1) { // Only search if more than one character
+            const filteredResults = allSubtopics.filter(topic =>
+                topic.title.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredResults.length > 0) {
+                const ul = document.createElement('ul');
+                filteredResults.forEach(topic => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = topic.url;
+                    a.textContent = topic.title;
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+                searchResultsDiv.appendChild(ul);
+                searchResultsDiv.style.display = 'block'; // Show results
+                allCards.forEach(card => card.style.display = 'none'); // Hide main category cards
+            } else {
+                searchResultsDiv.innerHTML = '<p>No results found.</p>';
+                searchResultsDiv.style.display = 'block';
+                allCards.forEach(card => card.style.display = 'none');
+            }
+        } else {
+            searchResultsDiv.innerHTML = '';
+            searchResultsDiv.style.display = 'none';
+            allCards.forEach(card => card.style.display = 'flex'); // Show main category cards
+        }
+    });
+
 });
 </script>
 </body>

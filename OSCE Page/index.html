@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSCE Spark</title>
 
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png"> 
     <link rel="manifest" href="/OSCE-Prep-Dark/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,7 +20,7 @@
         }
         // The 'isAuthenticated' flag will persist in sessionStorage until the tab/PWA is closed.
     </script>
-
+    
     <style>
 /* --- MASTER INLINE STYLES --- */
 
@@ -40,52 +40,41 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.header-container { /* This div wraps the logo, header text, and search bar */
-    text-align: center;
+.header-container { /* This div wraps the logo and the search bar */
+    text-align: center; /* Centers the main logo/title text */
     margin-bottom: 40px;
     padding: 25px 10px;
     font-size: 1.8em;
     font-weight: bold;
     color: white; /* Header text color in light mode (default) */
-    background: linear-gradient(to right, #42a5f5, #0d47a1); /* Default blue theme gradient for header */
-    position: relative; /* Needed for absolute positioning of search bar */
-    box-sizing: border-box; /* Include padding in width */
-    display: flex; /* Use flexbox to align items in header */
-    justify-content: space-between; /* Pushes items to ends */
-    align-items: center; /* Vertically center items */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-}
-
-.header-logo { /* New class for the logo wrapper */
-    flex-shrink: 0; /* Prevent logo from shrinking */
-    padding-right: 20px; /* Space from title/search */
-}
-
-.header-title { /* For the actual "OSCE SPARK" text */
-    flex-grow: 1; /* Allows it to take available space */
-    text-align: center;
-    color: white; /* Ensure it's white in all light themes for contrast */
+    background: linear-gradient(to right, #42a5f5, #0d47a1); /* Blue theme gradient */
+    position: relative; /* Needed for positioning the search bar absolutely */
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .logo {
     max-width: 100%;
     height: auto;
     max-height: 80px;
+    display: block; /* Ensures it takes its own line for text-align: center to work */
+    margin: 0 auto; /* Centers the logo horizontally */
 }
+
+/* Specific style for the OSCE SPARK text in the header */
+.header-container > strong { /* Targeting the 'OSCE SPARK' text which is directly inside header-container */
+    display: block; /* Ensure it takes its own line for text-align: center to work */
+    margin-top: 10px; /* Space between logo and title text */
+}
+
 
 /* Search Bar Styling */
 .search-container {
-    position: relative;
+    position: absolute;
+    top: 50%; /* Center vertically within the header-container */
+    right: 20px;
+    transform: translateY(-50%); /* Adjust to truly center vertically */
+    z-index: 100; /* Ensure it stays on top */
     width: 250px; /* Fixed width for the search bar */
-    order: 2; /* Place it after the logo and title in flex order */
-    margin-left: auto; /* Push to the right */
-    margin-right: 20px; /* Add some margin from the edge */
-    flex-shrink: 0; /* Prevent search from shrinking */
-}
-
-.search-input-wrapper {
-    position: relative;
-    width: 100%;
 }
 
 #searchInput {
@@ -107,56 +96,8 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* Search Results Container for Cards */
-#searchResults {
-    display: none; /* Hidden by default */
-    flex-wrap: wrap; /* Allow cards to wrap */
-    justify-content: center;
-    gap: 25px;
-    padding: 40px 20px; /* Same padding as main container */
-    box-sizing: border-box;
-    max-width: 1200px; /* Limit max width of results container */
-    margin: 0 auto; /* Center the results container */
-}
-
-#searchResults .card { /* Apply existing card styling to search results */
-    background-color: #ffffff;
-    padding: 20px;
-    width: 280px;
-    min-height: 80px;
-    text-align: center;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
-    display: flex; /* Ensure flex for alignment within card */
-    align-items: center;
-    justify-content: center;
-    border-left: 5px solid transparent; /* For theme color accent */
-    font-size: 1.1rem; /* Match main cards */
-    font-weight: 600; /* Match main cards */
-}
-
-#searchResults .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-}
-
-#searchResults .card a {
-    text-decoration: none;
-    color: #333; /* Default link color in light mode */
-    display: block; /* Make the whole card clickable */
-    width: 100%;
-}
-
-#searchResults p.no-results {
-    text-align: center;
-    color: #666;
-    padding: 20px;
-    width: 100%; /* Take full width of results container */
-}
-
-
-.container { /* For the main index page cards */
+/* Main Container for all cards (including search results) */
+.container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -165,7 +106,7 @@ body {
     box-sizing: border-box; /* Include padding in width/height calculation */
 }
 
-.card { /* For individual cards on the index page */
+.card { /* For individual cards (main categories and search results) */
     background-color: #ffffff;
     padding: 20px;
     width: 280px;
@@ -185,13 +126,26 @@ body {
         box-shadow: 0 6px 20px rgba(0,0,0,0.12);
     }
 
-a {
+.card a { /* Styling for links within cards */
     text-decoration: none;
     color: #333; /* Default link color in light mode */
     font-weight: 600;
     font-size: 1.1rem;
     transition: color 0.3s;
+    display: block; /* Make the whole card area clickable */
+    width: 100%;
 }
+
+/* "No results found" message styling */
+p.no-results {
+    text-align: center;
+    font-size: 1.2em;
+    color: #666;
+    padding: 50px 20px;
+    width: 100%; /* Ensure it spans the container */
+    box-sizing: border-box;
+}
+
 
 footer {
     margin-top: 50px;
@@ -277,22 +231,73 @@ body.dark-mode .theme-switch input:not(:checked) + .slider {
 }
 
 
-/* --- 2. Color Themes for LIGHT Mode --- */
-/* These define the specific colors for each station type when in LIGHT mode */
-
-/* Blue Theme (Diagnosis) - Default for homepage */
-.theme-blue .header-container {
-    background: linear-gradient(to right, #42a5f5, #0d47a1);
+/* Content Page Specific Styles (for sections like Benefits, Risks, etc.) */
+/* These are not used on the index page, but keep them here to avoid breaking sub-pages */
+.content-section {
+    display: none;
+    max-width: 720px;
+    margin: 0 auto 40px;
+    background: white; /* Default light background for content sections */
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-/* Card border colors for light mode - these are used by the search results cards too */
-.card.history-taking, #searchResults .card.history-taking { border-color: #f06292; } /* Pink-like for History */
-.card.diagnosis, #searchResults .card.diagnosis { border-color: #29b6f6; } /* Blue for Diagnosis */
-.card.medication, #searchResults .card.medication { border-color: #66bb6a; } /* Green for Medication */
-.card.procedure, #searchResults .card.procedure { border-color: #ffa726; } /* Orange for Procedure */
-.card.post-procedure, #searchResults .card.post-procedure { border-color: #ab47bc; } /* Purple for Post-Procedure */
-.card.surgery, #searchResults .card.surgery { border-color: #ef5350; } /* Red for Surgery */
-.card.community, #searchResults .card.community { border-color: #ff7043; } /* Terracotta for Community */
+.section-box { /* Individual boxes within content sections */
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h3 {
+    padding-left: 10px;
+    margin-top: 20px;
+    border-left-width: 5px;
+    border-left-style: solid;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+/* Styles for High-Yield/Full Script Toggle (labels above the switch) */
+/* Not used on index, but keep for sub-pages */
+.toggle-wrapper {
+    display: none;
+}
+.toggle-container {
+    display: none;
+}
+
+
+/* --- 2. Color Themes for LIGHT Mode --- */
+/* These define the specific colors for each station type when in LIGHT mode */
+/* Applied to .card for both main and search results */
+
+.card.history-taking { border-color: #f06292; } /* Pink-like for History */
+.card.diagnosis { border-color: #29b6f6; } /* Blue for Diagnosis */
+.card.medication { border-color: #66bb6a; } /* Green for Medication */
+.card.procedure { border-color: #ffa726; } /* Orange for Procedure */
+.card.post-procedure { border-color: #ab47bc; } /* Purple for Post-Procedure */
+.card.surgery { border-color: #ef5350; } /* Red for Surgery */
+.card.community { border-color: #ff7043; } /* Terracotta for Community */
 
 
 /* --- 3. Dark Mode Styles --- */
@@ -301,12 +306,13 @@ body.dark-mode {
     color: #e0e0e0;
 }
 
-.dark-mode .card, .dark-mode #searchResults .card { /* Apply to both main and search cards */
+/* Dark mode for general text and background elements */
+.dark-mode .card {
     background-color: #2f3136;
     box-shadow: 0 6px 18px rgba(0,0,0,0.4);
 }
 
-.dark-mode .card a, .dark-mode #searchResults .card a { /* Apply to both main and search card links */
+.dark-mode .card a {
     color: #e0e0e0;
 }
 
@@ -317,8 +323,9 @@ body.dark-mode {
 /* Dark Mode Header */
 .dark-mode .header-container {
     background: linear-gradient(to right, #0d47a1, #1a237e); /* Darker blue gradient */
+    color: white; /* Ensure text is white */
 }
-.dark-mode .header-title {
+.dark-mode .header-container > strong { /* Target the OSCE SPARK text */
     color: white;
 }
 
@@ -334,33 +341,14 @@ body.dark-mode {
     border-color: #42a5f5; /* Theme blue on focus */
 }
 
-.dark-mode #searchResults {
-    background-color: #3f4147;
-    border-color: #82b1ff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4); /* Darker shadow */
-}
-
-.dark-mode #searchResults li:hover {
-    background-color: #2a2c30; /* Even darker hover for dark mode */
-}
-
-.dark-mode #searchResults li a {
-    color: #82b1ff; /* Lighter blue for links in dark mode results */
-}
-
-.dark-mode #searchResults p.no-results {
-    color: #999;
-}
-
-/* Dark Mode Card Borders for Search Results and Main Cards */
-.dark-mode .card.history-taking, .dark-mode #searchResults .card.history-taking { border-color: #f48fb1; }
-.dark-mode .card.diagnosis, .dark-mode #searchResults .card.diagnosis { border-color: #82b1ff; }
-.dark-mode .card.medication, .dark-mode #searchResults .card.medication { border-color: #a5d6a7; }
-.dark-mode .card.procedure, .dark-mode #searchResults .card.procedure { border-color: #ffcc80; }
-.dark-mode .card.post-procedure, .dark-mode #searchResults .card.post-procedure { border-color: #e1bee7; }
-.dark-mode .card.surgery, .dark-mode #searchResults .card.surgery { border-color: #ff8a80; }
-.dark-mode .card.community, .dark-mode #searchResults .card.community { border-color: #ffccbc; }
-
+/* Dark Mode Card Borders */
+.dark-mode .card.history-taking { border-color: #f48fb1; } /* Lighter Pink */
+.dark-mode .card.diagnosis { border-color: #82b1ff; } /* Lighter Blue */
+.dark-mode .card.medication { border-color: #a5d6a7; } /* Lighter Green */
+.dark-mode .card.procedure { border-color: #ffcc80; } /* Lighter Orange */
+.dark-mode .card.post-procedure { border-color: #e1bee7; } /* Lighter Purple */
+.dark-mode .card.surgery { border-color: #ff8a80; } /* Lighter Red */
+.dark-mode .card.community { border-color: #ffccbc; } /* Lighter Terracotta */
 
 /* --- 4. Media Queries for Mobile-Friendly Layout --- */
 @media screen and (max-width: 768px) {
@@ -372,43 +360,24 @@ body.dark-mode {
         justify-content: center; /* Center content horizontally */
     }
 
-    .header-logo {
-        padding-right: 0; /* Remove right padding */
+    .logo {
         margin-bottom: 10px; /* Space between logo and title */
     }
 
-    .header-title {
-        margin-bottom: 15px; /* Space between title and search */
-        flex-grow: 0; /* Prevent it from taking all space when stacked */
+    .header-container > strong { /* Adjust main title on small screens */
+        margin-top: 0; /* Remove extra margin from previous rule */
+        margin-bottom: 15px; /* Space between title and search bar */
     }
 
     .search-container {
         position: static; /* Remove absolute positioning on small screens */
         width: 90%; /* Take up more width */
-        margin: 10px auto 0 auto; /* Center it below header content */
-        order: 3; /* Ensure it appears last in the stacked layout */
-        flex-shrink: 1; /* Allow it to shrink if needed */
+        margin: 0 auto; /* Center it below header content */
+        transform: translateY(0); /* Reset transform */
     }
 
-    #searchInput, #searchResults {
-        max-width: 100%; /* Allow elements to stretch on small screens */
-    }
-
-    #searchResults {
-        width: 100%; /* Adjusted for consistent width on mobile */
-        position: static; /* No absolute positioning for results on mobile */
-        margin-top: 20px; /* Push results down from search bar */
-        border: none; /* Remove borders when static to prevent double borders */
-        box-shadow: none; /* Remove shadow to blend better with cards */
-        padding: 0; /* Remove padding to better align with cards */
-    }
-
-    #searchResults .card {
-        margin-bottom: 15px; /* Space between search result cards on mobile */
-    }
-
-    #searchResults .card:last-child {
-        margin-bottom: 0; /* No margin for the last card */
+    #searchInput {
+        max-width: 100%; /* Allow input to stretch */
     }
 
     .container {
@@ -426,35 +395,20 @@ body.dark-mode {
     .card {
         width: 100%;
     }
-
-    h2 {
-        font-size: 1.5em;
-        margin-bottom: 20px;
-    }
-
-    h3 {
-        font-size: 1.1em;
-    }
 }
-    </style>
+</style>
 </head>
 <body class="theme-blue">
 <main>
 
     <div class="header-container">
-        <div class="header-logo">
-            <img src="OSCE SPARK.png" alt="OSCE Spark Logo" class="logo">
-        </div>
-        <div class="header-title">OSCE SPARK</div>
-
-        <div class="search-container">
-            <div class="search-input-wrapper">
-                <input type="text" id="searchInput" placeholder="Search OSCE topics...">
-            </div>
+        <img src="OSCE SPARK.png" alt="OSCE Spark Logo" class="logo">
+        <strong>OSCE SPARK</strong> <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search OSCE topics...">
         </div>
     </div>
 
-    <div id="content-display" class="container">
+    <div id="main-content-area" class="container">
         <div class="card history-taking"><a href="Main Page/pretty_history_taking.html">🧠 History Taking</a></div>
         <div class="card diagnosis"><a href="Main Page/pretty_diagnosis_stations.html">💡 Diagnosis Stations</a></div>
         <div class="card medication"><a href="Main Page/pretty_medication_stations.html">💊 Medication Stations</a></div>
@@ -508,10 +462,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Search Functionality ---
     const searchInput = document.getElementById('searchInput');
-    const contentDisplayDiv = document.getElementById('content-display'); // The container that holds either main cards or search results
-    const mainCategoryCardsHTML = contentDisplayDiv.innerHTML; // Store initial main category cards HTML
+    const mainContentArea = document.getElementById('main-content-area'); // The container for all cards
+    
+    // Store the original HTML content of the main category cards
+    // This allows us to easily revert when the search is cleared
+    const originalMainCardsHTML = mainContentArea.innerHTML;
 
-    // Define the category for each subtopic to apply correct border color
     const allSubtopics = [
         [cite_start]// History Taking [cite: 1]
         { title: "Abdominal Pain", url: "Main Page/History Taking/Abdominal Pain.html", categoryClass: "history-taking" },
@@ -547,7 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "Inhaler Technique Counselling", url: "Main Page/pretty_community_stations/inhaler_technique_counselling.html", categoryClass: "community" },
         { title: "Peak Flow (PEFR) Technique", url: "Main Page/pretty_community_stations/peak_flow_counselling.html", categoryClass: "community" },
         { title: "Smoking Cessation Counselling", url: "Main Page/pretty_community_stations/smoking_cessation_counselling.html", categoryClass: "community" },
-        { title: "Weight Loss Counselling", url: "Main Page/pretty_community_stations/weight_loss_counselling.html", categoryClass: "community" },
+        { title: "Weight Loss Counselling", url: "Main Page/pretty_community_stations/weight_loss_counselling.html" },
         [cite_start]// Diagnosis Stations [cite: 2]
         { title: "Atrial Fibrillation Counselling", url: "Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html", categoryClass: "diagnosis" },
         { title: "Bacterial Vaginosis Counselling", url: "Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html", categoryClass: "diagnosis" },
@@ -600,8 +556,8 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', () => {
         const searchTerm = searchInput.value.toLowerCase();
         
-        // Clear previous content
-        contentDisplayDiv.innerHTML = ''; 
+        // Clear current content in the main content area
+        mainContentArea.innerHTML = ''; 
 
         if (searchTerm.length > 1) { // Only search if more than one character
             const filteredResults = allSubtopics.filter(topic =>
@@ -611,56 +567,53 @@ document.addEventListener('DOMContentLoaded', () => {
             if (filteredResults.length > 0) {
                 filteredResults.forEach(topic => {
                     const cardDiv = document.createElement('div');
-                    cardDiv.classList.add('card', topic.categoryClass); // Add 'card' and specific category class
+                    // Add existing 'card' class and the specific category class for styling
+                    cardDiv.classList.add('card', topic.categoryClass); 
                     const a = document.createElement('a');
                     a.href = topic.url;
                     a.textContent = topic.title;
                     cardDiv.appendChild(a);
-                    contentDisplayDiv.appendChild(cardDiv);
+                    mainContentArea.appendChild(cardDiv);
                 });
-                contentDisplayDiv.style.display = 'flex'; // Ensure container is visible
+                mainContentArea.style.display = 'flex'; // Ensure container is visible
             } else {
                 const noResultsP = document.createElement('p');
-                noResultsP.classList.add('no-results'); // Add a class for specific styling if needed
+                noResultsP.classList.add('no-results'); 
                 noResultsP.textContent = 'No results found.';
-                contentDisplayDiv.appendChild(noResultsP);
-                contentDisplayDiv.style.display = 'flex'; // Ensure container is visible for message
+                mainContentArea.appendChild(noResultsP);
+                mainContentArea.style.display = 'flex'; // Ensure container is visible for message
             }
         } else {
             // If search term is empty, restore original content
-            contentDisplayDiv.innerHTML = mainCategoryCardsHTML;
-            contentDisplayDiv.style.display = 'flex'; // Ensure container is visible
+            mainContentArea.innerHTML = originalMainCardsHTML;
+            mainContentArea.style.display = 'flex'; // Ensure container is visible
         }
     });
 
-    // Handle initial state and focus behavior
-    searchInput.addEventListener('focus', () => {
-        if (searchInput.value.length > 1) {
-            searchInput.dispatchEvent(new Event('input')); // Re-trigger search to show results
-        }
-    });
-
-    // Close search results when clicking outside (and restore main cards)
+    // Close search results and restore main cards when clicking outside search bar AND current results
     document.addEventListener('click', (event) => {
         const targetElement = event.target;
-        const isClickInsideSearch = searchInput.contains(targetElement);
-        const isClickInsideContentDisplay = contentDisplayDiv.contains(targetElement) && contentDisplayDiv.children.length > 0 && contentDisplayDiv.firstElementChild.classList.contains('card'); // Check if it's a card from results
+        const isClickInsideSearchInput = searchInput.contains(targetElement);
+        // Check if click is inside any of the currently displayed card elements within mainContentArea
+        const isClickInsideContentCards = mainContentArea.contains(targetElement) && targetElement.closest('.card');
 
-        // Only hide if clicking outside search input AND outside search results (if they are currently displayed as cards)
-        if (!isClickInsideSearch && !isClickInsideContentDisplay && searchInput.value.length > 0) {
-             // If there's text in search input but we click outside AND it's not a search result card, clear search and restore
-            searchInput.value = ''; // Clear the input
-            contentDisplayDiv.innerHTML = mainCategoryCardsHTML; // Restore original content
-            contentDisplayDiv.style.display = 'flex';
-        } else if (!isClickInsideSearch && searchInput.value.length === 0) {
-            // If clicking outside, and search input is already empty, just ensure main cards are shown
-            contentDisplayDiv.innerHTML = mainCategoryCardsHTML;
-            contentDisplayDiv.style.display = 'flex';
+        if (!isClickInsideSearchInput && !isClickInsideContentCards) {
+            // If search input has text AND we clicked outside, clear search and restore
+            if (searchInput.value.length > 0) {
+                searchInput.value = ''; // Clear the input
+                mainContentArea.innerHTML = originalMainCardsHTML; // Restore original content
+            }
+            mainContentArea.style.display = 'flex'; // Always ensure main cards are visible after external click
         }
     });
 
-    // Initial load: ensure main cards are visible
-    contentDisplayDiv.innerHTML = mainCategoryCardsHTML;
+    // Re-show results if input is focused and already has text
+    searchInput.addEventListener('focus', () => {
+        // Trigger the input event manually to re-render results if text is present
+        if (searchInput.value.length > 1) {
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    });
 });
 </script>
 </body>

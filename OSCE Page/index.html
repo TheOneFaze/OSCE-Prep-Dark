@@ -40,44 +40,47 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.header-container { /* Styles for main headers on index and content pages */
+.header-container { /* This div wraps the logo, header text, and search bar */
     text-align: center;
     margin-bottom: 40px;
     padding: 25px 10px;
     font-size: 1.8em;
     font-weight: bold;
     color: white; /* Header text color in light mode (default) */
-    /* Will be overridden by theme-specific header colors, but dark mode should revert to white */
+    background: linear-gradient(to right, #42a5f5, #0d47a1); /* Default blue theme gradient for header */
     position: relative; /* Needed for absolute positioning of search bar */
+    box-sizing: border-box; /* Include padding in width */
+    display: flex; /* Use flexbox to align items in header */
+    justify-content: space-between; /* Pushes items to ends */
+    align-items: center; /* Vertically center items */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
-.header-container header {
-    color: white; /* Ensure header text is white */
-    margin-bottom: 0; /* Remove extra margin */
+.header-title { /* For the actual "OSCE SPARK" text */
+    flex-grow: 1; /* Allows it to take available space */
+    text-align: center;
+    color: white; /* Ensure it's white in all light themes for contrast */
 }
 
 .logo {
     max-width: 100%;
     height: auto;
     max-height: 80px;
+    padding-right: 20px; /* Space from search bar if aligned left */
 }
 
 /* Search Bar Styling */
 .search-container {
-    position: absolute;
-    top: 20px; /* Adjust as needed for vertical positioning */
-    right: 20px; /* Adjust as needed for horizontal positioning */
-    z-index: 100; /* Ensure it stays on top */
-    display: flex;
-    flex-direction: column; /* Stack input and results vertically */
-    align-items: flex-end; /* Align to the right */
+    position: relative; /* Changed to relative to fit within flex container more smoothly */
     width: 250px; /* Fixed width for the search bar */
+    order: 2; /* Place it after the logo and title in flex order */
+    margin-left: auto; /* Push to the right */
+    margin-right: 20px; /* Add some margin from the edge */
 }
 
 .search-input-wrapper {
     position: relative;
     width: 100%;
-    max-width: 250px;
 }
 
 #searchInput {
@@ -91,6 +94,7 @@ body {
     transition: all 0.3s ease;
     background-color: #ffffff; /* White background */
     color: #333;
+    box-sizing: border-box; /* Include padding/border in width */
 }
 
 #searchInput:focus {
@@ -100,16 +104,19 @@ body {
 
 /* Search Results Styling */
 #searchResults {
-    width: calc(100% - 4px); /* Adjust for border */
-    max-width: 250px;
+    position: absolute; /* Position results relative to search-container */
+    top: 100%; /* Position below the input */
+    left: 0;
+    right: 0;
     background-color: #ffffff;
-    border: 2px solid #42a5f5;
-    border-radius: 10px;
+    border: 1px solid #ddd; /* Lighter border for results */
+    border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    margin-top: 10px; /* Space between input and results */
-    padding: 10px 0;
-    max-height: 300px; /* Limit height and allow scrolling */
+    margin-top: 5px; /* Small space between input and results */
+    padding: 0; /* Remove default padding */
+    max-height: 250px; /* Limit height and allow scrolling */
     overflow-y: auto;
+    z-index: 1000; /* Ensure results are on top of everything */
     display: none; /* Hidden by default */
 }
 
@@ -120,9 +127,14 @@ body {
 }
 
 #searchResults li {
-    padding: 8px 15px;
+    padding: 10px 15px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    border-bottom: 1px solid #eee; /* Separator for list items */
+}
+
+#searchResults li:last-child {
+    border-bottom: none; /* No border for the last item */
 }
 
 #searchResults li:hover {
@@ -134,6 +146,7 @@ body {
     font-weight: normal; /* Override default card link bold */
     display: block; /* Make the whole list item clickable */
     text-align: left;
+    font-size: 1em; /* Ensure consistent font size */
 }
 
 #searchResults p {
@@ -195,7 +208,7 @@ footer {
     gap: 10px; /* Space between items */
 }
 
-/* Dark Mode Toggle Slider Styles */
+/* Dark Mode Toggle Slider Styles (existing, ensure they are correct) */
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
@@ -229,6 +242,19 @@ footer {
     border-radius: 34px; /* Rounded slider */
 }
 
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px; /* Slightly larger for round effect */
+    width: 26px; /* Slightly larger for round effect */
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
 /* This rule applies when the input is checked (dark mode active) */
 input:checked + .slider {
     background-color: #03a9f4; /* Blue when checked (dark mode)*/
@@ -253,317 +279,55 @@ body.dark-mode .theme-switch input:not(:checked) + .slider {
 
 
 /* Content Page Specific Styles (for sections like Benefits, Risks, etc.) */
+/* These were mostly for subpages, but ensuring they don't interfere */
 .content-section {
-    max-width: 720px;
-    margin: 0 auto 40px;
-    background: white; /* Default light background for content sections */
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    transition: background-color 0.3s, box-shadow 0.3s;
+    display: none; /* These are not used on the index page, but keep them hidden */
 }
-
-.section-box { /* Individual boxes within content sections */
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-h3 {
-    padding-left: 10px;
-    margin-top: 20px;
-    border-left-width: 5px;
-    border-left-style: solid;
-    transition: color 0.3s, border-color 0.3s;
-}
-
-ul {
-    padding-left: 20px;
-}
-
-li {
-    margin-bottom: 10px;
-}
-
-p {
-    margin-bottom: 15px;
-}
-
-/* Styles for High-Yield/Full Script Toggle (labels above the switch) */
-.toggle-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;
-    background-color: #f0f0f0; /* Light background for the wrapper */
-    border-radius: 30px;
-    padding: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    max-width: 350px; /* Constrain width to look better */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.toggle-label {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #666; /* Default text color */
-    transition: color 0.3s, background-color 0.3s;
-    border-radius: 20px; /* For the highlighted effect */
-    user-select: none; /* Prevent text selection on click */
-    white-space: nowrap; /* Prevent wrapping */
-}
-
-    .toggle-label.active {
-        color: white; /* Text color when active */
-        background-color: #66bb6a; /* Default Green for active label (matches Medication theme) */
-        box-shadow: 0 0 0 rgba(0,0,0,0); /* REMOVED STICKING OUT SHADOW */
-    }
-
-/* Switch styling itself */
-.toggle-container {
-    position: relative;
-    width: 60px;
-    height: 30px;
-    margin: 0 15px; /* Space between labels and switch */
-    flex-shrink: 0; /* Prevent shrinking on small screens */
-}
-
-    .toggle-container .switch {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc; /* Grey when off */
-        transition: .4s;
-        border-radius: 30px;
-    }
-
-        .toggle-container .switch:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        .toggle-container .switch.active {
-            background-color: #66bb6a; /* Default Green when on (matches Medication theme) */
-        }
-
-            .toggle-container .switch.active:before {
-                transform: translateX(30px); /* Slide to the right */
-            }
-
-/* Styles for content sections being hidden/shown */
-.content-section {
-    display: none; /* Hidden by default */
-}
-
-    .content-section.active {
-        display: block; /* Shown when active */
-    }
 
 
 /* --- 2. Color Themes for LIGHT Mode --- */
 /* These define the specific colors for each station type when in LIGHT mode */
 
-/* Blue Theme (Diagnosis)
-   Primary: #0d47a1 (Dark Blue)
-   Accent: #42a5f5 (Lighter Blue)
-   Background: #e3f2fd (Very Light Blue) */
-/* Modified for homepage to be the default blue theme */
+/* Blue Theme (Diagnosis) - Default for homepage */
 .theme-blue .header-container {
     background: linear-gradient(to right, #42a5f5, #0d47a1);
 }
-.theme-blue header h1, .theme-blue header {
-    color: #ffffff; /* Make the h1 text white for readability on blue background */
-}
-.theme-blue .card {
-    border-color: #29b6f6;
-}
-.theme-blue .toggle-label.active, .theme-blue .toggle-container .switch.active {
-    background-color: #42a5f5;
-}
-
-
-/* Green Theme (Medication)
-   Primary: #1b5e20 (Dark Green)
-   Accent: #66bb6a (Medium Green)
-   Background: #e8f5e9 (Very Light Green) */
-.theme-green .header-container {
-    background: linear-gradient(to right, #66bb6a, #1b5e20);
-}
-.theme-green header h1, .theme-green header {
-    color: #ffffff; /* Make the h1 text white for readability on green background */
-}
-.theme-green .card {
-    border-color: #66bb6a;
-}
-.theme-green .toggle-label.active, .theme-green .toggle-container .switch.active {
-    background-color: #66bb6a;
-}
-
-
-/* Orange Theme (Procedure)
-   Primary: #e65100 (Dark Orange)
-   Accent: #ffb74d (Lighter Orange)
-   Background: #fff3e0 (Very Light Orange) */
-.theme-orange .header-container {
-    background: linear-gradient(to right, #ffb74d, #e65100);
-}
-.theme-orange header h1, .theme-orange header {
-    color: #ffffff;
-}
-.theme-orange .card {
-    border-color: #ffa726;
-}
-.theme-orange .toggle-label.active, .theme-orange .toggle-container .switch.active {
-    background-color: #ffa726;
-}
-
-
-/* Purple Theme (Post-Procedure/Psychiatry-related Medication)
-   Primary: #4a148c (Dark Purple)
-   Accent: #ce93d8 (Lighter Purple)
-   Background: #f3e5f5 (Very Light Purple) */
-.theme-purple .header-container {
-    background: linear-gradient(to right, #ce93d8, #4a148c);
-}
-.theme-purple header h1, .theme-purple header {
-    color: #ffffff;
-}
-.theme-purple .card {
-    border-color: #ab47bc;
-}
-.theme-purple .toggle-label.active, .theme-purple .toggle-container .switch.active {
-    background-color: #ab47bc;
-}
-
-
-/* Red Theme (Surgery)
-   Primary: #b71c1c (Dark Red)
-   Accent: #ef5350 (Medium Red)
-   Background: #ffebee (Very Light Red) */
-.theme-red .header-container {
-    background: linear-gradient(to right, #ef5350, #b71c1c);
-}
-.theme-red header h1, .theme-red header {
-    color: #ffffff; /* Make the h1 text white for readability on red background */
-}
-.theme-red .card {
-    border-color: #ef5350;
-}
-.theme-red .toggle-label.active, .theme-red .toggle-container .switch.active {
-    background-color: #ef5350;
-}
-
-
-/* Terracotta Theme (Community)
-   Primary: #bf360c (Dark Terracotta)
-   Accent: #ffab91 (Lighter Terracotta)
-   Background: #fff3e0 (Very Light Peach) */
-.theme-terracotta .header-container {
-    background: linear-gradient(to right, #ffab91, #bf360c);
-}
-.theme-terracotta header h1, .theme-terracotta header {
-    color: #ffffff; /* Make the h1 text white for readability on terracotta background */
-}
-.theme-terracotta .card {
-    border-color: #ff7043;
-}
-.theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active {
-    background-color: #ff7043;
-}
-
-
-/* Teal Theme (Respiratory)
-   Primary: #004d40 (Dark Teal)
-   Accent: #4db6ac (Medium Teal)
-   Background: #e0f2f1 (Very Light Teal) */
-.theme-teal .header-container {
-    background: linear-gradient(to right, #4db6ac, #004d40);
-}
-.theme-teal header h1, .theme-teal header {
-    color: #ffffff;
-}
-.theme-teal .card {
-    border-color: #4db6ac;
-}
-.theme-teal .toggle-label.active, .theme-teal .toggle-container .switch.active {
-    background-color: #4db6ac;
-}
-
-
-/* Pink Theme (Diabetes)
-   Primary: #ad1457 (Dark Pink)
-   Accent: #f06292 (Medium Pink)
-   Background: #fce4ec (Very Light Pink) */
-.theme-pink .header-container {
-    background: linear-gradient(to right, #f06292, #ad1457);
-}
-.theme-pink header h1, .theme-pink header {
-    color: #ffffff;
-}
-.theme-pink .card {
-    border-color: #f06292;
-}
-.theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f48fb1;
-}
+.theme-blue .card.history-taking { border-color: #f06292; } /* Pink-like for History */
+.theme-blue .card.diagnosis { border-color: #29b6f6; } /* Blue for Diagnosis */
+.theme-blue .card.medication { border-color: #66bb6a; } /* Green for Medication */
+.theme-blue .card.procedure { border-color: #ffa726; } /* Orange for Procedure */
+.theme-blue .card.post-procedure { border-color: #ab47bc; } /* Purple for Post-Procedure */
+.theme-blue .card.surgery { border-color: #ef5350; } /* Red for Surgery */
+.theme-blue .card.community { border-color: #ff7043; } /* Terracotta for Community */
 
 
 /* --- 3. Dark Mode Styles --- */
-/* These override the above themes when .dark-mode is active */
 body.dark-mode {
     background: #1f2023;
     color: #e0e0e0;
 }
 
-.dark-mode .card, .dark-mode .content-section {
+.dark-mode .card {
     background-color: #2f3136;
     box-shadow: 0 6px 18px rgba(0,0,0,0.4);
 }
 
-.dark-mode .section-box {
-    background-color: #2a2c30;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.dark-mode a {
+.dark-mode .card a {
     color: #e0e0e0;
 }
-/* Default link color in dark mode */
+
 .dark-mode footer {
     color: #999;
 }
 
-.dark-mode h1, .dark-mode h2 {
-    color: #e0e0e0;
+/* Dark Mode Header */
+.dark-mode .header-container {
+    background: linear-gradient(to right, #0d47a1, #1a237e); /* Darker blue gradient */
 }
-/* Header text color in dark mode */
-.dark-mode p, .dark-mode li {
-    color: #cccccc;
-}
-/* Ensure text inside boxes is readable */
-.dark-mode header {
+.dark-mode .header-title {
     color: white;
 }
-/* Ensure main header text is white in dark mode */
+
 
 /* Dark Mode Search Bar Styling */
 .dark-mode .search-container #searchInput {
@@ -598,110 +362,54 @@ body.dark-mode {
 }
 
 
-/* Dark Mode Theme Overrides - Adjust header and border colors for contrast */
-.dark-mode.theme-blue header, .dark-mode.theme-blue h3, .dark-mode.theme-blue a {
-    color: #82b1ff;
-}
-/* Lighter blue */
-.dark-mode.theme-blue .toggle-label.active, .dark-mode.theme-blue .toggle-container .switch.active {
-    background-color: #82b1ff;
-}
-
-.dark-mode.theme-green header, .dark-mode.theme-green h3, .dark-mode.theme-green a {
-    color: #a5d6a7;
-}
-/* Lighter green */
-.dark-mode.theme-green .toggle-label.active, .dark-mode.theme-green .toggle-container .switch.active {
-    background-color: #a5d6a7;
-}
-
-.dark-mode.theme-orange header, .dark-mode.theme-orange h3, .dark-mode.theme-orange a {
-    color: #ffcc80;
-}
-/* Lighter orange */
-.dark-mode.theme-orange .toggle-label.active, .dark-mode.theme-orange .toggle-container .switch.active {
-    background-color: #ffcc80;
-}
-
-.dark-mode.theme-purple header, .dark-mode.theme-purple h3, .dark-mode.theme-purple a {
-    color: #e1bee7;
-}
-/* Lighter purple */
-.dark-mode.theme-purple .toggle-label.active, .dark-mode.theme-purple .toggle-container .switch.active {
-    background-color: #e1bee7;
-}
-
-.dark-mode.theme-red header, .dark-mode.theme-red h3, .dark-mode.theme-red a {
-    color: #ff8a80;
-}
-/* Lighter red */
-.dark-mode.theme-red .toggle-label.active, .dark-mode.theme-red .toggle-container .switch.active {
-    background-color: #ff8a80;
-}
-
-.dark-mode.theme-terracotta header, .dark-mode.theme-terracotta h3, .dark-mode.theme-terracotta a {
-    color: #ffccbc;
-}
-/* Lighter terracotta */
-.dark-mode.theme-terracotta .toggle-label.active, .dark-mode.theme-terracotta .toggle-container .switch.active {
-    background-color: #ffccbc;
-}
-
-.dark-mode.theme-teal header, .dark-mode.theme-teal h3, .dark-mode.theme-teal a {
-    color: #80cbc4;
-}
-/* Lighter teal */
-.dark-mode.theme-teal .toggle-label.active, .dark-mode.theme-teal .toggle-container .switch.active {
-    background-color: #80cbc4;
-}
-
-.dark-mode.theme-pink header, .dark-mode.theme-pink h3, .dark-mode.theme-pink a {
-    color: #f48fb1;
-}
-/* Lighter pink */
-.dark-mode.theme-pink .toggle-label.active, .dark-mode.theme-pink .toggle-container .switch.active {
-    background-color: #f48fb1;
-}
+/* Dark Mode Card Borders */
+.dark-mode .card.history-taking { border-color: #f48fb1; } /* Lighter Pink */
+.dark-mode .card.diagnosis { border-color: #82b1ff; } /* Lighter Blue */
+.dark-mode .card.medication { border-color: #a5d6a7; } /* Lighter Green */
+.dark-mode .card.procedure { border-color: #ffcc80; } /* Lighter Orange */
+.dark-mode .card.post-procedure { border-color: #e1bee7; } /* Lighter Purple */
+.dark-mode .card.surgery { border-color: #ff8a80; } /* Lighter Red */
+.dark-mode .card.community { border-color: #ffccbc; } /* Lighter Terracotta */
 
 
 /* --- 4. Media Queries for Mobile-Friendly Layout --- */
 @media screen and (max-width: 768px) {
-    .container {
-        padding: 20px;
-    }
-    /* Adjust padding for cards on smaller screens */
-    .card {
-        width: 45%;
-    }
-
-    .toggle-wrapper {
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
+    .header-container {
+        flex-direction: column; /* Stack logo, title, search vertically */
+        align-items: center; /* Center items when stacked */
+        padding-top: 15px; /* Adjust header padding */
+        padding-bottom: 15px;
     }
 
-    .toggle-label {
-        width: 80%;
-        text-align: center;
+    .logo {
+        padding-right: 0; /* Remove right padding */
+        margin-bottom: 10px; /* Space between logo and title */
     }
 
-    .toggle-container {
-        margin: 10px 0;
+    .header-title {
+        margin-bottom: 15px; /* Space between title and search */
     }
 
     .search-container {
         position: static; /* Remove absolute positioning on small screens */
         width: 90%; /* Take up more width */
-        margin: 20px auto; /* Center it */
-        align-items: center; /* Center items for static positioning */
+        margin: 10px auto 0 auto; /* Center it below header content */
+        order: 3; /* Ensure it appears last in the stacked layout */
     }
 
-    .search-input-wrapper, #searchInput, #searchResults {
+    #searchInput, #searchResults {
         max-width: 100%; /* Allow elements to stretch on small screens */
     }
 
     #searchResults {
-        width: 100%;
+        width: calc(100% - 2px); /* Adjust for border */
+    }
+
+    .container {
+        padding: 20px;
+    }
+    .card {
+        width: 45%;
     }
 }
 
@@ -709,19 +417,8 @@ body.dark-mode {
     .container {
         padding: 15px;
     }
-    /* Adjust padding for cards on very small screens */
     .card {
         width: 100%;
-    }
-
-    .content-section {
-        padding: 20px;
-        margin: 0 auto 30px;
-    }
-
-    .section-box {
-        padding: 15px;
-        margin-bottom: 20px;
     }
 
     h2 {
@@ -740,6 +437,8 @@ body.dark-mode {
 
     <div class="header-container">
         <img src="OSCE SPARK.png" alt="OSCE Spark Logo" class="logo">
+        <div class="header-title">OSCE SPARK</div>
+        
         <div class="search-container">
             <div class="search-input-wrapper">
                 <input type="text" id="searchInput" placeholder="Search OSCE topics...">
@@ -758,21 +457,19 @@ body.dark-mode {
         <div class="card community"><a href="Main Page/pretty_community_stations.html">🏘️ Community Stations</a></div>
     </div>
 
-    </main>
+</main>
 <footer>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="darkModeToggle">
-                <input type="checkbox" id="darkModeToggle" />
-                <span class="slider round"></span>
-            </label>
-        </div>
-        Made with ❤️ for OSCE preparation
-    </footer>
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="darkModeToggle">
+            <input type="checkbox" id="darkModeToggle" />
+            <span class="slider round"></span>
+        </label>
+    </div>
+    Made with ❤️ for OSCE preparation
+</footer>
 
     
-    <script>
-// --- MASTER INLINE JAVASCRIPT ---
-
+<script>
 document.addEventListener('DOMContentLoaded', () => {
     // Dark Mode Toggle Logic
     const darkModeToggle = document.getElementById('darkModeToggle');
@@ -802,45 +499,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // High-Yield / Full Script Toggle Logic (for content pages)
-    // These functions need to be global or attached to window to be called from onclick attributes.
-    window.toggleSwitch = function(switchEl) { // Make global
-        const isActive = switchEl.classList.toggle('active');
-        document.getElementById('highYieldLabel').classList.toggle('active', !isActive);
-        document.getElementById('fullScriptLabel').classList.toggle('active', isActive);
-        document.getElementById('highYield').classList.toggle('active', !isActive);
-        document.getElementById('fullScript').classList.toggle('active', isActive);
-    }
-
-    window.showContent = function(id) { // Make global
-        const highYieldContent = document.getElementById('highYield');
-        const fullScriptContent = document.getElementById('fullScript');
-        const highYieldLabel = document.getElementById('highYieldLabel');
-        const fullScriptLabel = document.getElementById('fullScriptLabel');
-        const switchEl = document.querySelector('.toggle-container .switch');
-
-        if (id === 'highYield') {
-            highYieldContent.classList.add('active');
-            fullScriptContent.classList.remove('active');
-            highYieldLabel.classList.add('active');
-            fullScriptLabel.classList.remove('active');
-            switchEl.classList.remove('active');
-        } else { // id === 'fullScript'
-            highYieldContent.classList.remove('active');
-            fullScriptContent.classList.add('active');
-            highYieldLabel.classList.remove('active');
-            fullScriptLabel.classList.add('active');
-            switchEl.classList.add('active');
-        }
-    }
-
     // --- Search Functionality ---
     const searchInput = document.getElementById('searchInput');
     const searchResultsDiv = document.getElementById('searchResults');
     const mainContentContainer = document.querySelector('.container'); // The div holding your main category cards
 
     const allSubtopics = [
-        [cite_start]// History Taking [cite: 1]
+        // History Taking [cite: 1]
         { title: "Abdominal Pain", url: "Main Page/History Taking/Abdominal Pain.html" },
         { title: "Anxiety", url: "Main Page/History Taking/Anxiety.html" },
         { title: "Breast Lump", url: "Main Page/History Taking/Breast Lump.html" },
@@ -865,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "Tiredness", url: "Main Page/History Taking/Tiredness.html" },
         { title: "Unintentional Weight Loss", url: "Main Page/History Taking/Unintentional Weight Loss.html" },
         { title: "Urological", url: "Main Page/History Taking/Urological.html" },
-        [cite_start]// Community Stations [cite: 1, 2]
+        // Community Stations 
         { title: "Alcohol Cessation Counselling", url: "Main Page/pretty_community_stations/alcohol_cessation_counselling.html" },
         { title: "Bowel Cancer Screening", url: "Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html" },
         { title: "Community Blood Pressure Check", url: "Main Page/pretty_community_stations/community_blood_pressure_check.html" },
@@ -875,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "Peak Flow (PEFR) Technique", url: "Main Page/pretty_community_stations/peak_flow_counselling.html" },
         { title: "Smoking Cessation Counselling", url: "Main Page/pretty_community_stations/smoking_cessation_counselling.html" },
         { title: "Weight Loss Counselling", url: "Main Page/pretty_community_stations/weight_loss_counselling.html" },
-        [cite_start]// Diagnosis Stations [cite: 2]
+        // Diagnosis Stations [cite: 2]
         { title: "Atrial Fibrillation Counselling", url: "Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html" },
         { title: "Bacterial Vaginosis Counselling", url: "Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html" },
         { title: "Chronic Kidney Disease Counselling", url: "Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html" },
@@ -886,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "Explaining a Diagnosis of Glaucoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html" },
         { title: "Explaining a Diagnosis of Type 1 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html" },
         { title: "Explaining a Diagnosis of Type 2 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html" },
-        [cite_start]// Medication Stations [cite: 2]
+        // Medication Stations [cite: 2]
         { title: "ACE-Inhibitor Counselling", url: "Main Page/pretty_medication_stations/ace_inhibitor_counselling.html" },
         { title: "Amitriptyline Counselling", url: "Main Page/pretty_medication_stations/amitriptyline_counselling.html" },
         { title: "Anticoagulant Counselling | Pharmacy", url: "Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html" },
@@ -903,10 +568,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "SSRI Counselling", url: "Main Page/pretty_medication_stations/ssri_counselling.html" },
         { title: "Statin Counselling", url: "Main Page/pretty_medication_stations/statin_counselling.html" },
         { title: "Warfarin Counselling", url: "Main Page/pretty_medication_stations/warfarin_counselling.html" },
-        [cite_start]// Post-Procedure Stations [cite: 2]
+        // Post-Procedure Stations [cite: 2]
         { title: "Post-STEMI Counselling", url: "Main Page/pretty_post-procedure__stations/post_stemi_counselling.html" },
         { title: "Post-stroke Counselling", url: "Main Page/pretty_post-procedure__stations/post_stroke_counselling.html" },
-        [cite_start]// Procedure Stations [cite: 2]
+        // Procedure Stations [cite: 2]
         { title: "Ascitic drain explanation", url: "Main Page/pretty_procedure_stations/ascitic_drain_explanation.html" },
         { title: "Blood transfusion counselling", url: "Main Page/pretty_procedure_stations/blood_transfusion_counselling.html" },
         { title: "Bronchoscopy Counselling", url: "Main Page/pretty_procedure_stations/bronchoscopy_counselling.html" },
@@ -917,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "ERCP explanation", url: "Main Page/pretty_procedure_stations/ercp_explanation.html" },
         { title: "Haemodialysis Counselling", url: "Main Page/pretty_procedure_stations/haemodialysis_counselling.html" },
         { title: "Tuberculosis treatment counselling", url: "Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html" },
-        [cite_start]// Surgery Stations [cite: 2]
+        // Surgery Stations [cite: 2]
         { title: "Appendicectomy Counselling", url: "Main Page/pretty_surgery_stations/appendicectomy_counselling.html" },
         { title: "Coronary Artery Bypass Graft (CABG) Counselling", url: "Main Page/pretty_surgery_stations/cabg_counselling.html" },
         { title: "Cholecystectomy Counselling", url: "Main Page/pretty_surgery_stations/cholecystectomy_counselling.html" },
@@ -960,9 +625,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close search results when clicking outside
     document.addEventListener('click', (event) => {
-        if (!searchInput.contains(event.target) && !searchResultsDiv.contains(event.target)) {
+        const targetElement = event.target;
+        // Check if the click is outside the search input and results container
+        if (!searchInput.contains(targetElement) && !searchResultsDiv.contains(targetElement)) {
             searchResultsDiv.style.display = 'none';
-            if (searchInput.value === '') { // Only show main cards if search is empty
+            // Only show main cards if search input is empty when clicking outside
+            if (searchInput.value === '') {
                 mainContentContainer.style.display = 'flex';
             }
         }

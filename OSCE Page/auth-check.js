@@ -4,7 +4,7 @@
 (function() {
     // Define the path to your login page.
     // This path is relative to the root of your GitHub Pages site.
-    const loginPagePath = '/OSCE-Prep-Dark/OSCE%20Page/login.html';
+    const loginPagePath = '/OSCE%20Page/login.html';
 
     // Check if the user is NOT authenticated for the current session.
     // If 'isAuthenticated' is not 'true' in sessionStorage, redirect.
@@ -20,5 +20,5 @@
 window.logout = function() {
     sessionStorage.removeItem('isAuthenticated');
     // Redirect to the login page after logout
-    window.location.replace('/OSCE-Prep-Dark/OSCE%20Page/login.html');
+    window.location.replace('/OSCE%20Page/login.html');
 };

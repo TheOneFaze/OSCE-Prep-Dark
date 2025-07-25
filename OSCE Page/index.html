@@ -48,7 +48,7 @@ body {
     font-weight: bold;
     color: white;
     background: linear-gradient(to right, #42a5f5, #0d47a1); /* Default blue theme gradient for header */
-    position: relative; /* Needed for positioning the search bar */
+    position: relative; /* Needed for positioning the search bar absolutely */
     box-sizing: border-box; /* Include padding in width */
 }
 
@@ -73,27 +73,79 @@ body {
     right: 20px;
     transform: translateY(-50%); /* Adjust for true vertical centering */
     z-index: 100; /* Ensure it stays on top */
-    width: 250px; /* Fixed width for the search bar */
+    width: 250px; /* Fixed width for the search bar when expanded */
+    display: flex; /* Use flex for icon/input alignment */
+    align-items: center;
+    justify-content: flex-end; /* Align icon/input to the right initially */
+    transition: width 0.3s ease; /* Smooth transition for width */
+}
+
+.search-container.active { /* State when search input is open/active */
+    width: 250px; /* Explicit width when active */
 }
 
 #searchInput {
-    width: 100%;
-    padding: 10px 15px;
+    width: 0; /* Hidden by default */
+    padding: 10px 0px; /* No horizontal padding initially */
     border: 2px solid #42a5f5; /* Theme blue border */
     border-radius: 25px; /* Pill shape */
     font-size: 1em;
     outline: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
     background-color: #ffffff; /* White background */
     color: #333;
     box-sizing: border-box; /* Include padding/border in width */
+    opacity: 0;
+    pointer-events: none; /* Disable interaction when hidden */
+}
+
+.search-container.active #searchInput {
+    width: 100%; /* Expand to full width of container */
+    padding: 10px 15px; /* Add padding when active */
+    opacity: 1;
+    pointer-events: auto; /* Enable interaction */
 }
 
 #searchInput:focus {
     border-color: #0d47a1; /* Darker blue on focus */
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+
+.search-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Icon size */
+    height: 40px; /* Icon size */
+    cursor: pointer;
+    border-radius: 50%; /* Make it round */
+    background-color: #ffffff; /* Icon background color */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.search-container.active .search-icon-wrapper {
+    background-color: transparent; /* Hide background when text input is shown */
+    box-shadow: none;
+    pointer-events: none; /* Disable icon interaction when text input is shown */
+    width: 0; /* Collapse icon wrapper when active */
+    opacity: 0;
+    margin-right: -40px; /* Move it off to the left to avoid taking space */
+}
+
+.search-icon {
+    width: 24px; /* SVG icon size */
+    height: 24px; /* SVG icon size */
+    fill: #0d47a1; /* Icon color (dark blue) */
+    transition: fill 0.3s ease;
+}
+
+.search-container.active .search-icon {
+    fill: transparent; /* Hide icon when text input is shown */
+}
+
 
 /* Container for all cards (main categories and individual topics) */
 .container {
@@ -135,7 +187,7 @@ body {
         width: 100%;
     }
 
-/* Hidden state for individual topic cards */
+/* Hidden state for individual topic cards (and also main categories when search is active) */
 .card.hidden {
     opacity: 0;
     visibility: hidden;
@@ -147,6 +199,7 @@ body {
     padding: 0 !important; /* Remove internal padding */
     border: none !important; /* No border when hidden */
     box-shadow: none !important; /* No shadow when hidden */
+    transform: none !important; /* Reset any hover transforms */
 }
 
 /* "No results found" message styling */
@@ -676,6 +729,15 @@ body.dark-mode {
     border-color: #42a5f5; /* Theme blue on focus */
 }
 
+.dark-mode .search-icon {
+    fill: #82b1ff; /* Lighter blue icon in dark mode */
+}
+
+.dark-mode .search-icon-wrapper {
+    background-color: #3f4147; /* Dark background for icon */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
 
 /* Dark Mode Theme Overrides for Cards - all cards will use these */
 .dark-mode .card {
@@ -694,13 +756,16 @@ body.dark-mode {
 .dark-mode .card.surgery { border-color: #ff8a80; } /* Lighter Red */
 .dark-mode .card.community { border-color: #ffccbc; } /* Lighter Terracotta */
 
+/* Dark mode for no-results message */
+.dark-mode p.no-results {
+    color: #aaa;
+}
 
 /* --- 4. Media Queries for Mobile-Friendly Layout --- */
 @media screen and (max-width: 768px) {
     .header-container {
         padding-top: 15px;
         padding-bottom: 15px;
-        /* Revert to original text-align: center and let elements stack naturally */
         display: block; /* Override flex for header on small screens */
     }
 
@@ -713,21 +778,58 @@ body.dark-mode {
         margin-bottom: 15px; /* Space between title and search bar */
     }
 
+    /* Mobile-specific search bar adjustments */
     .search-container {
         position: static; /* Remove absolute positioning */
         width: 90%; /* Take up more width */
         margin: 0 auto; /* Center it */
         transform: translateY(0); /* Reset vertical centering transform */
+        justify-content: flex-end; /* Keep icon/input aligned right within its mobile container */
     }
 
     #searchInput {
-        max-width: 100%; /* Ensure search input is responsive */
+        flex-grow: 1; /* Allow input to grow */
+        max-width: calc(100% - 50px); /* Max width for input to leave room for icon */
+        margin-left: 10px; /* Space between icon and input when expanded */
+        opacity: 1; /* Always visible on mobile once activated */
+        pointer-events: auto; /* Always interactive on mobile once activated */
     }
+
+    .search-icon-wrapper {
+        background-color: transparent; /* Remove background for icon on mobile */
+        box-shadow: none; /* Remove shadow */
+    }
+
+    .search-container:not(.active) #searchInput { /* Force input to be visible on mobile if search container is shown (for direct navigation or mobile-first display) */
+        width: 100%; /* Show input fully */
+        padding: 10px 15px;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* On mobile, if search is NOT active, hide input */
+    .search-container.mobile-collapsed:not(.active) #searchInput {
+        width: 0;
+        padding: 10px 0px;
+        opacity: 0;
+        pointer-events: none;
+        margin-left: 0; /* No margin when collapsed */
+    }
+
+    /* On mobile, if search is NOT active, show icon */
+    .search-container.mobile-collapsed:not(.active) .search-icon-wrapper {
+        background-color: #ffffff; /* Icon background visible */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        width: 40px;
+        opacity: 1;
+        pointer-events: auto;
+        margin-left: 0; /* Ensure icon is at the right edge if this is the only thing */
+    }
+
 
     .container {
         padding: 20px;
     }
-    /* Adjust padding for cards on smaller screens */
     .card {
         width: 45%;
     }
@@ -737,7 +839,6 @@ body.dark-mode {
     .container {
         padding: 15px;
     }
-    /* Adjust padding for cards on very small screens */
     .card {
         width: 100%;
     }
@@ -768,7 +869,12 @@ body.dark-mode {
 
     <div class="header-container">
         <img src="OSCE SPARK.png" alt="OSCE Spark Logo" class="logo">
-        <div class="search-container">
+        <strong>OSCE SPARK</strong> <div class="search-container">
+            <div class="search-icon-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+            </div>
             <input type="text" id="searchInput" placeholder="Search OSCE topics...">
         </div>
     </div>
@@ -934,6 +1040,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Search Functionality ---
+    const searchContainer = document.querySelector('.search-container');
+    const searchIconWrapper = document.querySelector('.search-icon-wrapper');
     const searchInput = document.getElementById('searchInput');
     const allCardsContainer = document.getElementById('all-cards-container'); // The main container holding ALL cards
     const mainCategoryCards = document.querySelectorAll('.main-category-card'); // Your 7 main category cards
@@ -941,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const noResultsMessage = document.querySelector('.no-results'); // The "No results" paragraph
 
     // Function to hide all cards and the "no results" message
-    const hideAll = () => {
+    const hideAllCardsAndMessage = () => {
         mainCategoryCards.forEach(card => card.classList.add('hidden'));
         subTopicCards.forEach(card => card.classList.add('hidden'));
         noResultsMessage.style.display = 'none';
@@ -949,17 +1057,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to show only main category cards
     const showMainCategories = () => {
-        hideAll(); // Hide everything first
+        hideAllCardsAndMessage(); // Hide everything first
         mainCategoryCards.forEach(card => card.classList.remove('hidden'));
     };
 
     // Initial state: show main categories
     showMainCategories();
 
+    // Event listener for typing in search input
     searchInput.addEventListener('input', () => {
         const searchTerm = searchInput.value.toLowerCase().trim(); // Trim whitespace
 
-        hideAll(); // Start by hiding everything
+        hideAllCardsAndMessage(); // Start by hiding everything
 
         if (searchTerm.length > 1) { // Only search if more than one character
             let resultsFound = false;
@@ -981,28 +1090,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle clicks outside the search bar
+    // Toggle search bar expansion on icon click (mobile)
+    searchIconWrapper.addEventListener('click', () => {
+        // Toggle the 'active' class on search-container
+        searchContainer.classList.toggle('active');
+        
+        // If it becomes active, focus the input and show search results (if any text)
+        if (searchContainer.classList.contains('active')) {
+            searchInput.focus();
+            if (searchInput.value.length > 1) {
+                searchInput.dispatchEvent(new Event('input')); // Trigger search
+            } else {
+                // If opening with empty input, ensure main categories are shown
+                showMainCategories(); 
+            }
+        } else {
+            // If collapsing, clear search input and show main categories
+            searchInput.value = '';
+            showMainCategories();
+        }
+    });
+
+    // Handle clicks outside the search bar and cards
     document.addEventListener('click', (event) => {
         const targetElement = event.target;
-        const isClickInsideSearch = searchInput.contains(targetElement);
+        const isClickInsideSearchContainer = searchContainer.contains(targetElement);
         const isClickInsideCard = targetElement.closest('.card'); // Check if the click was inside any card
 
-        // If clicking outside the search input AND not on a card
-        if (!isClickInsideSearch && !isClickInsideCard) {
-            // Only clear search and reset view if search input had content
+        // If clicking outside the search container AND not on a card
+        if (!isClickInsideSearchContainer && !isClickInsideCard) {
+            // On mobile, if the search bar is expanded, collapse it
+            if (window.innerWidth <= 768 && searchContainer.classList.contains('active')) {
+                searchContainer.classList.remove('active');
+            }
+            
+            // Always clear search input and show main categories if clicked outside and search was active
             if (searchInput.value.length > 0) {
                 searchInput.value = ''; // Clear the input
                 showMainCategories(); // Show main categories
+            } else if (searchInput.value.length === 0) {
+                // If search input is empty, just ensure main categories are shown
+                showMainCategories();
             }
         }
     });
 
-    // Re-show relevant results if input is focused and already has text
-    searchInput.addEventListener('focus', () => {
-        if (searchInput.value.length > 1) {
-            searchInput.dispatchEvent(new Event('input')); // Re-trigger the input event
+    // Handle responsiveness for search bar behavior
+    const handleResize = () => {
+        if (window.innerWidth > 768) {
+            // Desktop view: always show input, remove mobile-specific classes
+            searchContainer.classList.add('active'); // Keep input expanded
+            searchContainer.classList.remove('mobile-collapsed');
+            searchInput.style.width = '100%'; // Ensure width is maintained
+            searchInput.style.padding = '10px 15px';
+            searchInput.style.opacity = '1';
+            searchInput.style.pointerEvents = 'auto';
+            searchIconWrapper.style.width = '0';
+            searchIconWrapper.style.opacity = '0';
+            searchIconWrapper.style.pointerEvents = 'none';
+        } else {
+            // Mobile view: initially collapsed, add mobile-specific class
+            searchContainer.classList.remove('active'); // Collapse by default
+            searchContainer.classList.add('mobile-collapsed');
+            searchInput.value = ''; // Clear search on mobile resize to collapse
+            showMainCategories(); // Show main categories
         }
-    });
+    };
+
+    // Run on load and resize
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial call on page load
 });
 </script>
 </body>

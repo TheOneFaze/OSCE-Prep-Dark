@@ -872,7 +872,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial setup for search bar on load and resize
+    
+// Updated click outside logic to prevent premature collapse
+document.addEventListener('click', (event) => {
+    const isInsideSearch = searchContainer.contains(event.target);
+    const isCard = event.target.closest('.card:not(.hidden)');
+
+    // Only collapse if the input is not focused
+    if (!isInsideSearch && !isCard && !searchInput.matches(':focus')) {
+        searchContainer.classList.remove('active');
+        searchInput.value = '';
+        searchInput.blur();
+        logo.classList.remove('hidden-on-search-active');
+        showMainCategories();
+    }
+});
+
+// Add blur delay on mobile to prevent auto-collapse when keyboard dismissed
+let collapseTimeout;
+searchInput.addEventListener('blur', () => {
+    collapseTimeout = setTimeout(() => {
+        if (!searchInput.matches(':focus')) {
+            searchContainer.classList.remove('active');
+            searchInput.value = '';
+            showMainCategories();
+            logo.classList.remove('hidden-on-search-active');
+        }
+    }, 300);
+});
+searchInput.addEventListener('focus', () => {
+    clearTimeout(collapseTimeout);
+});
+
+
+// Initial setup for search bar on load and resize
     const updateSearchDisplay = () => {
         // Ensure collapsed state is applied by CSS
         searchContainer.classList.remove('active');

@@ -573,7 +573,7 @@ body.dark-mode {
                     <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
             </div>
-            <input type="text" id="searchInput" placeholder="Search OSCE topics...">
+            <input type="text" id="searchInput" placeholder="">
         </div>
     </div>
 
@@ -675,7 +675,7 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V5)
+    Made with ❤️ for OSCE preparation (V0.2.1)
 </footer>
 
 
@@ -757,6 +757,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const noResultsMessage = document.querySelector('.no-results');
     const logo = document.querySelector('.logo');
 
+    // Flag to prevent immediate closing after opening search bar
+    let isOpeningSearch = false;
+
     // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
         mainCategoryCards.forEach(card => card.classList.add('hidden'));
@@ -807,7 +810,12 @@ document.addEventListener('DOMContentLoaded', () => {
         searchIconWrapper.addEventListener('click', () => {
             searchContainer.classList.toggle('active');
             if (searchContainer.classList.contains('active')) {
-                searchInput.focus(); // Focus immediately
+                // Set flag and then focus with a delay
+                isOpeningSearch = true;
+                setTimeout(() => {
+                    searchInput.focus();
+                    isOpeningSearch = false; // Clear flag after focus attempt
+                }, 200); // Increased delay to 200ms for better reliability on touch devices
 
                 if (window.innerWidth <= 768) {
                     logo.classList.add('hidden-on-search-active'); // Hide logo on mobile when search is active
@@ -832,11 +840,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle clicks outside the search bar and visible cards to close search
     document.addEventListener('click', (event) => {
-        const isInsideSearchContainer = searchContainer.contains(event.target);
+        // IMPORTANT: Prevent closing if we just initiated opening the search bar
+        if (isOpeningSearch) {
+            return;
+        }
+
+        const isInsideSearch = searchContainer.contains(event.target);
         const isVisibleCard = event.target.closest('.card:not(.hidden)');
-        
-        // Only close if search container is active, click is outside it, and the input is NOT currently focused
-        if (searchContainer.classList.contains('active') && !isInsideSearchContainer && document.activeElement !== searchInput) {
+        // Close search if click is outside search container, not on a visible card, and search input is not focused
+        if (!isInsideSearch && !isVisibleCard && document.activeElement !== searchInput) {
             searchContainer.classList.remove('active');
             searchInput.value = '';
             searchInput.blur();
@@ -849,14 +861,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let blurTimeout;
     searchInput.addEventListener('blur', () => {
         blurTimeout = setTimeout(() => {
-            // Only close if the search input is truly no longer the active element
-            if (document.activeElement !== searchInput) { 
+            if (document.activeElement !== searchInput) { // Only close if focus truly left the search input
                 searchContainer.classList.remove('active');
                 searchInput.value = '';
                 logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
                 showMainCategories(); // Reset to main categories view
             }
-        }, 250); // Small delay to allow clicks within search container (e.g., on the search icon itself)
+        }, 250); // Small delay to allow clicks within search container
     });
 
     searchInput.addEventListener('focus', () => {

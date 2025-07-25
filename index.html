@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSCE Spark</title>
 
-    <link rel="apple-touch-icon" href="/OSCE-Prep-Dark/apple-touch-icon.png">
-    <link rel="manifest" href="/OSCE-Prep-Dark/manifest.json">
+    <link rel="apple-touch-icon" href="/OSCE-Prep-Dark/OSCE Page/apple-touch-icon.png">
+    <link rel="manifest" href="/OSCE-Prep-Dark/OSCE Page/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -14,8 +14,7 @@
         // Check if the user is NOT authenticated for the current session.
         // This must run before any content is rendered to prevent flicker.
         if (sessionStorage.getItem('isAuthenticated') !== 'true') {
-            // Redirect to the login page.
-            // Ensure this path is correct relative to the root of your GitHub Pages site.
+            // Redirect to the login page. This path was already correct.
             window.location.href = '/OSCE-Prep-Dark/OSCE Page/login.html';
         }
         // The 'isAuthenticated' flag will persist in sessionStorage until the tab/PWA is closed.
@@ -628,6 +627,7 @@ body.dark-mode {
     right: 0;
     bottom: 0;
     border-radius: 34px;
+    /* Corrected background-image path */
     background-image: url('/OSCE-Prep-Dark/OSCE Page/sun-toggle-final.png');
     background-repeat: no-repeat;
     background-position: center center;
@@ -650,6 +650,7 @@ body.dark-mode {
 }
 
 input:checked + .slider {
+    /* Corrected background-image path */
     background-image: url('/OSCE-Prep-Dark/OSCE Page/moon-toggle-final.png');
     background-position: center center;
     background-size: cover;

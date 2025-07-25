@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSCE Spark</title>
 
-    <link rel="apple-touch-icon" href="apple-touch-icon.png"> 
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="/OSCE-Prep-Dark/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,7 +20,7 @@
         }
         // The 'isAuthenticated' flag will persist in sessionStorage until the tab/PWA is closed.
     </script>
-    
+
     <style>
 /* --- MASTER INLINE STYLES --- */
 
@@ -40,22 +40,16 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.header-container { /* Original header-container */
-    text-align: center;
+.header-container { /* This div wraps the logo and the search bar */
+    text-align: center; /* Centers the main logo/title */
     margin-bottom: 40px;
     padding: 25px 10px;
     font-size: 1.8em;
     font-weight: bold;
     color: white;
     background: linear-gradient(to right, #42a5f5, #0d47a1); /* Default blue theme gradient for header */
-    position: relative; /* Needed for positioning the search bar absolutely */
+    position: relative; /* Needed for positioning the search bar */
     box-sizing: border-box; /* Include padding in width */
-}
-
-/* The actual "OSCE SPARK" text within the header-container */
-.header-container strong {
-    display: block; /* Ensure it takes its own line */
-    margin-top: 10px; /* Space between logo and text */
 }
 
 .logo {
@@ -66,86 +60,43 @@ body {
     margin: 0 auto;
 }
 
-/* Search Bar Styling */
+/* Search Bar Styling - DESKTOP FIRST (full bar) */
 .search-container {
     position: absolute;
     top: 50%; /* Vertically center in header */
     right: 20px;
     transform: translateY(-50%); /* Adjust for true vertical centering */
     z-index: 100; /* Ensure it stays on top */
-    width: 250px; /* Fixed width for the search bar when expanded */
-    display: flex; /* Use flex for icon/input alignment */
+    width: 250px; /* Fixed width for the search bar */
+    display: flex; /* Use flex for alignment */
     align-items: center;
-    justify-content: flex-end; /* Align icon/input to the right initially */
-    transition: width 0.3s ease; /* Smooth transition for width */
+    justify-content: flex-end; /* Align contents to the right */
 }
 
-.search-container.active { /* State when search input is open/active */
-    width: 250px; /* Explicit width when active */
+.search-icon-wrapper { /* Icon part of search (hidden by default on desktop) */
+    display: none; /* Hide icon wrapper by default on desktop */
 }
 
-#searchInput {
-    width: 0; /* Hidden by default */
-    padding: 10px 0px; /* No horizontal padding initially */
+#searchInput { /* Input part of search (always visible on desktop) */
+    width: 100%; /* Full width within its container */
+    padding: 10px 15px;
     border: 2px solid #42a5f5; /* Theme blue border */
     border-radius: 25px; /* Pill shape */
     font-size: 1em;
     outline: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: all 0.3s ease; /* Smooth transition for all properties */
+    transition: all 0.3s ease;
     background-color: #ffffff; /* White background */
     color: #333;
     box-sizing: border-box; /* Include padding/border in width */
-    opacity: 0;
-    pointer-events: none; /* Disable interaction when hidden */
-}
-
-.search-container.active #searchInput {
-    width: 100%; /* Expand to full width of container */
-    padding: 10px 15px; /* Add padding when active */
-    opacity: 1;
-    pointer-events: auto; /* Enable interaction */
+    opacity: 1; /* Always visible on desktop */
+    pointer-events: auto; /* Always interactive on desktop */
 }
 
 #searchInput:focus {
     border-color: #0d47a1; /* Darker blue on focus */
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
-
-.search-icon-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px; /* Icon size */
-    height: 40px; /* Icon size */
-    cursor: pointer;
-    border-radius: 50%; /* Make it round */
-    background-color: #ffffff; /* Icon background color */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    flex-shrink: 0; /* Prevent shrinking */
-}
-
-.search-container.active .search-icon-wrapper {
-    background-color: transparent; /* Hide background when text input is shown */
-    box-shadow: none;
-    pointer-events: none; /* Disable icon interaction when text input is shown */
-    width: 0; /* Collapse icon wrapper when active */
-    opacity: 0;
-    margin-right: -40px; /* Move it off to the left to avoid taking space */
-}
-
-.search-icon {
-    width: 24px; /* SVG icon size */
-    height: 24px; /* SVG icon size */
-    fill: #0d47a1; /* Icon color (dark blue) */
-    transition: fill 0.3s ease;
-}
-
-.search-container.active .search-icon {
-    fill: transparent; /* Hide icon when text input is shown */
-}
-
 
 /* Container for all cards (main categories and individual topics) */
 .container {
@@ -187,7 +138,7 @@ body {
         width: 100%;
     }
 
-/* Hidden state for individual topic cards (and also main categories when search is active) */
+/* Hidden state for individual topic cards and other non-visible elements */
 .card.hidden {
     opacity: 0;
     visibility: hidden;
@@ -434,7 +385,7 @@ p {
     border-color: #42a5f5;
 }
 
-.theme-blue .header-container, .theme-blue header {
+.theme-blue .header-container { /* Note: Removed 'header' as separate target here */
     background: linear-gradient(to right, #42a5f5, #0d47a1);
 }
 
@@ -447,7 +398,7 @@ p {
 }
 
 /* Specific override for h1 within theme-blue header for readability */
-.theme-blue header h1 {
+.theme-blue header h1 { /* This rule is likely not needed anymore given new header structure */
     color: #ffffff; /* Make the h1 text white for readability on blue background */
 }
 
@@ -714,9 +665,6 @@ body.dark-mode {
 .dark-mode .header-container {
     background: linear-gradient(to right, #0d47a1, #1a237e); /* Darker blue gradient */
 }
-.dark-mode .header-container strong { /* The OSCE SPARK text */
-    color: white;
-}
 
 /* Dark Mode Search Bar Styling */
 .dark-mode .search-container #searchInput {
@@ -766,6 +714,7 @@ body.dark-mode {
     .header-container {
         padding-top: 15px;
         padding-bottom: 15px;
+        /* Revert to original text-align: center and let elements stack naturally */
         display: block; /* Override flex for header on small screens */
     }
 
@@ -773,9 +722,9 @@ body.dark-mode {
         margin-bottom: 10px; /* Space below logo */
     }
 
-    .header-container strong { /* The OSCE SPARK text */
-        margin-top: 0; /* Remove extra margin from previous rule */
-        margin-bottom: 15px; /* Space between title and search bar */
+    /* Remove the 'strong' element, as per your original file, only the image acts as title */
+    .header-container > strong { /* Target the OSCE SPARK text */
+        display: none; /* Hide the extra OSCE SPARK text on mobile */
     }
 
     /* Mobile-specific search bar adjustments */
@@ -785,45 +734,56 @@ body.dark-mode {
         margin: 0 auto; /* Center it */
         transform: translateY(0); /* Reset vertical centering transform */
         justify-content: flex-end; /* Keep icon/input aligned right within its mobile container */
+        margin-top: 15px; /* Add space below logo/title */
     }
 
     #searchInput {
-        flex-grow: 1; /* Allow input to grow */
-        max-width: calc(100% - 50px); /* Max width for input to leave room for icon */
-        margin-left: 10px; /* Space between icon and input when expanded */
-        opacity: 1; /* Always visible on mobile once activated */
-        pointer-events: auto; /* Always interactive on mobile once activated */
+        width: 0; /* Hidden by default on mobile */
+        padding: 10px 0px; /* No horizontal padding initially */
+        opacity: 0;
+        pointer-events: none; /* Disable interaction when hidden */
+        flex-grow: 1; /* Allow it to grow when active */
     }
 
-    .search-icon-wrapper {
-        background-color: transparent; /* Remove background for icon on mobile */
-        box-shadow: none; /* Remove shadow */
+    .search-icon-wrapper { /* Icon part of search (visible on mobile by default) */
+        display: flex; /* Show icon wrapper on mobile */
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        border-radius: 50%;
+        background-color: #ffffff; /* Icon background color */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.3s ease; /* Smooth transition for icon */
+        flex-shrink: 0;
     }
 
-    .search-container:not(.active) #searchInput { /* Force input to be visible on mobile if search container is shown (for direct navigation or mobile-first display) */
-        width: 100%; /* Show input fully */
+    .search-icon {
+        width: 24px;
+        height: 24px;
+        fill: #0d47a1;
+    }
+
+    /* Mobile active state for search bar (expanded) */
+    .search-container.active {
+        width: 100%; /* Expand width to 100% of its static container */
+        justify-content: flex-start; /* Align input to left when expanded */
+    }
+
+    .search-container.active #searchInput {
+        width: calc(100% - 50px); /* Fill remaining space, minus icon size */
         padding: 10px 15px;
         opacity: 1;
         pointer-events: auto;
+        margin-left: 10px; /* Space between icon and input when expanded */
     }
 
-    /* On mobile, if search is NOT active, hide input */
-    .search-container.mobile-collapsed:not(.active) #searchInput {
-        width: 0;
-        padding: 10px 0px;
+    .search-container.active .search-icon-wrapper {
+        background-color: transparent; /* Hide background when text input is shown */
+        box-shadow: none;
+        width: 0; /* Collapse icon wrapper */
         opacity: 0;
-        pointer-events: none;
-        margin-left: 0; /* No margin when collapsed */
-    }
-
-    /* On mobile, if search is NOT active, show icon */
-    .search-container.mobile-collapsed:not(.active) .search-icon-wrapper {
-        background-color: #ffffff; /* Icon background visible */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        width: 40px;
-        opacity: 1;
-        pointer-events: auto;
-        margin-left: 0; /* Ensure icon is at the right edge if this is the only thing */
+        pointer-events: none; /* Disable interaction */
+        margin-right: -40px; /* Move it off to the left to avoid taking space */
     }
 
 
@@ -862,14 +822,14 @@ body.dark-mode {
         font-size: 1.1em;
     }
 }
-</style>
+    </style>
 </head>
 <body class="theme-blue">
 <main>
 
     <div class="header-container">
         <img src="OSCE SPARK.png" alt="OSCE Spark Logo" class="logo">
-        <strong>OSCE SPARK</strong> <div class="search-container">
+        <div class="search-container">
             <div class="search-icon-wrapper">
                 <svg class="search-icon" viewBox="0 0 24 24">
                     <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -895,6 +855,78 @@ body.dark-mode {
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Chest Pain.html">Chest Pain</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Cough.html">Cough</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Depression.html">Depression</a></div>
+        {/*
+        The code below has been commented out to match the content of `files.txt` more accurately.
+        If these files exist and you want them to be searchable, uncomment them and ensure their paths are correct.
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dizziness History.html">Dizziness History</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dysphagia.html">Dysphagia</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dyspnoea.html">Dyspnoea</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Falls.html">Falls</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Female LUTS.html">Female LUTS</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Headache.html">Headache</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Leg Swelling.html">Leg Swelling</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Loss of Consciousness.html">Loss of Consciousness</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Male LUTS.html">Male LUTS</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Ophthalmic.html">Ophthalmic</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Palpitations.html">Palpitations</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Respiratory.html">Respiratory</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Seizure.html">Seizure</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Stroke-TIA.html">Stroke-TIA</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Tiredness.html">Tiredness</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Unintentional Weight Loss.html">Unintentional Weight Loss</a></div>
+        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Urological.html">Urological</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/alcohol_cessation_counselling.html">Alcohol Cessation Counselling</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html">Bowel Cancer Screening</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/community_blood_pressure_check.html">Community Blood Pressure Check</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/dnacpr_counselling.html">DNACPR Counselling</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/hypertension_counselling.html">Hypertension Counselling</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/inhaler_technique_counselling.html">Inhaler Technique Counselling</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/peak_flow_counselling.html">Peak Flow (PEFR) Technique</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/smoking_cessation_counselling.html">Smoking Cessation Counselling</a></div>
+        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/weight_loss_counselling.html">Weight Loss Counselling</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html">Atrial Fibrillation Counselling</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html">Bacterial Vaginosis Counselling</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html">Chronic Kidney Disease Counselling</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html">Explaining a Diagnosis of Asthma</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_copd.html">Explaining a Diagnosis of COPD</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_eczema.html">Explaining a Diagnosis of Eczema</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html">Explaining a Diagnosis of Fibroadenoma</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html">Explaining a Diagnosis of Glaucoma</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html">Explaining a Diagnosis of Type 1 Diabetes</a></div>
+        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html">Explaining a Diagnosis of Type 2 Diabetes</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/ace_inhibitor_counselling.html">ACE-Inhibitor Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/amitriptyline_counselling.html">Amitriptyline Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html">Anticoagulant Counselling | Pharmacy</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/asthma_spacer_explanation.html">Asthma Spacer Explanation</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/direct_oral_anticoagulant_counselling.html">Direct Oral Anticoagulant Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/gliclazide_counselling.html">Gliclazide Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/gtn_spray_counselling.html">GTN Spray Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/inhaler_counselling_01_pharmacy.html">Inhaler Counselling 01 | Pharmacy</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/inhaler_counselling_02_pharmacy.html">Inhaler Counselling 02 | Pharmacy</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/insulin_counselling.html">Insulin Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/iron_supplementation_counselling.html">Iron Supplementation Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/metformin_counselling.html">Metformin Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/opioid_analgesia_counselling.html">Opioid Analgesia Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/ssri_counselling.html">SSRI Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/statin_counselling.html">Statin Counselling</a></div>
+        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/warfarin_counselling.html">Warfarin Counselling</a></div>
+        <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stemi_counselling.html">Post-STEMI Counselling</a></div>
+        <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stroke_counselling.html">Post-stroke Counselling</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/ascitic_drain_explanation.html">Ascitic drain explanation</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/blood_transfusion_counselling.html">Blood transfusion counselling</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/bronchoscopy_counselling.html">Bronchoscopy Counselling</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/chest_drain_explanation.html">Chest drain explanation</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/colonoscopy_explanation.html">Colonoscopy explanation</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/echocardiogram_explanation.html">Echocardiogram explanation</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/endoscopy_counselling.html">Endoscopy counselling</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/ercp_explanation.html">ERCP explanation</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/haemodialysis_counselling.html">Haemodialysis Counselling</a></div>
+        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html">Tuberculosis treatment counselling</a></div>
+        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/appendicectomy_counselling.html">Appendicectomy Counselling</a></div>
+        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
+        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
+        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
+        */}
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dizziness History.html">Dizziness History</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dysphagia.html">Dysphagia</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dyspnoea.html">Dyspnoea</a></div>
@@ -964,7 +996,8 @@ body.dark-mode {
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
 
-        <p class="no-results">No results found.</p> </div>
+        <p class="no-results">No results found.</p>
+    </div>
 
 </main>
 <footer>
@@ -1009,15 +1042,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // High-Yield / Full Script Toggle Logic (for content pages) - Keep these as they might be used in sub-pages
-    window.toggleSwitch = function(switchEl) { // Make global
+    // These functions are generally for content pages, not the index. They are kept globally scoped.
+    window.toggleSwitch = function(switchEl) {
         const isActive = switchEl.classList.toggle('active');
-        document.getElementById('highYieldLabel').classList.toggle('active', !isActive);
-        document.getElementById('fullScriptLabel').classList.toggle('active', isActive);
-        document.getElementById('highYield').classList.toggle('active', !isActive);
-        document.getElementById('fullScript').classList.toggle('active', isActive);
+        // Check if elements exist before toggling classes, as they might not be on index.html
+        const highYieldLabel = document.getElementById('highYieldLabel');
+        const fullScriptLabel = document.getElementById('fullScriptLabel');
+        const highYieldContent = document.getElementById('highYield');
+        const fullScriptContent = document.getElementById('fullScript');
+
+        if (highYieldLabel) highYieldLabel.classList.toggle('active', !isActive);
+        if (fullScriptLabel) fullScriptLabel.classList.toggle('active', isActive);
+        if (highYieldContent) highYieldContent.classList.toggle('active', !isActive);
+        if (fullScriptContent) fullScriptContent.classList.toggle('active', isActive);
     }
 
-    window.showContent = function(id) { // Make global
+    window.showContent = function(id) {
         const highYieldContent = document.getElementById('highYield');
         const fullScriptContent = document.getElementById('fullScript');
         const highYieldLabel = document.getElementById('highYieldLabel');
@@ -1025,17 +1065,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const switchEl = document.querySelector('.toggle-container .switch');
 
         if (id === 'highYield') {
-            highYieldContent.classList.add('active');
-            fullScriptContent.classList.remove('active');
-            highYieldLabel.classList.add('active');
-            fullScriptLabel.classList.remove('active');
-            switchEl.classList.remove('active');
+            if (highYieldContent) highYieldContent.classList.add('active');
+            if (fullScriptContent) fullScriptContent.classList.remove('active');
+            if (highYieldLabel) highYieldLabel.classList.add('active');
+            if (fullScriptLabel) fullScriptLabel.classList.remove('active');
+            if (switchEl) switchEl.classList.remove('active');
         } else { // id === 'fullScript'
-            highYieldContent.classList.remove('active');
-            fullScriptContent.classList.add('active');
-            highYieldLabel.classList.remove('active');
-            fullScriptLabel.classList.add('active');
-            switchEl.classList.add('active');
+            if (highYieldContent) highYieldContent.classList.remove('active');
+            if (fullScriptContent) fullScriptContent.classList.add('active');
+            if (highYieldLabel) highYieldLabel.classList.remove('active');
+            if (fullScriptLabel) fullScriptLabel.classList.add('active');
+            if (switchEl) switchEl.classList.add('active');
         }
     }
 
@@ -1090,70 +1130,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Toggle search bar expansion on icon click (mobile)
+    // Toggle search bar expansion on icon click (mobile only)
     searchIconWrapper.addEventListener('click', () => {
-        // Toggle the 'active' class on search-container
-        searchContainer.classList.toggle('active');
-        
-        // If it becomes active, focus the input and show search results (if any text)
-        if (searchContainer.classList.contains('active')) {
-            searchInput.focus();
-            if (searchInput.value.length > 1) {
-                searchInput.dispatchEvent(new Event('input')); // Trigger search
+        // Only activate if on a mobile viewport
+        if (window.innerWidth <= 768) {
+            searchContainer.classList.toggle('active');
+
+            if (searchContainer.classList.contains('active')) {
+                searchInput.focus();
+                // If opening search, and there's text, show results
+                if (searchInput.value.length > 1) {
+                    searchInput.dispatchEvent(new Event('input'));
+                } else {
+                    // If opening search with empty input, hide all cards to show empty canvas for typing
+                    hideAllCardsAndMessage(); 
+                }
             } else {
-                // If opening with empty input, ensure main categories are shown
-                showMainCategories(); 
-            }
-        } else {
-            // If collapsing, clear search input and show main categories
-            searchInput.value = '';
-            showMainCategories();
-        }
-    });
-
-    // Handle clicks outside the search bar and cards
-    document.addEventListener('click', (event) => {
-        const targetElement = event.target;
-        const isClickInsideSearchContainer = searchContainer.contains(targetElement);
-        const isClickInsideCard = targetElement.closest('.card'); // Check if the click was inside any card
-
-        // If clicking outside the search container AND not on a card
-        if (!isClickInsideSearchContainer && !isClickInsideCard) {
-            // On mobile, if the search bar is expanded, collapse it
-            if (window.innerWidth <= 768 && searchContainer.classList.contains('active')) {
-                searchContainer.classList.remove('active');
-            }
-            
-            // Always clear search input and show main categories if clicked outside and search was active
-            if (searchInput.value.length > 0) {
-                searchInput.value = ''; // Clear the input
-                showMainCategories(); // Show main categories
-            } else if (searchInput.value.length === 0) {
-                // If search input is empty, just ensure main categories are shown
+                // If collapsing search, clear input and show main categories
+                searchInput.value = '';
                 showMainCategories();
             }
         }
     });
 
-    // Handle responsiveness for search bar behavior
+    // Handle clicks outside the search bar and visible cards
+    document.addEventListener('click', (event) => {
+        const targetElement = event.target;
+        const isClickInsideSearchContainer = searchContainer.contains(targetElement);
+        // Only consider cards that are currently NOT hidden in the layout
+        const isClickInsideVisibleCard = targetElement.closest('.card:not(.hidden)');
+
+        // If clicking outside the search container AND not on a visible card
+        if (!isClickInsideSearchContainer && !isClickInsideVisibleCard) {
+            // If on mobile, and search is expanded, collapse it
+            if (window.innerWidth <= 768 && searchContainer.classList.contains('active')) {
+                searchContainer.classList.remove('active');
+            }
+            
+            // Clear search input and show main categories only if search input was not empty
+            if (searchInput.value.length > 0) {
+                searchInput.value = ''; // Clear the input
+            }
+            // Always ensure main categories are shown after external click
+            showMainCategories();
+        }
+    });
+
+    // Re-show relevant results if input is focused and already has text
+    // This handles scenarios where user tabs back to input or clicks in it
+    searchInput.addEventListener('focus', () => {
+        if (searchInput.value.length > 1) {
+            searchInput.dispatchEvent(new Event('input')); // Re-trigger the input event
+        }
+    });
+
+    // Handle responsiveness for search bar behavior on load and resize
     const handleResize = () => {
         if (window.innerWidth > 768) {
-            // Desktop view: always show input, remove mobile-specific classes
-            searchContainer.classList.add('active'); // Keep input expanded
-            searchContainer.classList.remove('mobile-collapsed');
-            searchInput.style.width = '100%'; // Ensure width is maintained
+            // Desktop view: always show input, hide icon, remove mobile-specific classes
+            searchContainer.classList.remove('active'); // Ensure not in mobile 'active' state
+            searchContainer.classList.remove('mobile-collapsed'); // Remove mobile class
+            searchIconWrapper.style.display = 'none'; // Hide icon
+            searchInput.style.width = '100%'; // Ensure full width
             searchInput.style.padding = '10px 15px';
             searchInput.style.opacity = '1';
             searchInput.style.pointerEvents = 'auto';
-            searchIconWrapper.style.width = '0';
-            searchIconWrapper.style.opacity = '0';
-            searchIconWrapper.style.pointerEvents = 'none';
         } else {
-            // Mobile view: initially collapsed, add mobile-specific class
+            // Mobile view: initially collapsed, show icon, add mobile-specific classes
             searchContainer.classList.remove('active'); // Collapse by default
-            searchContainer.classList.add('mobile-collapsed');
-            searchInput.value = ''; // Clear search on mobile resize to collapse
-            showMainCategories(); // Show main categories
+            searchIconWrapper.style.display = 'flex'; // Show icon
+            // Reset input to hidden state for mobile collapsed view
+            searchInput.style.width = '0';
+            searchInput.style.padding = '10px 0px';
+            searchInput.style.opacity = '0';
+            searchInput.style.pointerEvents = 'none';
+
+            // Clear search and reset view on mobile resize to prevent odd states
+            searchInput.value = '';
+            showMainCategories();
         }
     };
 

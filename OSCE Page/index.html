@@ -602,348 +602,350 @@ body.dark-mode {
 
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Dark Mode Toggle Logic
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const body = document.body;
-    const themeKey = 'theme-preference';
+    document.addEventListener('DOMContentLoaded', () => {
+        // Dark Mode Toggle Logic (No changes needed, keeping as is)
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        const themeKey = 'theme-preference';
 
-    const applyTheme = (theme) => {
-        if (theme === 'dark') {
-            body.classList.add('dark-mode');
-            if (darkModeToggle) darkModeToggle.checked = true;
-        } else {
-            body.classList.remove('dark-mode');
-            if (darkModeToggle) darkModeToggle.checked = false;
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                if (darkModeToggle) darkModeToggle.checked = true;
+            } else {
+                body.classList.remove('dark-mode');
+                if (darkModeToggle) darkModeToggle.checked = false;
+            }
+        };
+
+        const savedTheme = localStorage.getItem(themeKey);
+        if (savedTheme) {
+            applyTheme(savedTheme);
         }
-    };
 
-    const savedTheme = localStorage.getItem(themeKey);
-    if (savedTheme) {
-        applyTheme(savedTheme);
-    }
-
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener('change', () => {
-            const newTheme = darkModeToggle.checked ? 'dark' : 'light';
-            applyTheme(newTheme);
-            localStorage.setItem(themeKey, newTheme);
-        });
-    }
-
-    // High-Yield / Full Script Toggle Logic (for content pages) - Kept globally scoped as before
-    window.toggleSwitch = function(switchEl) {
-        const isActive = switchEl.classList.toggle('active');
-        const highYieldLabel = document.getElementById('highYieldLabel');
-        const fullScriptLabel = document.getElementById('fullScriptLabel');
-        const highYieldContent = document.getElementById('highYield');
-        const fullScriptContent = document.getElementById('fullScript');
-
-        if (highYieldLabel) highYieldLabel.classList.toggle('active', !isActive);
-        if (fullScriptLabel) fullScriptLabel.classList.toggle('active', isActive);
-        if (highYieldContent) highYieldContent.classList.toggle('active', !isActive);
-        if (fullScriptContent) fullScriptContent.classList.add('active'); // Ensure content is displayed
-        if (fullScriptContent) fullScriptContent.classList.toggle('active', isActive);
-    }
-
-    window.showContent = function(id) {
-        const highYieldContent = document.getElementById('highYield');
-        const fullScriptContent = document.getElementById('fullScript');
-        const highYieldLabel = document.getElementById('highYieldLabel');
-        const fullScriptLabel = document.getElementById('fullScriptLabel');
-        const switchEl = document.querySelector('.toggle-container .switch');
-
-        if (id === 'highYield') {
-            if (highYieldContent) highYieldContent.classList.add('active');
-            if (fullScriptContent) fullScriptContent.classList.remove('active');
-            if (highYieldLabel) highYieldLabel.classList.add('active');
-            if (fullScriptLabel) fullScriptLabel.classList.remove('active');
-            if (switchEl) switchEl.classList.remove('active');
-        } else { // id === 'fullScript'
-            if (highYieldContent) highYieldContent.classList.remove('active');
-            if (fullScriptContent) fullScriptContent.classList.add('active');
-            if (highYieldLabel) highYieldLabel.classList.remove('active');
-            if (fullScriptLabel) fullScriptLabel.classList.add('active');
-            if (switchEl) switchEl.classList.add('active');
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('change', () => {
+                const newTheme = darkModeToggle.checked ? 'dark' : 'light';
+                applyTheme(newTheme);
+                localStorage.setItem(themeKey, newTheme);
+            });
         }
-    }
 
-    // --- Search Functionality ---
-    const headerContainer = document.querySelector('.header-container');
-    const searchContainer = document.querySelector('.search-container');
-    const searchIconWrapper = document.querySelector('.search-icon-wrapper');
-    const searchIcon = document.querySelector('.search-icon');
-    const searchInput = document.getElementById('searchInput');
-    const allCardsContainer = document.getElementById('all-cards-container');
-    const mainCategoryCards = document.querySelectorAll('.main-category-card');
-    let subTopicCards = []; // This will be populated dynamically
-    const noResultsMessage = document.querySelector('.no-results');
-    const logo = document.querySelector('.logo'); // Get logo element
+        // High-Yield / Full Script Toggle Logic (for content pages) - Kept globally scoped as before
+        window.toggleSwitch = function(switchEl) {
+            const isActive = switchEl.classList.toggle('active');
+            const highYieldLabel = document.getElementById('highYieldLabel');
+            const fullScriptLabel = document.getElementById('fullScriptLabel');
+            const highYieldContent = document.getElementById('highYield');
+            const fullScriptContent = document.getElementById('fullScript');
 
-    // Master list of all subtopics with their category classes from files.txt
-    const allSubtopicsData = [
-        // History Taking
-        { title: "Abdominal Pain", url: "Main Page/History Taking/Abdominal Pain.html", categoryClass: "history-taking" },
-        { title: "Anxiety", url: "Main Page/History Taking/Anxiety.html", categoryClass: "history-taking" },
-        { title: "Breast Lump", url: "Main Page/History Taking/Breast Lump.html", categoryClass: "history-taking" },
-        { title: "Cardiovascular", url: "Main Page/History Taking/Cardiovascular.html", categoryClass: "history-taking" },
-        { title: "Chest Pain", url: "Main Page/History Taking/Chest Pain.html", categoryClass: "history-taking" },
-        { title: "Cough", url: "Main Page/History Taking/Cough.html", categoryClass: "history-taking" },
-        { title: "Depression", url: "Main Page/History Taking/Depression.html", categoryClass: "history-taking" },
-        { title: "Dizziness History", url: "Main Page/History Taking/Dizziness History.html", categoryClass: "history-taking" },
-        { title: "Dysphagia", url: "Main Page/History Taking/Dysphagia.html", categoryClass: "history-taking" },
-        { title: "Dyspnoea", url: "Main Page/History Taking/Dyspnoea.html", categoryClass: "history-taking" },
-        { title: "Falls", url: "Main Page/History Taking/Falls.html", categoryClass: "history-taking" },
-        { title: "Female LUTS", url: "Main Page/History Taking/Female LUTS.html", categoryClass: "history-taking" },
-        { title: "Headache", url: "Main Page/History Taking/Headache.html", categoryClass: "history-taking" },
-        { title: "Leg Swelling", url: "Main Page/History Taking/Leg Swelling.html", categoryClass: "history-taking" },
-        { title: "Loss of Consciousness", url: "Main Page/History Taking/Loss of Consciousness.html", categoryClass: "history-taking" },
-        { title: "Male LUTS", url: "Main Page/History Taking/Male LUTS.html", categoryClass: "history-taking" },
-        { title: "Ophthalmic", url: "Main Page/History Taking/Ophthalmic.html", categoryClass: "history-taking" },
-        { title: "Palpitations", url: "Main Page/History Taking/Palpitations.html", categoryClass: "history-taking" },
-        { title: "Respiratory", url: "Main Page/History Taking/Respiratory.html", categoryClass: "history-taking" },
-        { title: "Seizure", url: "Main Page/History Taking/Seizure.html", categoryClass: "history-taking" },
-        { title: "Stroke-TIA", url: "Main Page/History Taking/Stroke-TIA.html", categoryClass: "history-taking" },
-        { title: "Tiredness", url: "Main Page/History Taking/Tiredness.html", categoryClass: "history-taking" },
-        { title: "Unintentional Weight Loss", url: "Main Page/History Taking/Unintentional Weight Loss.html", categoryClass: "history-taking" },
-        { title: "Urological", url: "Main Page/History Taking/Urological.html", categoryClass: "history-taking" },
-        // Community Stations
-        { title: "Alcohol Cessation Counselling", url: "Main Page/pretty_community_stations/alcohol_cessation_counselling.html", categoryClass: "community" },
-        { title: "Bowel Cancer Screening", url: "Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html", categoryClass: "community" },
-        { title: "Community Blood Pressure Check", url: "Main Page/pretty_community_stations/community_blood_pressure_check.html", categoryClass: "community" },
-        { title: "DNACPR Counselling", url: "Main Page/pretty_community_stations/dnacpr_counselling.html", categoryClass: "community" },
-        { title: "Hypertension Counselling", url: "Main Page/pretty_community_stations/hypertension_counselling.html", categoryClass: "community" },
-        { title: "Inhaler Technique Counselling", url: "Main Page/pretty_community_stations/inhaler_technique_counselling.html", categoryClass: "community" },
-        { title: "Peak Flow (PEFR) Technique", url: "Main Page/pretty_community_stations/peak_flow_counselling.html", categoryClass: "community" },
-        { title: "Smoking Cessation Counselling", url: "Main Page/pretty_community_stations/smoking_cessation_counselling.html", categoryClass: "community" },
-        { title: "Weight Loss Counselling", url: "Main Page/pretty_community_stations/weight_loss_counselling.html", categoryClass: "community" },
-        // Diagnosis Stations
-        { title: "Atrial Fibrillation Counselling", url: "Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html", categoryClass: "diagnosis" },
-        { title: "Bacterial Vaginosis Counselling", url: "Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html", categoryClass: "diagnosis" },
-        { title: "Chronic Kidney Disease Counselling", url: "Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html", categoryClass: "diagnosis" },
-        { title: "Explaining a Diagnosis of Asthma", url: "Main Page/pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html", categoryClass: "diagnosis" },
-        { title: "Explaining a Diagnosis of COPD", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_copd.html", categoryClass: "diagnosis" },
-        { title: "Explaining a Diagnosis of Eczema", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_eczema.html", categoryClass: "diagnosis" },
-        { title: "Explaining a Diagnosis of Fibroadenoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html", categoryClass: "diagnosis" },
-        { title: "Explaining a Diagnosis of Glaucoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html", categoryClass: "diagnosis" },
-        { title: "Explaining a Diagnosis of Type 1 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html", categoryClass: "diagnosis" },
-        { title: "Explaining a Diagnosis of Type 2 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html", categoryClass: "diagnosis" },
-        // Medication Stations
-        { title: "ACE-Inhibitor Counselling", url: "Main Page/pretty_medication_stations/ace_inhibitor_counselling.html", categoryClass: "medication" },
-        { title: "Amitriptyline Counselling", url: "Main Page/pretty_medication_stations/amitriptyline_counselling.html", categoryClass: "medication" },
-        { title: "Anticoagulant Counselling | Pharmacy", url: "Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html", categoryClass: "medication" },
-        { title: "Asthma Spacer Explanation", url: "Main Page/pretty_medication_stations/asthma_spacer_explanation.html", categoryClass: "medication" },
-        { title: "Direct Oral Anticoagulant Counselling", url: "Main Page/pretty_medication_stations/direct_oral_anticoagulant_counselling.html", categoryClass: "medication" },
-        { title: "Gliclazide Counselling", url: "Main Page/pretty_medication_stations/gliclazide_counselling.html", categoryClass: "medication" },
-        { title: "GTN Spray Counselling", url: "Main Page/pretty_medication_stations/gtn_spray_counselling.html", categoryClass: "medication" },
-        { title: "Inhaler Counselling 01 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_01_pharmacy.html", categoryClass: "medication" },
-        { title: "Inhaler Counselling 02 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_02_pharmacy.html", categoryClass: "medication" },
-        { title: "Insulin Counselling", url: "Main Page/pretty_medication_stations/insulin_counselling.html", categoryClass: "medication" },
-        { title: "Iron Supplementation Counselling", url: "Main Page/pretty_medication_stations/iron_supplementation_counselling.html", categoryClass: "medication" },
-        { title: "Metformin Counselling", url: "Main Page/pretty_medication_stations/metformin_counselling.html", categoryClass: "medication" },
-        { title: "Opioid Analgesia Counselling", url: "Main Page/pretty_medication_stations/opioid_analgesia_counselling.html", categoryClass: "medication" },
-        { title: "SSRI Counselling", url: "Main Page/pretty_medication_stations/ssri_counselling.html", categoryClass: "medication" },
-        { title: "Statin Counselling", url: "Main Page/pretty_medication_stations/statin_counselling.html", categoryClass: "medication" },
-        { title: "Warfarin Counselling", url: "Main Page/pretty_medication_stations/warfarin_counselling.html", categoryClass: "medication" },
-        // Post-Procedure Stations
-        { title: "Post-STEMI Counselling", url: "Main Page/pretty_post-procedure__stations/post_stemi_counselling.html", categoryClass: "post-procedure" },
-        { title: "Post-stroke Counselling", url: "Main Page/pretty_post-procedure__stations/post_stroke_counselling.html", categoryClass: "post-procedure" },
-        // Procedure Stations
-        { title: "Ascitic drain explanation", url: "Main Page/pretty_procedure_stations/ascitic_drain_explanation.html", categoryClass: "procedure" },
-        { title: "Blood transfusion counselling", url: "Main Page/pretty_procedure_stations/blood_transfusion_counselling.html", categoryClass: "procedure" },
-        { title: "Bronchoscopy Counselling", url: "Main Page/pretty_procedure_stations/bronchoscopy_counselling.html", categoryClass: "procedure" },
-        { title: "Chest drain explanation", url: "Main Page/pretty_procedure_stations/chest_drain_explanation.html", categoryClass: "procedure" },
-        { title: "Colonoscopy explanation", url: "Main Page/pretty_procedure_stations/colonoscopy_explanation.html", categoryClass: "procedure" },
-        { title: "Echocardiogram explanation", url: "Main Page/pretty_procedure_stations/echocardiogram_explanation.html", categoryClass: "procedure" },
-        { title: "Endoscopy counselling", url: "Main Page/pretty_procedure_stations/endoscopy_counselling.html", categoryClass: "procedure" },
-        { title: "ERCP explanation", url: "Main Page/pretty_procedure_stations/ercp_explanation.html", categoryClass: "procedure" },
-        { title: "Haemodialysis Counselling", url: "Main Page/pretty_procedure_stations/haemodialysis_counselling.html", categoryClass: "procedure" },
-        { title: "Tuberculosis treatment counselling", url: "Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html", categoryClass: "procedure" },
-        // Surgery Stations
-        { title: "Appendicectomy Counselling", url: "Main Page/pretty_surgery_stations/appendicectomy_counselling.html", categoryClass: "surgery" },
-        { title: "Coronary Artery Bypass Graft (CABG) Counselling", url: "Main Page/pretty_surgery_stations/cabg_counselling.html", categoryClass: "surgery" },
-        { title: "Cholecystectomy Counselling", url: "Main Page/pretty_surgery_stations/cholecystectomy_counselling.html", categoryClass: "surgery" },
-        { title: "Gastrectomy Counselling", url: "Main Page/pretty_surgery_stations/gastrectomy_counselling.html", categoryClass: "surgery" }
-    ];
+            if (highYieldLabel) highYieldLabel.classList.toggle('active', !isActive);
+            if (fullScriptLabel) fullScriptLabel.classList.toggle('active', isActive);
+            if (highYieldContent) highYieldContent.classList.toggle('active', !isActive);
+            if (fullScriptContent) fullScriptContent.classList.add('active'); // Ensure content is displayed
+            if (fullScriptContent) fullScriptContent.classList.toggle('active', isActive);
+        }
 
-    // Function to dynamically generate subtopic cards and append them
-    const generateAndAppendSubtopicCards = () => {
-        const fragment = document.createDocumentFragment();
-        allSubtopicsData.forEach(topic => {
-            const cardDiv = document.createElement('div');
-            cardDiv.classList.add('card', topic.categoryClass, 'sub-topic-card', 'hidden'); // All sub-topics are hidden initially
-            const a = document.createElement('a');
-            a.href = topic.url;
-            a.textContent = topic.title;
-            cardDiv.appendChild(a);
-            fragment.appendChild(cardDiv);
+        window.showContent = function(id) {
+            const highYieldContent = document.getElementById('highYield');
+            const fullScriptContent = document.getElementById('fullScript');
+            const highYieldLabel = document.getElementById('highYieldLabel');
+            const fullScriptLabel = document.getElementById('fullScriptLabel');
+            const switchEl = document.querySelector('.toggle-container .switch');
+
+            if (id === 'highYield') {
+                if (highYieldContent) highYieldContent.classList.add('active');
+                if (fullScriptContent) fullScriptContent.classList.remove('active');
+                if (highYieldLabel) highYieldLabel.classList.add('active');
+                if (fullScriptLabel) fullScriptLabel.classList.remove('active');
+                if (switchEl) switchEl.classList.remove('active');
+            } else { // id === 'fullScript'
+                if (highYieldContent) highYieldContent.classList.remove('active');
+                if (fullScriptContent) fullScriptContent.classList.add('active');
+                if (highYieldLabel) highYieldLabel.classList.remove('active');
+                if (fullScriptLabel) fullScriptLabel.classList.add('active');
+                if (switchEl) switchEl.classList.add('active');
+            }
+        }
+
+        // --- Search Functionality ---
+        const headerContainer = document.querySelector('.header-container');
+        const searchContainer = document.querySelector('.search-container');
+        const searchIconWrapper = document.querySelector('.search-icon-wrapper');
+        const searchIcon = document.querySelector('.search-icon');
+        const searchInput = document.getElementById('searchInput');
+        const allCardsContainer = document.getElementById('all-cards-container');
+        const mainCategoryCards = document.querySelectorAll('.main-category-card');
+        let subTopicCards = []; // This will be populated dynamically
+        const noResultsMessage = document.querySelector('.no-results');
+        const logo = document.querySelector('.logo'); // Get logo element
+
+        // Master list of all subtopics with their category classes from files.txt (Keeping as is)
+        const allSubtopicsData = [
+            // History Taking
+            { title: "Abdominal Pain", url: "Main Page/History Taking/Abdominal Pain.html", categoryClass: "history-taking" },
+            { title: "Anxiety", url: "Main Page/History Taking/Anxiety.html", categoryClass: "history-taking" },
+            { title: "Breast Lump", url: "Main Page/History Taking/Breast Lump.html", categoryClass: "history-taking" },
+            { title: "Cardiovascular", url: "Main Page/History Taking/Cardiovascular.html", categoryClass: "history-taking" },
+            { title: "Chest Pain", url: "Main Page/History Taking/Chest Pain.html", categoryClass: "history-taking" },
+            { title: "Cough", url: "Main Page/History Taking/Cough.html", categoryClass: "history-taking" },
+            { title: "Depression", url: "Main Page/History Taking/Depression.html", categoryClass: "history-taking" },
+            { title: "Dizziness History", url: "Main Page/History Taking/Dizziness History.html", categoryClass: "history-taking" },
+            { title: "Dysphagia", url: "Main Page/History Taking/Dysphagia.html", categoryClass: "history-taking" },
+            { title: "Dyspnoea", url: "Main Page/History Taking/Dyspnoea.html", categoryClass: "history-taking" },
+            { title: "Falls", url: "Main Page/History Taking/Falls.html", categoryClass: "history-taking" },
+            { title: "Female LUTS", url: "Main Page/History Taking/Female LUTS.html", categoryClass: "history-taking" },
+            { title: "Headache", url: "Main Page/History Taking/Headache.html", categoryClass: "history-taking" },
+            { title: "Leg Swelling", url: "Main Page/History Taking/Leg Swelling.html", categoryClass: "history-taking" },
+            { title: "Loss of Consciousness", url: "Main Page/History Taking/Loss of Consciousness.html", categoryClass: "history-taking" },
+            { title: "Male LUTS", url: "Main Page/History Taking/Male LUTS.html", categoryClass: "history-taking" },
+            { title: "Ophthalmic", url: "Main Page/History Taking/Ophthalmic.html", categoryClass: "history-taking" },
+            { title: "Palpitations", url: "Main Page/History Taking/Palpitations.html", categoryClass: "history-taking" },
+            { title: "Respiratory", url: "Main Page/History Taking/Respiratory.html", categoryClass: "history-taking" },
+            { title: "Seizure", url: "Main Page/History Taking/Seizure.html", categoryClass: "history-taking" },
+            { title: "Stroke-TIA", url: "Main Page/History Taking/Stroke-TIA.html", categoryClass: "history-taking" },
+            { title: "Tiredness", url: "Main Page/History Taking/Tiredness.html", categoryClass: "history-taking" },
+            { title: "Unintentional Weight Loss", url: "Main Page/History Taking/Unintentional Weight Loss.html", categoryClass: "history-taking" },
+            { title: "Urological", url: "Main Page/History Taking/Urological.html", categoryClass: "history-taking" },
+            // Community Stations
+            { title: "Alcohol Cessation Counselling", url: "Main Page/pretty_community_stations/alcohol_cessation_counselling.html", categoryClass: "community" },
+            { title: "Bowel Cancer Screening", url: "Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html", categoryClass: "community" },
+            { title: "Community Blood Pressure Check", url: "Main Page/pretty_community_stations/community_blood_pressure_check.html", categoryClass: "community" },
+            { title: "DNACPR Counselling", url: "Main Page/pretty_community_stations/dnacpr_counselling.html", categoryClass: "community" },
+            { title: "Hypertension Counselling", url: "Main Page/pretty_community_stations/hypertension_counselling.html", categoryClass: "community" },
+            { title: "Inhaler Technique Counselling", url: "Main Page/pretty_community_stations/inhaler_technique_counselling.html", categoryClass: "community" },
+            { title: "Peak Flow (PEFR) Technique", url: "Main Page/pretty_community_stations/peak_flow_counselling.html", categoryClass: "community" },
+            { title: "Smoking Cessation Counselling", url: "Main Page/pretty_community_stations/smoking_cessation_counselling.html", categoryClass: "community" },
+            { title: "Weight Loss Counselling", url: "Main Page/pretty_community_stations/weight_loss_counselling.html", categoryClass: "community" },
+            // Diagnosis Stations
+            { title: "Atrial Fibrillation Counselling", url: "Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html", categoryClass: "diagnosis" },
+            { title: "Bacterial Vaginosis Counselling", url: "Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html", categoryClass: "diagnosis" },
+            { title: "Chronic Kidney Disease Counselling", url: "Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html", categoryClass: "diagnosis" },
+            { title: "Explaining a Diagnosis of Asthma", url: "Main Page/pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html", categoryClass: "diagnosis" },
+            { title: "Explaining a Diagnosis of COPD", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_copd.html", categoryClass: "diagnosis" },
+            { title: "Explaining a Diagnosis of Eczema", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_eczema.html", categoryClass: "diagnosis" },
+            { title: "Explaining a Diagnosis of Fibroadenoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html", categoryClass: "diagnosis" },
+            { title: "Explaining a Diagnosis of Glaucoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html", categoryClass: "diagnosis" },
+            { title: "Explaining a Diagnosis of Type 1 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html", categoryClass: "diagnosis" },
+            { title: "Explaining a Diagnosis of Type 2 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html", categoryClass: "diagnosis" },
+            // Medication Stations
+            { title: "ACE-Inhibitor Counselling", url: "Main Page/pretty_medication_stations/ace_inhibitor_counselling.html", categoryClass: "medication" },
+            { title: "Amitriptyline Counselling", url: "Main Page/pretty_medication_stations/amitriptyline_counselling.html", categoryClass: "medication" },
+            { title: "Anticoagulant Counselling | Pharmacy", url: "Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html", categoryClass: "medication" },
+            { title: "Asthma Spacer Explanation", url: "Main Page/pretty_medication_stations/asthma_spacer_explanation.html", categoryClass: "medication" },
+            { title: "Direct Oral Anticoagulant Counselling", url: "Main Page/pretty_medication_stations/direct_oral_anticoagulant_counselling.html", categoryClass: "medication" },
+            { title: "Gliclazide Counselling", url: "Main Page/pretty_medication_stations/gliclazide_counselling.html", categoryClass: "medication" },
+            { title: "GTN Spray Counselling", url: "Main Page/pretty_medication_stations/gtn_spray_counselling.html", categoryClass: "medication" },
+            { title: "Inhaler Counselling 01 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_01_pharmacy.html", categoryClass: "medication" },
+            { title: "Inhaler Counselling 02 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_02_pharmacy.html", categoryClass: "medication" },
+            { title: "Insulin Counselling", url: "Main Page/pretty_medication_stations/insulin_counselling.html", categoryClass: "medication" },
+            { title: "Iron Supplementation Counselling", url: "Main Page/pretty_medication_stations/iron_supplementation_counselling.html", categoryClass: "medication" },
+            { title: "Metformin Counselling", url: "Main Page/pretty_medication_stations/metformin_counselling.html", categoryClass: "medication" },
+            { title: "Opioid Analgesia Counselling", url: "Main Page/pretty_medication_stations/opioid_analgesia_counselling.html", categoryClass: "medication" },
+            { title: "SSRI Counselling", url: "Main Page/pretty_medication_stations/ssri_counselling.html", categoryClass: "medication" },
+            { title: "Statin Counselling", url: "Main Page/pretty_medication_stations/statin_counselling.html", categoryClass: "medication" },
+            { title: "Warfarin Counselling", url: "Main Page/pretty_medication_stations/warfarin_counselling.html", categoryClass: "medication" },
+            // Post-Procedure Stations
+            { title: "Post-STEMI Counselling", url: "Main Page/pretty_post-procedure__stations/post_stemi_counselling.html", categoryClass: "post-procedure" },
+            { title: "Post-stroke Counselling", url: "Main Page/pretty_post-procedure__stations/post_stroke_counselling.html", categoryClass: "post-procedure" },
+            // Procedure Stations
+            { title: "Ascitic drain explanation", url: "Main Page/pretty_procedure_stations/ascitic_drain_explanation.html", categoryClass: "procedure" },
+            { title: "Blood transfusion counselling", url: "Main Page/pretty_procedure_stations/blood_transfusion_counselling.html", categoryClass: "procedure" },
+            { title: "Bronchoscopy Counselling", url: "Main Page/pretty_procedure_stations/bronchoscopy_counselling.html", categoryClass: "procedure" },
+            { title: "Chest drain explanation", url: "Main Page/pretty_procedure_stations/chest_drain_explanation.html", categoryClass: "procedure" },
+            { title: "Colonoscopy explanation", url: "Main Page/pretty_procedure_stations/colonoscopy_explanation.html", categoryClass: "procedure" },
+            { title: "Echocardiogram explanation", url: "Main Page/pretty_procedure_stations/echocardiogram_explanation.html", categoryClass: "procedure" },
+            { title: "Endoscopy counselling", url: "Main Page/pretty_procedure_stations/endoscopy_counselling.html", categoryClass: "procedure" },
+            { title: "ERCP explanation", url: "Main Page/pretty_procedure_stations/ercp_explanation.html", categoryClass: "procedure" },
+            { title: "Haemodialysis Counselling", url: "Main Page/pretty_procedure_stations/haemodialysis_counselling.html", categoryClass: "procedure" },
+            { title: "Tuberculosis treatment counselling", url: "Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html", categoryClass: "procedure" },
+            // Surgery Stations
+            { title: "Appendicectomy Counselling", url: "Main Page/pretty_surgery_stations/appendicectomy_counselling.html", categoryClass: "surgery" },
+            { title: "Coronary Artery Bypass Graft (CABG) Counselling", url: "Main Page/pretty_surgery_stations/cabg_counselling.html", categoryClass: "surgery" },
+            { title: "Cholecystectomy Counselling", url: "Main Page/pretty_surgery_stations/cholecystectomy_counselling.html", categoryClass: "surgery" },
+            { title: "Gastrectomy Counselling", url: "Main Page/pretty_surgery_stations/gastrectomy_counselling.html", categoryClass: "surgery" }
+        ];
+
+        // Function to dynamically generate subtopic cards and append them
+        const generateAndAppendSubtopicCards = () => {
+            const fragment = document.createDocumentFragment();
+            allSubtopicsData.forEach(topic => {
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add('card', topic.categoryClass, 'sub-topic-card', 'hidden'); // All sub-topics are hidden initially
+                const a = document.createElement('a');
+                a.href = topic.url;
+                a.textContent = topic.title;
+                cardDiv.appendChild(a);
+                fragment.appendChild(cardDiv);
+            });
+            allCardsContainer.appendChild(fragment);
+            // Re-select subTopicCards after they've been dynamically added
+            subTopicCards = document.querySelectorAll('.sub-topic-card');
+        };
+
+        // Call this function once on load to populate the hidden subtopic cards
+        generateAndAppendSubtopicCards();
+
+        // Function to hide all cards and the "no results" message
+        const hideAllCardsAndMessage = () => {
+            mainCategoryCards.forEach(card => card.classList.add('hidden'));
+            subTopicCards.forEach(card => card.classList.add('hidden'));
+            noResultsMessage.style.display = 'none';
+        };
+
+        // Function to show only main category cards
+        const showMainCategories = () => {
+            hideAllCardsAndMessage(); // Hide everything first
+            mainCategoryCards.forEach(card => card.classList.remove('hidden'));
+        };
+
+        // Initial state: show main categories
+        showMainCategories();
+
+        // Event listener for typing in search input
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            hideAllCardsAndMessage(); // Start by hiding everything
+
+            if (searchTerm.length > 1) {
+                let resultsFound = false;
+
+                subTopicCards.forEach(card => {
+                    const title = card.textContent.toLowerCase();
+                    if (title.includes(searchTerm)) {
+                        card.classList.remove('hidden'); // Show matching sub-topic card
+                        resultsFound = true;
+                    }
+                });
+
+                if (!resultsFound) {
+                    noResultsMessage.style.display = 'block'; // Show "No results" message
+                }
+            } else {
+                showMainCategories(); // Show main categories
+            }
         });
-        allCardsContainer.appendChild(fragment);
-        // Re-select subTopicCards after they've been dynamically added
-        subTopicCards = document.querySelectorAll('.sub-topic-card');
-    };
 
-    // Call this function once on load to populate the hidden subtopic cards
-    generateAndAppendSubtopicCards();
+        // Flag to prevent immediate collapse on mobile when search is activated
+        let isActivatingSearch = false;
 
-    // Function to hide all cards and the "no results" message
-    const hideAllCardsAndMessage = () => {
-        mainCategoryCards.forEach(card => card.classList.add('hidden'));
-        subTopicCards.forEach(card => card.classList.add('hidden'));
-        noResultsMessage.style.display = 'none';
-    };
+        // Toggle search bar expansion on icon click (Universal)
+        if (searchIconWrapper) {
+            searchIconWrapper.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent this click from bubbling up to document click handler
 
-    // Function to show only main category cards
-    const showMainCategories = () => {
-        hideAllCardsAndMessage(); // Hide everything first
-        mainCategoryCards.forEach(card => card.classList.remove('hidden'));
-    };
+                // If search is currently active and the click is on the icon,
+                // it means the user wants to collapse it.
+                if (searchContainer.classList.contains('active') && event.target.closest('.search-icon-wrapper')) {
+                    searchContainer.classList.remove('active');
+                    searchInput.value = ''; // Clear input
+                    showMainCategories(); // Show main categories
+                    searchInput.blur(); // Remove focus
+                    if (window.innerWidth <= 768) {
+                        logo.classList.remove('hidden-on-search-active'); // Show logo on mobile
+                    }
+                    return; // Exit as we've handled the collapse
+                }
 
-    // Initial state: show main categories
-    showMainCategories();
+                // If not active, activate it
+                if (!searchContainer.classList.contains('active')) {
+                    searchContainer.classList.add('active'); // Toggle 'active' class universally
+                    searchInput.focus();
+                    isActivatingSearch = true; // Set flag
+                    setTimeout(() => { isActivatingSearch = false; }, 300); // Reset flag after a short delay
 
-    // Event listener for typing in search input
-    searchInput.addEventListener('input', () => {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-
-        hideAllCardsAndMessage(); // Start by hiding everything
-
-        if (searchTerm.length > 1) {
-            let resultsFound = false;
-
-            subTopicCards.forEach(card => {
-                const title = card.textContent.toLowerCase();
-                if (title.includes(searchTerm)) {
-                    card.classList.remove('hidden'); // Show matching sub-topic card
-                    resultsFound = true;
+                    // Hide logo on mobile
+                    if (window.innerWidth <= 768) {
+                        logo.classList.add('hidden-on-search-active'); // Add class to hide logo
+                    }
+                    // If there's already text, trigger search to show results
+                    if (searchInput.value.length > 1) {
+                        searchInput.dispatchEvent(new Event('input'));
+                    } else {
+                        // If no text, hide all cards to provide an empty canvas for typing
+                        hideAllCardsAndMessage();
+                    }
                 }
             });
-
-            if (!resultsFound) {
-                noResultsMessage.style.display = 'block'; // Show "No results" message
-            }
-        } else {
-            showMainCategories(); // Show main categories
         }
-    });
 
-    // Toggle search bar expansion on icon click (Universal)
-    if (searchIconWrapper) { // Ensure searchIconWrapper exists
-        searchIconWrapper.addEventListener('click', () => {
-            searchContainer.classList.toggle('active'); // Toggle 'active' class universally
+        // Handle clicks outside the search bar and visible cards
+        document.addEventListener('click', (event) => {
+            const targetElement = event.target;
+            const isClickInsideSearchContainer = searchContainer.contains(targetElement);
+            const isClickInsideVisibleCard = targetElement.closest('.card:not(.hidden)');
 
-            if (searchContainer.classList.contains('active')) {
-                // When expanding
-                searchInput.focus();
-                // Hide logo on mobile
-                if (window.innerWidth <= 768) {
-                    logo.classList.add('hidden-on-search-active'); // Add class to hide logo
+            // Only collapse if the search container is active,
+            // the click is NOT inside the search container,
+            // and the search input is NOT currently focused (to allow keyboard interaction).
+            // Also, don't collapse if we're in the process of activating the search.
+            if (searchContainer.classList.contains('active') && !isClickInsideSearchContainer && !isClickInsideVisibleCard && !isActivatingSearch) {
+                // Check if the click was specifically on the body or outside any interactive elements
+                // This helps differentiate between losing focus due to keyboard and actual outside click
+                if (!searchInput.matches(':focus') || (searchInput.matches(':focus') && !searchContainer.contains(document.activeElement))) {
+                    searchContainer.classList.remove('active');
+                    searchInput.value = ''; // Clear input
+                    showMainCategories(); // Show main categories
+                    searchInput.blur(); // Remove focus
+                    // Show logo on mobile
+                    if (window.innerWidth <= 768) {
+                        logo.classList.remove('hidden-on-search-active'); // Remove class to show logo
+                    }
                 }
-                // If there's already text, trigger search to show results
+            } else if (!searchContainer.classList.contains('active') && !isClickInsideSearchContainer && searchInput.value.length > 0) {
+                 // If search isn't active but input had content and user clicked outside, clear and show main.
+                searchInput.value = '';
+                showMainCategories();
+                searchInput.blur();
+            }
+        });
+
+        // Re-show relevant results if input is focused and search is active (expanded)
+        searchInput.addEventListener('focus', () => {
+            if (searchContainer.classList.contains('active')) {
                 if (searchInput.value.length > 1) {
                     searchInput.dispatchEvent(new Event('input'));
                 } else {
-                    // If no text, hide all cards to provide an empty canvas for typing
-                    hideAllCardsAndMessage();
-                }
-            } else {
-                // When collapsing
-                searchInput.value = ''; // Clear input
-                showMainCategories(); // Show main categories
-                searchInput.blur(); // Remove focus
-                // Show logo on mobile
-                if (window.innerWidth <= 768) {
-                    logo.classList.remove('hidden-on-search-active'); // Remove class to show logo
+                    hideAllCardsAndMessage(); // Show empty canvas if input is empty but search is active
                 }
             }
         });
-    }
 
-    // Handle clicks outside the search bar and visible cards
-    document.addEventListener('click', (event) => {
-        const targetElement = event.target;
-        const isClickInsideSearchContainer = searchContainer.contains(targetElement);
-        const isClickInsideVisibleCard = targetElement.closest('.card:not(.hidden)');
-
-        // If clicking outside search container AND not on a visible card
-        if (!isClickInsideSearchContainer && !isClickInsideVisibleCard) {
-            // Collapse search bar if it's active
-            if (searchContainer.classList.contains('active')) {
-                searchContainer.classList.remove('active');
-                // Show logo on mobile
-                if (window.innerWidth <= 768) {
-                    logo.classList.remove('hidden-on-search-active');
+        // Add blur delay on mobile to prevent auto-collapse when keyboard dismissed
+        let collapseTimeout;
+        searchInput.addEventListener('blur', () => {
+            // Give a very short delay to allow for re-focusing events (e.g., keyboard adjusting)
+            collapseTimeout = setTimeout(() => {
+                // Only collapse if the input truly isn't focused anymore and we aren't in activation state
+                if (!searchInput.matches(':focus') && !isActivatingSearch) {
+                    searchContainer.classList.remove('active');
+                    searchInput.value = '';
+                    showMainCategories();
+                    if (window.innerWidth <= 768) {
+                        logo.classList.remove('hidden-on-search-active');
+                    }
                 }
-            }
-            // Clear search input and show main categories only if search input had content
-            if (searchInput.value.length > 0) {
-                searchInput.value = ''; // Clear the input
-            }
-            showMainCategories(); // Always ensure main categories are shown after external click
-            searchInput.blur(); // Remove focus
-        }
-    });
+            }, 100); // Reduced delay slightly
+        });
+        searchInput.addEventListener('focus', () => {
+            clearTimeout(collapseTimeout); // Clear any pending collapse when focused
+        });
 
-    // Re-show relevant results if input is focused and search is active (expanded)
-    searchInput.addEventListener('focus', () => {
-        if (searchContainer.classList.contains('active')) {
-            if (searchInput.value.length > 1) {
-                searchInput.dispatchEvent(new Event('input'));
-            } else {
-                hideAllCardsAndMessage(); // Show empty canvas if input is empty but search is active
-            }
-        }
-    });
 
-    
-// Updated click outside logic to prevent premature collapse
-document.addEventListener('click', (event) => {
-    const isInsideSearch = searchContainer.contains(event.target);
-    const isCard = event.target.closest('.card:not(.hidden)');
-
-    // Only collapse if the input is not focused
-    if (!isInsideSearch && !isCard && !searchInput.matches(':focus')) {
-        searchContainer.classList.remove('active');
-        searchInput.value = '';
-        searchInput.blur();
-        logo.classList.remove('hidden-on-search-active');
-        showMainCategories();
-    }
-});
-
-// Add blur delay on mobile to prevent auto-collapse when keyboard dismissed
-let collapseTimeout;
-searchInput.addEventListener('blur', () => {
-    collapseTimeout = setTimeout(() => {
-        if (!searchInput.matches(':focus')) {
+        // Initial setup for search bar on load and resize
+        const updateSearchDisplay = () => {
+            // Ensure collapsed state is applied by CSS
             searchContainer.classList.remove('active');
-            searchInput.value = '';
-            showMainCategories();
-            logo.classList.remove('hidden-on-search-active');
-        }
-    }, 300);
-});
-searchInput.addEventListener('focus', () => {
-    clearTimeout(collapseTimeout);
-});
+            searchInput.value = ''; // Clear input
+            showMainCategories(); // Show main categories
+            logo.classList.remove('hidden-on-search-active'); // Ensure logo is visible on resize
+        };
 
-
-// Initial setup for search bar on load and resize
-    const updateSearchDisplay = () => {
-        // Ensure collapsed state is applied by CSS
-        searchContainer.classList.remove('active');
-        searchInput.value = ''; // Clear input
-        showMainCategories(); // Show main categories
-        logo.classList.remove('hidden-mobile-logo'); // Ensure logo is visible on resize
-
-        // No need for specific style manipulations in JS now, CSS handles it via classes
-        // and media queries based on window.innerWidth
-    };
-
-    // Run on load and resize
-    window.addEventListener('resize', updateSearchDisplay);
-    updateSearchDisplay(); // Initial call on page load
-});
+        // Run on load and resize
+        window.addEventListener('resize', updateSearchDisplay);
+        updateSearchDisplay(); // Initial call on page load
+    });
 </script>
 </body>
 </html>

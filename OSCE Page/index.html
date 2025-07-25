@@ -40,75 +40,134 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.header-container { /* This div wraps the logo and the search bar */
-    text-align: center; /* Centers the main logo/title */
+.header-container { /* Original header-container */
+    text-align: center;
     margin-bottom: 40px;
     padding: 25px 10px;
     font-size: 1.8em;
     font-weight: bold;
     color: white;
     background: linear-gradient(to right, #42a5f5, #0d47a1); /* Default blue theme gradient for header */
-    position: relative; /* Needed for positioning the search bar */
-    box-sizing: border-box; /* Include padding in width */
+    position: relative; /* Essential for absolute positioning of search icon */
+    box-sizing: border-box;
+    display: flex; /* Use flexbox to align content within header */
+    justify-content: center; /* Center logo by default */
+    align-items: center; /* Vertically center content */
+    flex-wrap: nowrap; /* Prevent wrapping initially */
+    height: 130px; /* Fixed height to accommodate logo and search */
 }
 
 .logo {
     max-width: 100%;
     height: auto;
     max-height: 80px;
-    display: block; /* Centers the logo with text-align: center on parent */
-    margin: 0 auto;
+    display: block; /* Important for flex-item behavior */
+    flex-shrink: 0; /* Prevent logo from shrinking */
+    margin: 0 auto; /* CENTER LOGO USING AUTO MARGINS IN FLEX CONTAINER */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for hiding */
 }
 
-/* Search Bar Styling - DESKTOP FIRST (full bar) */
+/* --- Search Bar Styling (Universal: Starts as Icon, Expands on Click) --- */
+
+/* The outer container of the search bar (collapsed state) */
 .search-container {
-    position: absolute;
-    top: 50%; /* Vertically center in header */
+    position: absolute; /* Absolute position for icon in top-right */
     right: 20px;
-    transform: translateY(-50%); /* Adjust for true vertical centering */
-    z-index: 100; /* Ensure it stays on top */
-    width: 250px; /* Fixed width for the search bar */
-    display: flex; /* Use flex for alignment */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+
+    width: 40px; /* Initial width for icon only */
+    height: 40px; /* Fixed height */
+    
+    display: flex; /* Flex container for icon and input */
     align-items: center;
-    justify-content: flex-end; /* Align contents to the right */
+    justify-content: flex-end; /* Align icon/input to the right edge */
+    
+    background-color: transparent; /* No background in collapsed state */
+    border: none; /* No border in collapsed state */
+    border-radius: 25px; /* Prepare for expanded state */
+    box-shadow: none; /* No shadow in collapsed state */
+    
+    transition: all 0.3s ease; /* Transition for all properties */
 }
 
-.search-icon-wrapper { /* Icon part of search (hidden by default on desktop) */
-    display: none; /* Hide icon wrapper by default on desktop */
+/* State when search input is active/expanded (Desktop Specific) */
+.search-container.active {
+    width: 250px; /* Expanded width for desktop */
+    background-color: #ffffff; /* White background for expanded bar */
+    border-radius: 25px; /* Match input border-radius */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 2px solid #42a5f5; /* Border for expanded bar */
+    justify-content: flex-start; /* Move icon to left, input expands right */
 }
 
-#searchInput { /* Input part of search (always visible on desktop) */
-    width: 100%; /* Full width within its container */
-    padding: 10px 15px;
-    border: 2px solid #42a5f5; /* Theme blue border */
-    border-radius: 25px; /* Pill shape */
+.search-icon-wrapper { /* Magnifying glass icon wrapper (always visible) */
+    display: flex; /* Always flex to center icon */
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Fixed width for the icon area */
+    height: 40px; /* Fixed height for the icon area */
+    cursor: pointer;
+    flex-shrink: 0;
+    pointer-events: auto; /* Ensure clickable */
+}
+
+.search-icon { /* SVG styling */
+    width: 28px;
+    height: 28px;
+    fill: white; /* Default: Icon color, visible on header gradient (when collapsed) */
+    transition: fill 0.3s ease; /* Smooth color change */
+    pointer-events: auto; /* Ensure clickable */
+}
+
+/* FIX: Make icon dark when search is active AND NOT dark mode */
+.search-container.active .search-icon {
+    fill: #0d47a1; /* Icon color when expanded (LIGHT MODE: dark blue on white background) */
+}
+
+/* No change needed for .dark-mode .search-icon as it's correctly #82b1ff */
+
+
+#searchInput {
+    display: block; /* Always 'block' for transition */
+    width: 0; /* Hidden by default */
+    padding: 0; /* No padding initially */
+    border: none; /* No border initially */
     font-size: 1em;
     outline: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    background-color: #ffffff; /* White background */
-    color: #333;
+    background-color: transparent; /* Transparent so container's background shows */
+    color: #333; /* Text color */
     box-sizing: border-box; /* Include padding/border in width */
-    opacity: 1; /* Always visible on desktop */
-    pointer-events: auto; /* Always interactive on desktop */
+    opacity: 0;
+    pointer-events: none; /* Disable interaction when hidden */
+    transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
+}
+
+.search-container.active #searchInput {
+    width: calc(100% - 40px - 10px); /* Fill remaining space */
+    padding: 10px 15px; /* Add padding */
+    opacity: 1; /* Make visible */
+    pointer-events: auto; /* Enable interaction */
+    margin-left: 10px; /* Space between icon and input */
 }
 
 #searchInput:focus {
-    border-color: #0d47a1; /* Darker blue on focus */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    /* No additional styling on focus, container handles it */
 }
 
-/* Container for all cards (main categories and individual topics) */
+
+/* --- Container and Card Styles --- */
 .container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 25px;
-    padding: 40px 20px; /* Padding for the main card container */
-    box-sizing: border-box; /* Include padding in width/height calculation */
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
-.card { /* Styling for ALL cards (main categories AND subtopics) */
+.card { /* Styling for ALL cards */
     background-color: #ffffff;
     padding: 20px;
     width: 280px;
@@ -116,11 +175,11 @@ body {
     text-align: center;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s, opacity 0.3s, visibility 0.3s;
-    display: flex; /* Ensure content inside card is centered */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s, opacity 0.3s, visibility 0.3s, height 0.3s, padding 0.3s, margin 0.3s;
+    display: flex;
     align-items: center;
     justify-content: center;
-    border-left: 5px solid transparent; /* For theme color accent */
+    border-left: 5px solid transparent;
 }
 
     .card:hover {
@@ -130,60 +189,57 @@ body {
 
     .card a {
         text-decoration: none;
-        color: #333; /* Default link color in light mode */
+        color: #333;
         font-weight: 600;
         font-size: 1.1rem;
         transition: color 0.3s;
-        display: block; /* Make entire card clickable */
+        display: block;
         width: 100%;
     }
 
-/* Hidden state for individual topic cards and other non-visible elements */
+/* Hidden state for cards */
 .card.hidden {
     opacity: 0;
     visibility: hidden;
-    position: absolute; /* Take out of flow when hidden */
-    pointer-events: none; /* Disable interaction */
-    height: 0; /* Collapse height */
-    overflow: hidden; /* Hide content overflow */
-    margin: 0 !important; /* Remove any external margins */
-    padding: 0 !important; /* Remove internal padding */
-    border: none !important; /* No border when hidden */
-    box-shadow: none !important; /* No shadow when hidden */
-    transform: none !important; /* Reset any hover transforms */
+    height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    pointer-events: none;
+    display: none; /* Crucially, set display to none to remove it from flex layout */
 }
 
-/* "No results found" message styling */
 p.no-results {
     text-align: center;
     font-size: 1.2em;
     color: #666;
     padding: 50px 20px;
-    width: 100%; /* Ensure it spans the container */
+    width: 100%;
     box-sizing: border-box;
-    display: none; /* Hidden by default, shown by JS */
+    display: none;
 }
 
 footer {
     margin-top: 50px;
     text-align: center;
     font-size: 14px;
-    color: #777; /* Default footer text color in light mode */
+    color: #777;
     padding: 20px;
     width: 100%;
-    display: flex; /* Use flexbox for footer content */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    flex-wrap: wrap; /* Allow wrapping on small screens */
-    gap: 10px; /* Space between items */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 /* Dark Mode Toggle Slider Styles */
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center; /* Center the switch within its wrapper */
-    margin-bottom: 0; /* Remove previous margin */
+    justify-content: center;
+    margin-bottom: 0;
 }
 
 .theme-switch {
@@ -206,17 +262,17 @@ footer {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc; /* Grey when off in light mode */
+    background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
-    border-radius: 34px; /* Rounded slider */
+    border-radius: 34px;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 26px; /* Slightly larger for round effect */
-    width: 26px; /* Slightly larger for round effect */
+    height: 26px;
+    width: 26px;
     left: 4px;
     bottom: 4px;
     background-color: white;
@@ -225,406 +281,79 @@ footer {
     border-radius: 50%;
 }
 
-/* This rule applies when the input is checked (dark mode active) */
 input:checked + .slider {
-    background-color: #03a9f4; /* Blue when checked (dark mode)*/
+    background-color: #03a9f4;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #03a9f4; /* Match the checked background color */
+    box-shadow: 0 0 1px #03a9f4;
 }
 
 input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-    /* The circle itself remains white as it provides good contrast */
 }
-
-/* Optional: Styling for the slider's "off" state when the body is in dark mode
-   to make it visually consistent with the dark theme when the switch is off. */
-body.dark-mode .theme-switch input:not(:checked) + .slider {
-    background-color: #555; /* A darker grey for "off" in dark mode, more subtle */
-}
-
-
-/* Content Page Specific Styles (for sections like Benefits, Risks, etc.) */
-/* These are not used on the index page, but keep them here to avoid breaking sub-pages */
-.content-section {
-    display: none;
-    max-width: 720px;
-    margin: 0 auto 40px;
-    background: white; /* Default light background for content sections */
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.section-box { /* Individual boxes within content sections */
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-h3 {
-    padding-left: 10px;
-    margin-top: 20px;
-    border-left-width: 5px;
-    border-left-style: solid;
-    transition: color 0.3s, border-color 0.3s;
-}
-
-ul {
-    padding-left: 20px;
-}
-
-li {
-    margin-bottom: 10px;
-}
-
-p {
-    margin-bottom: 15px;
-}
-
-/* Styles for High-Yield/Full Script Toggle (labels above the switch) */
-/* Not used on index, but keep for sub-pages */
-.toggle-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;
-    background-color: #f0f0f0; /* Light background for the wrapper */
-    border-radius: 30px;
-    padding: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    max-width: 350px; /* Constrain width to look better */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.toggle-label {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #666; /* Default text color */
-    transition: color 0.3s, background-color 0.3s;
-    border-radius: 20px; /* For the highlighted effect */
-    user-select: none; /* Prevent text selection on click */
-    white-space: nowrap; /* Prevent wrapping */
-}
-
-    .toggle-label.active {
-        color: white; /* Text color when active */
-        background-color: #66bb6a; /* Default Green for active label (matches Medication theme) */
-        box-shadow: 0 0 0 rgba(0,0,0,0); /* REMOVED STICKING OUT SHADOW */
-    }
-
-/* Switch styling itself */
-.toggle-container {
-    position: relative;
-    width: 60px;
-    height: 30px;
-    margin: 0 15px; /* Space between labels and switch */
-    flex-shrink: 0; /* Prevent shrinking on small screens */
-}
-
-    .toggle-container .switch {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc; /* Grey when off */
-        transition: .4s;
-        border-radius: 30px;
-    }
-
-        .toggle-container .switch:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        .toggle-container .switch.active {
-            background-color: #66bb6a; /* Default Green when on (matches Medication theme) */
-        }
-
-            .toggle-container .switch.active:before {
-                transform: translateX(30px); /* Slide to the right */
-            }
 
 /* --- 2. Color Themes for LIGHT Mode --- */
-/* These define the specific colors for each station type when in LIGHT mode */
+.theme-blue header, .theme-blue h1, .theme-blue h2, .theme-blue a { color: #0d47a1; }
+.theme-blue .section-box { background: #e3f2fd; }
+.theme-blue h3 { color: #0d47a1; border-color: #42a5f5; }
+.theme-blue .header-container { background: linear-gradient(to right, #42a5f5, #0d47a1); }
+.theme-blue .card { border-color: #29b6f6; }
+.theme-blue .toggle-label.active, .theme-blue .toggle-container .switch.active { background-color: #42a5f5; }
 
-/* Blue Theme (Diagnosis) - Default for homepage */
-.theme-blue header, .theme-blue h1, .theme-blue h2, .theme-blue a {
-    color: #0d47a1;
-}
+.theme-green header, .theme-green h1, .theme-green h2, .theme-green a { color: #1b5e20; }
+.theme-green .section-box { background: #e8f5e9; }
+.theme-green h3 { color: #1b5e20; border-color: #66bb6a; }
+.theme-green .header-container { background: linear-gradient(to right, #66bb6a, #1b5e20); }
+.theme-green .card { border-color: #66bb6a; }
+.theme-green .toggle-label.active, .theme-green .toggle-container .switch.active { background-color: #66bb6a; }
 
-.theme-blue .section-box {
-    background: #e3f2fd;
-}
+.theme-orange header, .theme-orange h1, .theme-orange h2, .theme-orange a { color: #e65100; }
+.theme-orange .section-box { background: #fff3e0; }
+.theme-orange h3 { color: #e65100; border-color: #ffb74d; }
+.theme-orange .header-container { background: linear-gradient(to right, #ffb74d, #e65100); }
+.theme-orange .card { border-color: #ffa726; }
+.theme-orange .toggle-label.active, .theme-orange .toggle-container .switch.active { background-color: #ffa726; }
 
-.theme-blue h3 {
-    color: #0d47a1;
-    border-color: #42a5f5;
-}
+.theme-purple header, .theme-purple h1, .theme-purple h2, .theme-purple a { color: #4a148c; }
+.theme-purple .section-box { background: #f3e5f5; }
+.theme-purple h3 { color: #4a148c; border-color: #ce93d8; }
+.theme-purple .header-container { background: linear-gradient(to right, #ce93d8, #4a148c); }
+.theme-purple .card { border-color: #ab47bc; }
+.theme-purple .toggle-label.active, .theme-purple .toggle-container .switch.active { background-color: #ab47bc; }
 
-.theme-blue .header-container { /* Note: Removed 'header' as separate target here */
-    background: linear-gradient(to right, #42a5f5, #0d47a1);
-}
+.theme-red header, .theme-red h1, .theme-red h2, .theme-red a { color: #b71c1c; }
+.theme-red .section-box { background: #ffebee; }
+.theme-red h3 { color: #b71c1c; border-color: #ef5350; }
+.theme-red .header-container { background: linear-gradient(to right, #ef5350, #b71c1c); }
+.theme-red .card { border-color: #ef5350; }
+.theme-red .toggle-label.active, .theme-red .toggle-container .switch.active { background-color: #ef5350; }
 
-.theme-blue .card {
-    border-color: #29b6f6;
-}
-/* For cards on main page */
-.theme-blue .toggle-label.active, .theme-blue .toggle-container .switch.active {
-    background-color: #42a5f5;
-}
+.theme-terracotta header, .theme-terracotta h1, .theme-terracotta h2, .theme-terracotta a { color: #bf360c; }
+.theme-terracotta .section-box { background: #fff3e0; }
+.theme-terracotta h3 { color: #bf360c; border-color: #ffab91; }
+.theme-terracotta .header-container { background: linear-gradient(to right, #ffab91, #bf360c); }
+.theme-terracotta .card { border-color: #ff7043; }
+.theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active { background-color: #ff7043; }
 
-/* Specific override for h1 within theme-blue header for readability */
-.theme-blue header h1 { /* This rule is likely not needed anymore given new header structure */
-    color: #ffffff; /* Make the h1 text white for readability on blue background */
-}
+.theme-teal header, .theme-teal h1, .theme-teal h2, .theme-teal a { color: #004d40; }
+.theme-teal .section-box { background: #e0f2f1; }
+.theme-teal h3 { color: #004d40; border-color: #4db6ac; }
+.theme-teal .header-container { background: linear-gradient(to right, #4db6ac, #004d40); }
+.theme-teal .card { border-color: #4db6ac; }
+.theme-teal .toggle-label.active, .theme-teal .toggle-container .switch.active { background-color: #4db6ac; }
 
-
-/* Green Theme (Medication)
-   Primary: #1b5e20 (Dark Green)
-   Accent: #66bb6a (Medium Green)
-   Background: #e8f5e9 (Very Light Green) */
-.theme-green header, .theme-green h1, .theme-green h2, .theme-green a {
-    color: #1b5e20;
-}
-
-.theme-green .section-box {
-    background: #e8f5e9;
-}
-
-.theme-green h3 {
-    color: #1b5e20;
-    border-color: #66bb6a;
-}
-
-.theme-green .header-container, .theme-green header {
-    background: linear-gradient(to right, #66bb6a, #1b5e20);
-}
-
-.theme-green .card {
-    border-color: #66bb6a;
-}
-/* For cards on main page */
-.theme-green .toggle-label.active, .theme-green .toggle-container .switch.active {
-    background-color: #66bb6a;
-}
-
-/* Specific override for h1 within theme-green header for readability */
-.theme-green header h1 {
-    color: #ffffff; /* Make the h1 text white for readability on green background */
-}
-
-
-/* Orange Theme (Procedure)
-   Primary: #e65100 (Dark Orange)
-   Accent: #ffb74d (Lighter Orange)
-   Background: #fff3e0 (Very Light Orange) */
-.theme-orange header, .theme-orange h1, .theme-orange h2, .theme-orange a {
-    color: #e65100;
-}
-
-.theme-orange .section-box {
-    background: #fff3e0;
-}
-
-.theme-orange h3 {
-    color: #e65100;
-    border-color: #ffb74d;
-}
-
-.theme-orange .header-container, .theme-orange header {
-    background: linear-gradient(to right, #ffb74d, #e65100);
-}
-
-.theme-orange .card {
-    border-color: #ffa726;
-}
-/* For cards on main page */
-.theme-orange .toggle-label.active, .theme-orange .toggle-container .switch.active {
-    background-color: #ffa726;
-}
-
-
-/* Purple Theme (Post-Procedure/Psychiatry-related Medication)
-   Primary: #4a148c (Dark Purple)
-   Accent: #ce93d8 (Lighter Purple)
-   Background: #f3e5f5 (Very Light Purple) */
-.theme-purple header, .theme-purple h1, .theme-purple h2, .theme-purple a {
-    color: #4a148c;
-}
-
-.theme-purple .section-box {
-    background: #f3e5f5;
-}
-
-.theme-purple h3 {
-    color: #4a148c;
-    border-color: #ce93d8;
-}
-
-.theme-purple .header-container, .theme-purple header {
-    background: linear-gradient(to right, #ce93d8, #4a148c);
-}
-
-.theme-purple .card {
-    border-color: #ab47bc;
-}
-/* For cards on main page */
-.theme-purple .toggle-label.active, .theme-purple .toggle-container .switch.active {
-    background-color: #ab47bc;
-}
-
-
-/* Red Theme (Surgery)
-   Primary: #b71c1c (Dark Red)
-   Accent: #ef5350 (Medium Red)
-   Background: #ffebee (Very Light Red) */
-.theme-red header, .theme-red h1, .theme-red h2, .theme-red a {
-    color: #b71c1c;
-}
-
-.theme-red .section-box {
-    background: #ffebee;
-}
-
-.theme-red h3 {
-    color: #b71c1c;
-    border-color: #ef5350;
-}
-
-.theme-red .header-container, .theme-red header {
-    background: linear-gradient(to right, #ef5350, #b71c1c);
-}
-
-.theme-red .card {
-    border-color: #ef5350;
-}
-/* For cards on main page */
-.theme-red .toggle-label.active, .theme-red .toggle-container .switch.active {
-    background-color: #ef5350;
-}
-
-/* Specific override for h1 within theme-red header for readability */
-.theme-red header h1 {
-    color: #ffffff; /* Make the h1 text white for readability on red background */
-}
-
-
-/* Terracotta Theme (Community)
-   Primary: #bf360c (Dark Terracotta)
-   Accent: #ffab91 (Lighter Terracotta)
-   Background: #fff3e0 (Very Light Peach) */
-.theme-terracotta header, .theme-terracotta h1, .theme-terracotta h2, .theme-terracotta a {
-    color: #bf360c;
-}
-
-.theme-terracotta .section-box {
-    background: #fff3e0;
-}
-
-.theme-terracotta h3 {
-    color: #bf360c;
-    border-color: #ffab91;
-}
-
-.theme-terracotta .header-container, .theme-terracotta header {
-    background: linear-gradient(to right, #ffab91, #bf360c);
-}
-
-.theme-terracotta .card {
-    border-color: #ff7043;
-}
-/* For cards on main page */
-.theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active {
-    background-color: #ff7043;
-}
-
-
-/* Teal Theme (Respiratory)
-   Primary: #004d40 (Dark Teal)
-   Accent: #4db6ac (Medium Teal)
-   Background: #e0f2f1 (Very Light Teal) */
-.theme-teal header, .theme-teal h1, .theme-teal h2, .theme-teal a {
-    color: #004d40;
-}
-
-.theme-teal .section-box {
-    background: #e0f2f1;
-}
-
-.theme-teal h3 {
-    color: #004d40;
-    border-color: #4db6ac;
-}
-
-.theme-teal .header-container, .theme-teal header {
-    background: linear-gradient(to right, #4db6ac, #004d40);
-}
-
-.theme-teal .card {
-    border-color: #4db6ac;
-}
-/* For cards on main page */
-.theme-teal .toggle-label.active, .theme-teal .toggle-container .switch.active {
-    background-color: #4db6ac;
-}
-
-
-/* Pink Theme (Diabetes)
-   Primary: #ad1457 (Dark Pink)
-   Accent: #f06292 (Medium Pink)
-   Background: #fce4ec (Very Light Pink) */
-.theme-pink header, .theme-pink h1, .theme-pink h2, .theme-pink a {
-    color: #ad1457;
-}
-
-.theme-pink .section-box {
-    background: #fce4ec;
-}
-
-.theme-pink h3 {
-    color: #ad1457;
-    border-color: #f06292;
-}
-
-.theme-pink .header-container, .theme-pink header {
-    background: linear-gradient(to right, #f06292, #ad1457);
-}
-
-.theme-pink .card {
-    border-color: #f06292;
-}
-/* For cards on main page */
-.theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active {
-    background-color: #f48fb1;
-}
+.theme-pink header, .theme-pink h1, .theme-pink h2, .theme-pink a { color: #ad1457; }
+.theme-pink .section-box { background: #fce4ec; }
+.theme-pink h3 { color: #ad1457; border-color: #f06292; }
+.theme-pink .header-container { background: linear-gradient(to right, #f06292, #ad1457); }
+.theme-pink .card { border-color: #f06292; }
+.theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active { background-color: #f48fb1; }
 
 
 /* --- 3. Dark Mode Styles --- */
-/* These override the above themes when .dark-mode is active */
 body.dark-mode {
     background: #1f2023;
     color: #e0e0e0;
@@ -643,155 +372,141 @@ body.dark-mode {
 .dark-mode a {
     color: #e0e0e0;
 }
-/* Default link color in dark mode */
 .dark-mode footer {
     color: #999;
 }
-
 .dark-mode h1, .dark-mode h2 {
     color: #e0e0e0;
 }
-/* Header text in dark mode */
 .dark-mode p, .dark-mode li {
     color: #cccccc;
 }
-/* Ensure text inside boxes is readable */
 .dark-mode header {
     color: white;
 }
-/* Ensure main header text is white in dark mode */
 
-/* Dark Mode Header styles */
+/* Dark Mode Header Background */
 .dark-mode .header-container {
-    background: linear-gradient(to right, #0d47a1, #1a237e); /* Darker blue gradient */
+    background: linear-gradient(to right, #0d47a1, #1a237e);
 }
 
 /* Dark Mode Search Bar Styling */
-.dark-mode .search-container #searchInput {
-    border-color: #82b1ff; /* Lighter blue for dark mode */
-    background-color: #3f4147; /* Darker background */
-    color: #e0e0e0;
+.dark-mode .search-container.active {
+    background-color: #3f4147;
+    border: 2px solid #82b1ff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
-.dark-mode .search-container #searchInput:focus {
-    border-color: #42a5f5; /* Theme blue on focus */
+.dark-mode .search-container.active #searchInput {
+    color: #e0e0e0;
 }
 
 .dark-mode .search-icon {
-    fill: #82b1ff; /* Lighter blue icon in dark mode */
+    fill: #82b1ff;
 }
 
-.dark-mode .search-icon-wrapper {
-    background-color: #3f4147; /* Dark background for icon */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
+/* Dark Mode Card Borders */
+.dark-mode .card.history-taking { border-color: #f48fb1; }
+.dark-mode .card.diagnosis { border-color: #82b1ff; }
+.dark-mode .card.medication { border-color: #a5d6a7; }
+.dark-mode .card.procedure { border-color: #ffcc80; }
+.dark-mode .card.post-procedure { border-color: #e1bee7; }
+.dark-mode .card.surgery { border-color: #ff8a80; }
+.dark-mode .card.community { border-color: #ffccbc; }
 
-
-/* Dark Mode Theme Overrides for Cards - all cards will use these */
-.dark-mode .card {
-    background-color: #2f3136;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-}
-.dark-mode .card a {
-    color: #e0e0e0;
-}
-
-.dark-mode .card.history-taking { border-color: #f48fb1; } /* Lighter Pink */
-.dark-mode .card.diagnosis { border-color: #82b1ff; } /* Lighter Blue */
-.dark-mode .card.medication { border-color: #a5d6a7; } /* Lighter Green */
-.dark-mode .card.procedure { border-color: #ffcc80; } /* Lighter Orange */
-.dark-mode .card.post-procedure { border-color: #e1bee7; } /* Lighter Purple */
-.dark-mode .card.surgery { border-color: #ff8a80; } /* Lighter Red */
-.dark-mode .card.community { border-color: #ffccbc; } /* Lighter Terracotta */
-
-/* Dark mode for no-results message */
 .dark-mode p.no-results {
     color: #aaa;
 }
 
 /* --- 4. Media Queries for Mobile-Friendly Layout --- */
 @media screen and (max-width: 768px) {
-    .header-container {
-        padding-top: 15px;
-        padding-bottom: 15px;
-        /* Revert to original text-align: center and let elements stack naturally */
-        display: block; /* Override flex for header on small screens */
-    }
-
-    .logo {
-        margin-bottom: 10px; /* Space below logo */
-    }
-
-    /* Remove the 'strong' element, as per your original file, only the image acts as title */
-    .header-container > strong { /* Target the OSCE SPARK text */
-        display: none; /* Hide the extra OSCE SPARK text on mobile */
-    }
-
-    /* Mobile-specific search bar adjustments */
-    .search-container {
-        position: static; /* Remove absolute positioning */
-        width: 90%; /* Take up more width */
-        margin: 0 auto; /* Center it */
-        transform: translateY(0); /* Reset vertical centering transform */
-        justify-content: flex-end; /* Keep icon/input aligned right within its mobile container */
-        margin-top: 15px; /* Add space below logo/title */
-    }
-
-    #searchInput {
-        width: 0; /* Hidden by default on mobile */
-        padding: 10px 0px; /* No horizontal padding initially */
-        opacity: 0;
-        pointer-events: none; /* Disable interaction when hidden */
-        flex-grow: 1; /* Allow it to grow when active */
-    }
-
-    .search-icon-wrapper { /* Icon part of search (visible on mobile by default) */
-        display: flex; /* Show icon wrapper on mobile */
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-        border-radius: 50%;
-        background-color: #ffffff; /* Icon background color */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        transition: all 0.3s ease; /* Smooth transition for icon */
-        flex-shrink: 0;
-    }
-
-    .search-icon {
-        width: 24px;
-        height: 24px;
-        fill: #0d47a1;
-    }
-
-    /* Mobile active state for search bar (expanded) */
-    .search-container.active {
-        width: 100%; /* Expand width to 100% of its static container */
-        justify-content: flex-start; /* Align input to left when expanded */
-    }
-
-    .search-container.active #searchInput {
-        width: calc(100% - 50px); /* Fill remaining space, minus icon size */
-        padding: 10px 15px;
-        opacity: 1;
-        pointer-events: auto;
-        margin-left: 10px; /* Space between icon and input when expanded */
-    }
-
-    .search-container.active .search-icon-wrapper {
-        background-color: transparent; /* Hide background when text input is shown */
-        box-shadow: none;
-        width: 0; /* Collapse icon wrapper */
-        opacity: 0;
-        pointer-events: none; /* Disable interaction */
-        margin-right: -40px; /* Move it off to the left to avoid taking space */
-    }
-
-
     .container {
         padding: 20px;
     }
     .card {
         width: 45%;
+    }
+
+    /* Mobile Header Layout (No change from desktop, simplified by flexbox) */
+    .header-container {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        flex-direction: row; /* Keep logo and search on one row initially */
+        justify-content: space-between;
+        align-items: center;
+        height: auto; /* Dynamic height */
+        flex-wrap: nowrap;
+    }
+
+    .logo {
+        margin: 0;
+        max-height: 50px; /* Reduce logo size slightly on mobile */
+        flex-shrink: 0;
+    }
+
+    /* Hide the logo when search is active on mobile */
+    .logo.hidden-on-search-active {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        width: 0; /* Collapse width */
+        margin: 0; /* Ensure no space taken */
+    }
+
+    /* Mobile Search Bar Behavior */
+    .search-container {
+        position: absolute; /* Absolute position for icon in top-right */
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px; /* Start as just the icon width */
+        height: 40px; /* Start as just the icon height */
+        overflow: hidden; /* Hide overflowing input */
+        transition: width 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease, border-radius 0.3s ease, 
+                    top 0.3s ease, left 0.3s ease, right 0.3s ease, transform 0.3s ease, height 0.3s ease; /* Added position transitions for mobile */
+        flex-shrink: 0;
+        justify-content: flex-end; /* Align icon to the right */
+    }
+
+    .search-container.active { /* State when search input is open/active */
+        width: calc(100% - 40px); /* Expand within the available header space */
+        position: absolute; /* Takes absolute positioning for expansion */
+        top: 50%; /* Center vertically within the header */
+        transform: translateY(-50%);
+        left: 20px; /* Start from left with padding */
+        right: 20px; /* Expand to right with padding */
+        margin: auto; /* Center horizontally */
+        border-radius: 25px; /* Keep consistent rounding */
+    }
+    
+    .search-icon-wrapper {
+        display: flex; /* Show icon wrapper */
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease, margin-right 0.3s ease;
+    }
+
+    .search-container.active .search-icon-wrapper {
+        margin-right: 10px; /* Space between icon and input when expanded */
+    }
+
+    #searchInput {
+        width: 0; /* Hidden by default on mobile */
+        padding: 10px 0px; /* No padding initially */
+        opacity: 0;
+        pointer-events: none; /* Disable interaction when hidden */
+        flex-grow: 1; /* Allow it to grow when active */
+    }
+
+    .search-container.active #searchInput {
+        width: calc(100% - 40px - 10px); /* Fill remaining space, minus icon and margin */
+        padding: 10px 15px;
+        opacity: 1;
+        pointer-events: auto;
     }
 }
 
@@ -835,7 +550,7 @@ body.dark-mode {
                     <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
             </div>
-            <input type="text" id="searchInput" placeholder="Search OSCE topics...">
+            <input type="text" id="searchInput" placeholder="">
         </div>
     </div>
 
@@ -847,154 +562,6 @@ body.dark-mode {
         <div class="card post-procedure main-category-card"><a href="Main Page/pretty_post-procedure__stations.html">🔁 Post-Procedure Stations</a></div>
         <div class="card surgery main-category-card"><a href="Main Page/pretty_surgery_stations.html">🩺 Surgery Stations</a></div>
         <div class="card community main-category-card"><a href="Main Page/pretty_community_stations.html">🏘️ Community Stations</a></div>
-
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Abdominal Pain.html">Abdominal Pain</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Anxiety.html">Anxiety</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Breast Lump.html">Breast Lump</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Cardiovascular.html">Cardiovascular</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Chest Pain.html">Chest Pain</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Cough.html">Cough</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Depression.html">Depression</a></div>
-        {/*
-        The code below has been commented out to match the content of `files.txt` more accurately.
-        If these files exist and you want them to be searchable, uncomment them and ensure their paths are correct.
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dizziness History.html">Dizziness History</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dysphagia.html">Dysphagia</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dyspnoea.html">Dyspnoea</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Falls.html">Falls</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Female LUTS.html">Female LUTS</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Headache.html">Headache</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Leg Swelling.html">Leg Swelling</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Loss of Consciousness.html">Loss of Consciousness</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Male LUTS.html">Male LUTS</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Ophthalmic.html">Ophthalmic</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Palpitations.html">Palpitations</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Respiratory.html">Respiratory</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Seizure.html">Seizure</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Stroke-TIA.html">Stroke-TIA</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Tiredness.html">Tiredness</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Unintentional Weight Loss.html">Unintentional Weight Loss</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Urological.html">Urological</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/alcohol_cessation_counselling.html">Alcohol Cessation Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html">Bowel Cancer Screening</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/community_blood_pressure_check.html">Community Blood Pressure Check</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/dnacpr_counselling.html">DNACPR Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/hypertension_counselling.html">Hypertension Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/inhaler_technique_counselling.html">Inhaler Technique Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/peak_flow_counselling.html">Peak Flow (PEFR) Technique</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/smoking_cessation_counselling.html">Smoking Cessation Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/weight_loss_counselling.html">Weight Loss Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html">Atrial Fibrillation Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html">Bacterial Vaginosis Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html">Chronic Kidney Disease Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html">Explaining a Diagnosis of Asthma</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_copd.html">Explaining a Diagnosis of COPD</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_eczema.html">Explaining a Diagnosis of Eczema</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html">Explaining a Diagnosis of Fibroadenoma</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html">Explaining a Diagnosis of Glaucoma</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html">Explaining a Diagnosis of Type 1 Diabetes</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html">Explaining a Diagnosis of Type 2 Diabetes</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/ace_inhibitor_counselling.html">ACE-Inhibitor Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/amitriptyline_counselling.html">Amitriptyline Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html">Anticoagulant Counselling | Pharmacy</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/asthma_spacer_explanation.html">Asthma Spacer Explanation</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/direct_oral_anticoagulant_counselling.html">Direct Oral Anticoagulant Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/gliclazide_counselling.html">Gliclazide Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/gtn_spray_counselling.html">GTN Spray Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/inhaler_counselling_01_pharmacy.html">Inhaler Counselling 01 | Pharmacy</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/inhaler_counselling_02_pharmacy.html">Inhaler Counselling 02 | Pharmacy</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/insulin_counselling.html">Insulin Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/iron_supplementation_counselling.html">Iron Supplementation Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/metformin_counselling.html">Metformin Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/opioid_analgesia_counselling.html">Opioid Analgesia Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/ssri_counselling.html">SSRI Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/statin_counselling.html">Statin Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/warfarin_counselling.html">Warfarin Counselling</a></div>
-        <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stemi_counselling.html">Post-STEMI Counselling</a></div>
-        <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stroke_counselling.html">Post-stroke Counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/ascitic_drain_explanation.html">Ascitic drain explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/blood_transfusion_counselling.html">Blood transfusion counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/bronchoscopy_counselling.html">Bronchoscopy Counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/chest_drain_explanation.html">Chest drain explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/colonoscopy_explanation.html">Colonoscopy explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/echocardiogram_explanation.html">Echocardiogram explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/endoscopy_counselling.html">Endoscopy counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/ercp_explanation.html">ERCP explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/haemodialysis_counselling.html">Haemodialysis Counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html">Tuberculosis treatment counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/appendicectomy_counselling.html">Appendicectomy Counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
-        */}
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dizziness History.html">Dizziness History</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dysphagia.html">Dysphagia</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Dyspnoea.html">Dyspnoea</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Falls.html">Falls</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Female LUTS.html">Female LUTS</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Headache.html">Headache</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Leg Swelling.html">Leg Swelling</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Loss of Consciousness.html">Loss of Consciousness</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Male LUTS.html">Male LUTS</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Ophthalmic.html">Ophthalmic</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Palpitations.html">Palpitations</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Respiratory.html">Respiratory</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Seizure.html">Seizure</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Stroke-TIA.html">Stroke-TIA</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Tiredness.html">Tiredness</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Unintentional Weight Loss.html">Unintentional Weight Loss</a></div>
-        <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Urological.html">Urological</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/alcohol_cessation_counselling.html">Alcohol Cessation Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html">Bowel Cancer Screening</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/community_blood_pressure_check.html">Community Blood Pressure Check</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/dnacpr_counselling.html">DNACPR Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/hypertension_counselling.html">Hypertension Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/inhaler_technique_counselling.html">Inhaler Technique Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/peak_flow_counselling.html">Peak Flow (PEFR) Technique</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/smoking_cessation_counselling.html">Smoking Cessation Counselling</a></div>
-        <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/weight_loss_counselling.html">Weight Loss Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html">Atrial Fibrillation Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html">Bacterial Vaginosis Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html">Chronic Kidney Disease Counselling</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html">Explaining a Diagnosis of Asthma</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_copd.html">Explaining a Diagnosis of COPD</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_eczema.html">Explaining a Diagnosis of Eczema</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html">Explaining a Diagnosis of Fibroadenoma</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html">Explaining a Diagnosis of Glaucoma</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html">Explaining a Diagnosis of Type 1 Diabetes</a></div>
-        <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html">Explaining a Diagnosis of Type 2 Diabetes</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/ace_inhibitor_counselling.html">ACE-Inhibitor Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/amitriptyline_counselling.html">Amitriptyline Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html">Anticoagulant Counselling | Pharmacy</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/asthma_spacer_explanation.html">Asthma Spacer Explanation</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/direct_oral_anticoagulant_counselling.html">Direct Oral Anticoagulant Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/gliclazide_counselling.html">Gliclazide Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/gtn_spray_counselling.html">GTN Spray Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/inhaler_counselling_01_pharmacy.html">Inhaler Counselling 01 | Pharmacy</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/inhaler_counselling_02_pharmacy.html">Inhaler Counselling 02 | Pharmacy</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/insulin_counselling.html">Insulin Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/iron_supplementation_counselling.html">Iron Supplementation Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/metformin_counselling.html">Metformin Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/opioid_analgesia_counselling.html">Opioid Analgesia Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/ssri_counselling.html">SSRI Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/statin_counselling.html">Statin Counselling</a></div>
-        <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/warfarin_counselling.html">Warfarin Counselling</a></div>
-        <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stemi_counselling.html">Post-STEMI Counselling</a></div>
-        <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stroke_counselling.html">Post-stroke Counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/ascitic_drain_explanation.html">Ascitic drain explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/blood_transfusion_counselling.html">Blood transfusion counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/bronchoscopy_counselling.html">Bronchoscopy Counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/chest_drain_explanation.html">Chest drain explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/colonoscopy_explanation.html">Colonoscopy explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/echocardiogram_explanation.html">Echocardiogram explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/endoscopy_counselling.html">Endoscopy counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/ercp_explanation.html">ERCP explanation</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/haemodialysis_counselling.html">Haemodialysis Counselling</a></div>
-        <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html">Tuberculosis treatment counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/appendicectomy_counselling.html">Appendicectomy Counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
-        <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
 
         <p class="no-results">No results found.</p>
     </div>
@@ -1041,11 +608,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // High-Yield / Full Script Toggle Logic (for content pages) - Keep these as they might be used in sub-pages
-    // These functions are generally for content pages, not the index. They are kept globally scoped.
+    // High-Yield / Full Script Toggle Logic (for content pages) - Kept globally scoped as before
     window.toggleSwitch = function(switchEl) {
         const isActive = switchEl.classList.toggle('active');
-        // Check if elements exist before toggling classes, as they might not be on index.html
         const highYieldLabel = document.getElementById('highYieldLabel');
         const fullScriptLabel = document.getElementById('fullScriptLabel');
         const highYieldContent = document.getElementById('highYield');
@@ -1054,6 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (highYieldLabel) highYieldLabel.classList.toggle('active', !isActive);
         if (fullScriptLabel) fullScriptLabel.classList.toggle('active', isActive);
         if (highYieldContent) highYieldContent.classList.toggle('active', !isActive);
+        if (fullScriptContent) fullScriptContent.classList.add('active'); // Ensure content is displayed
         if (fullScriptContent) fullScriptContent.classList.toggle('active', isActive);
     }
 
@@ -1080,13 +646,122 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Search Functionality ---
+    const headerContainer = document.querySelector('.header-container');
     const searchContainer = document.querySelector('.search-container');
     const searchIconWrapper = document.querySelector('.search-icon-wrapper');
+    const searchIcon = document.querySelector('.search-icon');
     const searchInput = document.getElementById('searchInput');
-    const allCardsContainer = document.getElementById('all-cards-container'); // The main container holding ALL cards
-    const mainCategoryCards = document.querySelectorAll('.main-category-card'); // Your 7 main category cards
-    const subTopicCards = document.querySelectorAll('.sub-topic-card'); // All individual topic cards
-    const noResultsMessage = document.querySelector('.no-results'); // The "No results" paragraph
+    const allCardsContainer = document.getElementById('all-cards-container');
+    const mainCategoryCards = document.querySelectorAll('.main-category-card');
+    let subTopicCards = []; // This will be populated dynamically
+    const noResultsMessage = document.querySelector('.no-results');
+    const logo = document.querySelector('.logo'); // Get logo element
+
+    // Master list of all subtopics with their category classes from files.txt
+    const allSubtopicsData = [
+        // History Taking
+        { title: "Abdominal Pain", url: "Main Page/History Taking/Abdominal Pain.html", categoryClass: "history-taking" },
+        { title: "Anxiety", url: "Main Page/History Taking/Anxiety.html", categoryClass: "history-taking" },
+        { title: "Breast Lump", url: "Main Page/History Taking/Breast Lump.html", categoryClass: "history-taking" },
+        { title: "Cardiovascular", url: "Main Page/History Taking/Cardiovascular.html", categoryClass: "history-taking" },
+        { title: "Chest Pain", url: "Main Page/History Taking/Chest Pain.html", categoryClass: "history-taking" },
+        { title: "Cough", url: "Main Page/History Taking/Cough.html", categoryClass: "history-taking" },
+        { title: "Depression", url: "Main Page/History Taking/Depression.html", categoryClass: "history-taking" },
+        { title: "Dizziness History", url: "Main Page/History Taking/Dizziness History.html", categoryClass: "history-taking" },
+        { title: "Dysphagia", url: "Main Page/History Taking/Dysphagia.html", categoryClass: "history-taking" },
+        { title: "Dyspnoea", url: "Main Page/History Taking/Dyspnoea.html", categoryClass: "history-taking" },
+        { title: "Falls", url: "Main Page/History Taking/Falls.html", categoryClass: "history-taking" },
+        { title: "Female LUTS", url: "Main Page/History Taking/Female LUTS.html", categoryClass: "history-taking" },
+        { title: "Headache", url: "Main Page/History Taking/Headache.html", categoryClass: "history-taking" },
+        { title: "Leg Swelling", url: "Main Page/History Taking/Leg Swelling.html", categoryClass: "history-taking" },
+        { title: "Loss of Consciousness", url: "Main Page/History Taking/Loss of Consciousness.html", categoryClass: "history-taking" },
+        { title: "Male LUTS", url: "Main Page/History Taking/Male LUTS.html", categoryClass: "history-taking" },
+        { title: "Ophthalmic", url: "Main Page/History Taking/Ophthalmic.html", categoryClass: "history-taking" },
+        { title: "Palpitations", url: "Main Page/History Taking/Palpitations.html", categoryClass: "history-taking" },
+        { title: "Respiratory", url: "Main Page/History Taking/Respiratory.html", categoryClass: "history-taking" },
+        { title: "Seizure", url: "Main Page/History Taking/Seizure.html", categoryClass: "history-taking" },
+        { title: "Stroke-TIA", url: "Main Page/History Taking/Stroke-TIA.html", categoryClass: "history-taking" },
+        { title: "Tiredness", url: "Main Page/History Taking/Tiredness.html", categoryClass: "history-taking" },
+        { title: "Unintentional Weight Loss", url: "Main Page/History Taking/Unintentional Weight Loss.html", categoryClass: "history-taking" },
+        { title: "Urological", url: "Main Page/History Taking/Urological.html", categoryClass: "history-taking" },
+        // Community Stations
+        { title: "Alcohol Cessation Counselling", url: "Main Page/pretty_community_stations/alcohol_cessation_counselling.html", categoryClass: "community" },
+        { title: "Bowel Cancer Screening", url: "Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html", categoryClass: "community" },
+        { title: "Community Blood Pressure Check", url: "Main Page/pretty_community_stations/community_blood_pressure_check.html", categoryClass: "community" },
+        { title: "DNACPR Counselling", url: "Main Page/pretty_community_stations/dnacpr_counselling.html", categoryClass: "community" },
+        { title: "Hypertension Counselling", url: "Main Page/pretty_community_stations/hypertension_counselling.html", categoryClass: "community" },
+        { title: "Inhaler Technique Counselling", url: "Main Page/pretty_community_stations/inhaler_technique_counselling.html", categoryClass: "community" },
+        { title: "Peak Flow (PEFR) Technique", url: "Main Page/pretty_community_stations/peak_flow_counselling.html", categoryClass: "community" },
+        { title: "Smoking Cessation Counselling", url: "Main Page/pretty_community_stations/smoking_cessation_counselling.html", categoryClass: "community" },
+        { title: "Weight Loss Counselling", url: "Main Page/pretty_community_stations/weight_loss_counselling.html", categoryClass: "community" },
+        // Diagnosis Stations
+        { title: "Atrial Fibrillation Counselling", url: "Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html", categoryClass: "diagnosis" },
+        { title: "Bacterial Vaginosis Counselling", url: "Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html", categoryClass: "diagnosis" },
+        { title: "Chronic Kidney Disease Counselling", url: "Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html", categoryClass: "diagnosis" },
+        { title: "Explaining a Diagnosis of Asthma", url: "Main Page/pretty_diagnosis_stations/explaining_a_diagnosis_of_asthma.html", categoryClass: "diagnosis" },
+        { title: "Explaining a Diagnosis of COPD", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_copd.html", categoryClass: "diagnosis" },
+        { title: "Explaining a Diagnosis of Eczema", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_eczema.html", categoryClass: "diagnosis" },
+        { title: "Explaining a Diagnosis of Fibroadenoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_fibroadenoma.html", categoryClass: "diagnosis" },
+        { title: "Explaining a Diagnosis of Glaucoma", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_glaucoma.html", categoryClass: "diagnosis" },
+        { title: "Explaining a Diagnosis of Type 1 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html", categoryClass: "diagnosis" },
+        { title: "Explaining a Diagnosis of Type 2 Diabetes", url: "Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html", categoryClass: "diagnosis" },
+        // Medication Stations
+        { title: "ACE-Inhibitor Counselling", url: "Main Page/pretty_medication_stations/ace_inhibitor_counselling.html", categoryClass: "medication" },
+        { title: "Amitriptyline Counselling", url: "Main Page/pretty_medication_stations/amitriptyline_counselling.html", categoryClass: "medication" },
+        { title: "Anticoagulant Counselling | Pharmacy", url: "Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html", categoryClass: "medication" },
+        { title: "Asthma Spacer Explanation", url: "Main Page/pretty_medication_stations/asthma_spacer_explanation.html", categoryClass: "medication" },
+        { title: "Direct Oral Anticoagulant Counselling", url: "Main Page/pretty_medication_stations/direct_oral_anticoagulant_counselling.html", categoryClass: "medication" },
+        { title: "Gliclazide Counselling", url: "Main Page/pretty_medication_stations/gliclazide_counselling.html", categoryClass: "medication" },
+        { title: "GTN Spray Counselling", url: "Main Page/pretty_medication_stations/gtn_spray_counselling.html", categoryClass: "medication" },
+        { title: "Inhaler Counselling 01 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_01_pharmacy.html", categoryClass: "medication" },
+        { title: "Inhaler Counselling 02 | Pharmacy", url: "Main Page/pretty_medication_stations/inhaler_counselling_02_pharmacy.html", categoryClass: "medication" },
+        { title: "Insulin Counselling", url: "Main Page/pretty_medication_stations/insulin_counselling.html", categoryClass: "medication" },
+        { title: "Iron Supplementation Counselling", url: "Main Page/pretty_medication_stations/iron_supplementation_counselling.html", categoryClass: "medication" },
+        { title: "Metformin Counselling", url: "Main Page/pretty_medication_stations/metformin_counselling.html", categoryClass: "medication" },
+        { title: "Opioid Analgesia Counselling", url: "Main Page/pretty_medication_stations/opioid_analgesia_counselling.html", categoryClass: "medication" },
+        { title: "SSRI Counselling", url: "Main Page/pretty_medication_stations/ssri_counselling.html", categoryClass: "medication" },
+        { title: "Statin Counselling", url: "Main Page/pretty_medication_stations/statin_counselling.html", categoryClass: "medication" },
+        { title: "Warfarin Counselling", url: "Main Page/pretty_medication_stations/warfarin_counselling.html", categoryClass: "medication" },
+        // Post-Procedure Stations
+        { title: "Post-STEMI Counselling", url: "Main Page/pretty_post-procedure__stations/post_stemi_counselling.html", categoryClass: "post-procedure" },
+        { title: "Post-stroke Counselling", url: "Main Page/pretty_post-procedure__stations/post_stroke_counselling.html", categoryClass: "post-procedure" },
+        // Procedure Stations
+        { title: "Ascitic drain explanation", url: "Main Page/pretty_procedure_stations/ascitic_drain_explanation.html", categoryClass: "procedure" },
+        { title: "Blood transfusion counselling", url: "Main Page/pretty_procedure_stations/blood_transfusion_counselling.html", categoryClass: "procedure" },
+        { title: "Bronchoscopy Counselling", url: "Main Page/pretty_procedure_stations/bronchoscopy_counselling.html", categoryClass: "procedure" },
+        { title: "Chest drain explanation", url: "Main Page/pretty_procedure_stations/chest_drain_explanation.html", categoryClass: "procedure" },
+        { title: "Colonoscopy explanation", url: "Main Page/pretty_procedure_stations/colonoscopy_explanation.html", categoryClass: "procedure" },
+        { title: "Echocardiogram explanation", url: "Main Page/pretty_procedure_stations/echocardiogram_explanation.html", categoryClass: "procedure" },
+        { title: "Endoscopy counselling", url: "Main Page/pretty_procedure_stations/endoscopy_counselling.html", categoryClass: "procedure" },
+        { title: "ERCP explanation", url: "Main Page/pretty_procedure_stations/ercp_explanation.html", categoryClass: "procedure" },
+        { title: "Haemodialysis Counselling", url: "Main Page/pretty_procedure_stations/haemodialysis_counselling.html", categoryClass: "procedure" },
+        { title: "Tuberculosis treatment counselling", url: "Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html", categoryClass: "procedure" },
+        // Surgery Stations
+        { title: "Appendicectomy Counselling", url: "Main Page/pretty_surgery_stations/appendicectomy_counselling.html", categoryClass: "surgery" },
+        { title: "Coronary Artery Bypass Graft (CABG) Counselling", url: "Main Page/pretty_surgery_stations/cabg_counselling.html", categoryClass: "surgery" },
+        { title: "Cholecystectomy Counselling", url: "Main Page/pretty_surgery_stations/cholecystectomy_counselling.html", categoryClass: "surgery" },
+        { title: "Gastrectomy Counselling", url: "Main Page/pretty_surgery_stations/gastrectomy_counselling.html", categoryClass: "surgery" }
+    ];
+
+    // Function to dynamically generate subtopic cards and append them
+    const generateAndAppendSubtopicCards = () => {
+        const fragment = document.createDocumentFragment();
+        allSubtopicsData.forEach(topic => {
+            const cardDiv = document.createElement('div');
+            cardDiv.classList.add('card', topic.categoryClass, 'sub-topic-card', 'hidden'); // All sub-topics are hidden initially
+            const a = document.createElement('a');
+            a.href = topic.url;
+            a.textContent = topic.title;
+            cardDiv.appendChild(a);
+            fragment.appendChild(cardDiv);
+        });
+        allCardsContainer.appendChild(fragment);
+        // Re-select subTopicCards after they've been dynamically added
+        subTopicCards = document.querySelectorAll('.sub-topic-card');
+    };
+
+    // Call this function once on load to populate the hidden subtopic cards
+    generateAndAppendSubtopicCards();
 
     // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
@@ -1106,11 +781,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener for typing in search input
     searchInput.addEventListener('input', () => {
-        const searchTerm = searchInput.value.toLowerCase().trim(); // Trim whitespace
+        const searchTerm = searchInput.value.toLowerCase().trim();
 
         hideAllCardsAndMessage(); // Start by hiding everything
 
-        if (searchTerm.length > 1) { // Only search if more than one character
+        if (searchTerm.length > 1) {
             let resultsFound = false;
 
             subTopicCards.forEach(card => {
@@ -1125,95 +800,93 @@ document.addEventListener('DOMContentLoaded', () => {
                 noResultsMessage.style.display = 'block'; // Show "No results" message
             }
         } else {
-            // If search term is empty or too short, show main categories
-            showMainCategories();
+            showMainCategories(); // Show main categories
         }
     });
 
-    // Toggle search bar expansion on icon click (mobile only)
-    searchIconWrapper.addEventListener('click', () => {
-        // Only activate if on a mobile viewport
-        if (window.innerWidth <= 768) {
-            searchContainer.classList.toggle('active');
+    // Toggle search bar expansion on icon click (Universal)
+    if (searchIconWrapper) { // Ensure searchIconWrapper exists
+        searchIconWrapper.addEventListener('click', () => {
+            searchContainer.classList.toggle('active'); // Toggle 'active' class universally
 
             if (searchContainer.classList.contains('active')) {
+                // When expanding
                 searchInput.focus();
-                // If opening search, and there's text, show results
+                // Hide logo on mobile
+                if (window.innerWidth <= 768) {
+                    logo.classList.add('hidden-on-search-active'); // Add class to hide logo
+                }
+                // If there's already text, trigger search to show results
                 if (searchInput.value.length > 1) {
                     searchInput.dispatchEvent(new Event('input'));
                 } else {
-                    // If opening search with empty input, hide all cards to show empty canvas for typing
-                    hideAllCardsAndMessage(); 
+                    // If no text, hide all cards to provide an empty canvas for typing
+                    hideAllCardsAndMessage();
                 }
             } else {
-                // If collapsing search, clear input and show main categories
-                searchInput.value = '';
-                showMainCategories();
+                // When collapsing
+                searchInput.value = ''; // Clear input
+                showMainCategories(); // Show main categories
+                searchInput.blur(); // Remove focus
+                // Show logo on mobile
+                if (window.innerWidth <= 768) {
+                    logo.classList.remove('hidden-on-search-active'); // Remove class to show logo
+                }
             }
-        }
-    });
+        });
+    }
 
     // Handle clicks outside the search bar and visible cards
     document.addEventListener('click', (event) => {
         const targetElement = event.target;
         const isClickInsideSearchContainer = searchContainer.contains(targetElement);
-        // Only consider cards that are currently NOT hidden in the layout
         const isClickInsideVisibleCard = targetElement.closest('.card:not(.hidden)');
 
-        // If clicking outside the search container AND not on a visible card
+        // If clicking outside search container AND not on a visible card
         if (!isClickInsideSearchContainer && !isClickInsideVisibleCard) {
-            // If on mobile, and search is expanded, collapse it
-            if (window.innerWidth <= 768 && searchContainer.classList.contains('active')) {
+            // Collapse search bar if it's active
+            if (searchContainer.classList.contains('active')) {
                 searchContainer.classList.remove('active');
+                // Show logo on mobile
+                if (window.innerWidth <= 768) {
+                    logo.classList.remove('hidden-on-search-active');
+                }
             }
-            
-            // Clear search input and show main categories only if search input was not empty
+            // Clear search input and show main categories only if search input had content
             if (searchInput.value.length > 0) {
                 searchInput.value = ''; // Clear the input
             }
-            // Always ensure main categories are shown after external click
-            showMainCategories();
+            showMainCategories(); // Always ensure main categories are shown after external click
+            searchInput.blur(); // Remove focus
         }
     });
 
-    // Re-show relevant results if input is focused and already has text
-    // This handles scenarios where user tabs back to input or clicks in it
+    // Re-show relevant results if input is focused and search is active (expanded)
     searchInput.addEventListener('focus', () => {
-        if (searchInput.value.length > 1) {
-            searchInput.dispatchEvent(new Event('input')); // Re-trigger the input event
+        if (searchContainer.classList.contains('active')) {
+            if (searchInput.value.length > 1) {
+                searchInput.dispatchEvent(new Event('input'));
+            } else {
+                hideAllCardsAndMessage(); // Show empty canvas if input is empty but search is active
+            }
         }
     });
 
-    // Handle responsiveness for search bar behavior on load and resize
-    const handleResize = () => {
-        if (window.innerWidth > 768) {
-            // Desktop view: always show input, hide icon, remove mobile-specific classes
-            searchContainer.classList.remove('active'); // Ensure not in mobile 'active' state
-            searchContainer.classList.remove('mobile-collapsed'); // Remove mobile class
-            searchIconWrapper.style.display = 'none'; // Hide icon
-            searchInput.style.width = '100%'; // Ensure full width
-            searchInput.style.padding = '10px 15px';
-            searchInput.style.opacity = '1';
-            searchInput.style.pointerEvents = 'auto';
-        } else {
-            // Mobile view: initially collapsed, show icon, add mobile-specific classes
-            searchContainer.classList.remove('active'); // Collapse by default
-            searchIconWrapper.style.display = 'flex'; // Show icon
-            // Reset input to hidden state for mobile collapsed view
-            searchInput.style.width = '0';
-            searchInput.style.padding = '10px 0px';
-            searchInput.style.opacity = '0';
-            searchInput.style.pointerEvents = 'none';
+    // Initial setup for search bar on load and resize
+    const updateSearchDisplay = () => {
+        // Ensure collapsed state is applied by CSS
+        searchContainer.classList.remove('active');
+        searchInput.value = ''; // Clear input
+        showMainCategories(); // Show main categories
+        logo.classList.remove('hidden-mobile-logo'); // Ensure logo is visible on resize
 
-            // Clear search and reset view on mobile resize to prevent odd states
-            searchInput.value = '';
-            showMainCategories();
-        }
+        // No need for specific style manipulations in JS now, CSS handles it via classes
+        // and media queries based on window.innerWidth
     };
 
     // Run on load and resize
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial call on page load
+    window.addEventListener('resize', updateSearchDisplay);
+    updateSearchDisplay(); // Initial call on page load
 });
 </script>
 </body>

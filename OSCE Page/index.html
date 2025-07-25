@@ -425,29 +425,28 @@ body.dark-mode {
 }
 
 /* --- 4. Media Queries for Mobile-Friendly Layout --- */
-/* Adjusted breakpoint to include tablets */
-@media screen and (max-width: 992px) { /* Changed from 768px to 992px */
+@media screen and (max-width: 768px) {
     .container {
         padding: 20px;
     }
     .card {
-        width: 100%; /* Changed to 100% for better mobile stacking */
+        width: 45%;
     }
 
-    /* Mobile Header Layout */
+    /* Mobile Header Layout (No change from desktop, simplified by flexbox) */
     .header-container {
         padding-top: 15px;
         padding-bottom: 15px;
-        flex-direction: row;
+        flex-direction: row; /* Keep logo and search on one row initially */
         justify-content: space-between;
         align-items: center;
-        height: auto;
+        height: auto; /* Dynamic height */
         flex-wrap: nowrap;
     }
 
     .logo {
         margin: 0;
-        max-height: 50px;
+        max-height: 50px; /* Reduce logo size slightly on mobile */
         flex-shrink: 0;
     }
 
@@ -456,73 +455,98 @@ body.dark-mode {
         opacity: 0;
         pointer-events: none;
         visibility: hidden;
-        width: 0;
-        margin: 0;
+        width: 0; /* Collapse width */
+        margin: 0; /* Ensure no space taken */
     }
 
-    /* Mobile Search Bar Behavior (Initial/Collapsed State) */
+    /* Mobile Search Bar Behavior */
     .search-container {
-        position: absolute; /* Keep initial state absolute relative to header */
+        position: absolute; /* Absolute position for icon in top-right */
         right: 20px;
         top: 50%;
         transform: translateY(-50%);
-        width: 40px;
-        height: 40px;
-        overflow: hidden;
-        transition: all 0.3s ease; /* Keep transition for opening/closing animation */
+        width: 40px; /* Start as just the icon width */
+        height: 40px; /* Start as just the icon height */
+        overflow: hidden; /* Hide overflowing input */
+        transition: width 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease, border-radius 0.3s ease, 
+                    top 0.3s ease, left 0.3s ease, right 0.3s ease, transform 0.3s ease, height 0.3s ease; /* Added position transitions for mobile */
         flex-shrink: 0;
-        justify-content: flex-end;
+        justify-content: flex-end; /* Align icon to the right */
+    }
+
+    .search-container.active { /* State when search input is open/active */
+        width: calc(100% - 40px); /* Expand within the available header space */
+        position: absolute; /* Takes absolute positioning for expansion */
+        top: 50%; /* Center vertically within the header */
+        transform: translateY(-50%);
+        left: 20px; /* Start from left with padding */
+        right: 20px; /* Expand to right with padding */
+        margin: auto; /* Center horizontally */
+        border-radius: 25px; /* Keep consistent rounding */
     }
     
-    /* Mobile Search Bar Behavior (Active/Expanded State) */
-    .search-container.active { 
-        position: fixed; /* Make it fixed to the viewport */
-        top: 0; /* Align to the top */
-        left: 0; /* Align to the left */
-        right: 0; /* Align to the right */
-        width: 100%; /* Full width */
-        height: 60px; /* Fixed height for the bar */
-        transform: none; /* No translateY */
-        border-radius: 0; /* No rounded corners when full width */
-        padding: 0 20px; /* Add some horizontal padding */
-        box-sizing: border-box; /* Include padding in width */
-        background-color: #ffffff; /* White background for expanded bar */
-        border: none; /* No border when full width */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        justify-content: flex-start; /* Align icon/input to the left */
-        align-items: center; /* Vertically center content */
-        z-index: 200; /* Ensure it's on top */
-        /* IMPORTANT: Disable transitions when active to prevent layout issues with keyboard */
-        transition: none !important; 
+    .search-icon-wrapper {
+        display: flex; /* Show icon wrapper */
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease, margin-right 0.3s ease;
     }
 
-    /* Dark Mode specific for the fixed active search bar */
-    .dark-mode .search-container.active {
-        background-color: #3f4147;
-        border: none;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-
-    /* Adjust elements inside active search container for mobile fixed view */
     .search-container.active .search-icon-wrapper {
-        margin-left: 0; /* Remove left margin */
-        margin-right: 10px; /* Space between icon and input */
+        margin-right: 10px; /* Space between icon and input when expanded */
+    }
+
+    #searchInput {
+        width: 0; /* Hidden by default on mobile */
+        padding: 10px 0px; /* No padding initially */
+        opacity: 0;
+        pointer-events: none; /* Disable interaction when hidden */
+        flex-grow: 1; /* Allow it to grow when active */
     }
 
     .search-container.active #searchInput {
-        width: calc(100% - 40px - 10px); /* Fill remaining space */
-        padding: 10px 0; /* Adjust padding as container has padding */
+        width: calc(100% - 40px - 10px); /* Fill remaining space, minus icon and margin */
+        padding: 10px 15px;
         opacity: 1;
         pointer-events: auto;
-        margin-left: 0; /* Remove left margin */
     }
 }
 
+
+    .search-container.active {
+        width: 100% !important;
+        height: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+        border-radius: 0 !important;
+        z-index: 200 !important;
+    }
+
+    .search-container.active .search-icon-wrapper {
+        margin-left: 15px;
+        margin-right: 10px;
+    }
+
+    .search-container.active #searchInput {
+        width: 100% !important;
+        padding: 20px 15px !important;
+        margin-left: 10px;
+    }
 
 @media screen and (max-width: 480px) {
     .container {
         padding: 15px;
     }
+    .card {
+        width: 100%;
+    }
+
     .content-section {
         padding: 20px;
         margin: 0 auto 30px;
@@ -644,8 +668,6 @@ body.dark-mode {
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
-        <!-- ***** SUB-TOPIC CARDS END HERE ***** -->
-
         <p class="no-results">No results found.</p>
     </div>
 
@@ -657,13 +679,13 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V0.2.1.9)
+    Made with ❤️ for OSCE preparation (V0.2.1.11)
 </footer>
 
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Dark Mode Toggle Logic (UNCHANGED) ---
+    // Dark Mode Toggle Logic
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
     const themeKey = 'theme-preference';
@@ -691,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- High-Yield / Full Script Toggle Logic (UNCHANGED) ---
+    // High-Yield / Full Script Toggle Logic (for content pages) - Kept globally scoped as before
     window.toggleSwitch = function(switchEl) {
         const isActive = switchEl.classList.toggle('active');
         const highYieldLabel = document.getElementById('highYieldLabel');
@@ -728,7 +750,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Search Functionality (MODIFIED) ---
     const headerContainer = document.querySelector('.header-container');
     const searchContainer = document.querySelector('.search-container');
     const searchIconWrapper = document.querySelector('.search-icon-wrapper');
@@ -740,8 +761,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const noResultsMessage = document.querySelector('.no-results');
     const logo = document.querySelector('.logo');
 
-    // Flag to track if the search was intentionally opened by user click
-    let userOpenedSearch = false; 
+    // Flag to track if events should be ignored temporarily (e.g., after opening search)
+    let ignoreEventsTemporarily = false; 
 
     // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
@@ -799,11 +820,11 @@ document.addEventListener('DOMContentLoaded', () => {
             searchContainer.classList.toggle('active');
 
             if (isActivating) { // Search bar is opening
-                userOpenedSearch = true; // Set flag
+                ignoreEventsTemporarily = true; // Start ignoring events
                 searchInput.focus(); // Focus immediately
 
                 // Hide logo on mobile when search is active
-                if (window.innerWidth <= 992) { 
+                if (window.innerWidth <= 992) { // Use 992px for tablet breakpoint
                     logo.classList.add('hidden-on-search-active'); 
                     document.body.classList.add('no-scroll'); // Lock body scroll
                 }
@@ -815,19 +836,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     hideAllCardsAndMessage(); // Clear results if search is activated empty
                 }
 
-                // NEW: Set a timeout to clear userOpenedSearch flag after a brief moment
-                // This prevents the document click listener from immediately closing the search bar
-                // if a "ghost click" or keyboard-related event fires right after opening.
+                // Stop ignoring events after a brief period
                 setTimeout(() => {
-                    userOpenedSearch = false;
-                }, 300); // 300ms is a common safe delay for touch events
+                    ignoreEventsTemporarily = false;
+                }, 500); // Increased delay to 500ms for robust keyboard handling
             } else { // Search bar is closing
-                userOpenedSearch = false; // Clear flag immediately on explicit close
+                ignoreEventsTemporarily = false; // Ensure flag is false on explicit close
                 searchInput.value = '';
                 searchInput.blur(); // Blur the input when closing
                 showMainCategories();
                 // Show logo when search closes
-                if (window.innerWidth <= 992) { 
+                if (window.innerWidth <= 992) { // Use 992px for tablet breakpoint
                     logo.classList.remove('hidden-on-search-active'); 
                     document.body.classList.remove('no-scroll'); // Unlock body scroll
                 }
@@ -839,18 +858,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const observer = new MutationObserver((mutationsList) => {
         for (const mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                // If 'active' class was removed AND user intentionally opened search
-                // The userOpenedSearch flag is crucial here to ensure we only re-add if it was meant to be open.
-                if (!searchContainer.classList.contains('active') && userOpenedSearch) {
+                // If 'active' class was removed AND search is supposed to be active
+                if (!searchContainer.classList.contains('active') && searchInput === document.activeElement) {
+                    // Only re-add if input is still focused (meaning keyboard is likely up)
                     searchContainer.classList.add('active');
                     // Re-hide logo if it was hidden
                     if (window.innerWidth <= 992 && logo.classList.contains('hidden-on-search-active')) { 
                         logo.classList.add('hidden-on-search-active');
                     }
-                    // Re-focus input if it's not focused, to bring back keyboard
-                    if (document.activeElement !== searchInput) {
-                        searchInput.focus();
-                    }
+                    // Re-focus input (might be redundant but safe)
+                    searchInput.focus();
                 }
             }
         }
@@ -862,10 +879,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle clicks outside the search bar and visible cards to close search
     document.addEventListener('click', (event) => {
-        // NEW: If userOpenedSearch is true, it means we just opened the search bar
-        // and are waiting for the initial "ghost click" or keyboard event to pass.
-        // In this brief period, we ignore clicks to prevent immediate closing.
-        if (userOpenedSearch) {
+        // NEW: If events are temporarily ignored, do nothing.
+        if (ignoreEventsTemporarily) {
             return; 
         }
 
@@ -880,7 +895,6 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.blur(); // Explicitly blur when closing via click outside
             logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
             showMainCategories(); // Reset to main categories view
-            // userOpenedSearch is already false from the setTimeout in click handler or previous close
             if (window.innerWidth <= 992) { 
                 document.body.classList.remove('no-scroll'); // Unlock body scroll
             }
@@ -889,15 +903,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // MODIFIED: window.addEventListener('resize') to be completely passive when search is active
     window.addEventListener('resize', () => {
-        // If the search bar is currently active AND the user intentionally opened it,
-        // we completely ignore resize events to prevent keyboard-related collapses.
-        // The userOpenedSearch flag here ensures that even if the MutationObserver re-adds 'active',
-        // this resize listener doesn't immediately counter it.
-        if (searchContainer.classList.contains('active') && userOpenedSearch) {
-            // We don't want resize to trigger any closing or resetting while active.
-            // The MutationObserver will re-assert 'active' if needed, and focus should be maintained.
-            return; // Exit the function, do nothing on resize
-        } 
+        // NEW: If events are temporarily ignored, do nothing.
+        if (ignoreEventsTemporarily) {
+            return; 
+        }
         
         // If search is NOT active, or if it's active but not user-opened (e.g., initial load or desktop)
         // then we proceed with the standard reset to handle genuine orientation changes etc.
@@ -906,7 +915,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showMainCategories();
         logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears correctly
         logo.classList.remove('hidden-mobile-logo'); // Ensure this is also handled
-        userOpenedSearch = false; // Reset flag
         if (window.innerWidth <= 992) { 
             document.body.classList.remove('no-scroll'); // Restore body scrolling
         }
@@ -919,7 +927,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showMainCategories();
         logo.classList.remove('hidden-on-search-active'); // Ensure logo is visible on initial load
         logo.classList.remove('hidden-mobile-logo'); // Also ensure this is handled on load
-        userOpenedSearch = false; // Ensure flag is reset on initial load
         if (window.innerWidth <= 992) { 
             document.body.classList.remove('no-scroll'); // Ensure body scrolling is enabled on load
         }

@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <!-- REVERTED: Standard responsive viewport for scrolling and responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSCE Spark</title>
 
@@ -31,7 +30,6 @@ html, body {
     margin: 0;
     padding: 0; /* Remove default browser padding/margin */
     overflow-x: hidden; /* Prevent horizontal scrollbar from overflow */
-    /* REMOVED: Fixed width/height and overflow:hidden from previous attempt */
 }
 
 /* --- 1. Main Site Layout & Structure --- */
@@ -659,7 +657,7 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V0.2.1.6)
+    Made with ❤️ for OSCE preparation (V0.2.1.7)
 </footer>
 
 
@@ -745,7 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Flag to track if the search was intentionally opened by user click
     let userOpenedSearch = false; 
     // Store initial viewport height to detect keyboard appearance
-    let lastViewportHeight = window.innerHeight;
+    let lastViewportHeight = window.innerHeight; // Keep this for initial check, but less critical now
 
     // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
@@ -877,39 +875,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // RE-INTRODUCED: window.addEventListener('resize') to handle keyboard appearance and orientation changes
+    // MODIFIED: window.addEventListener('resize') to be more passive when search is active
     window.addEventListener('resize', () => {
-        const currentViewportHeight = window.innerHeight;
-        const heightDifference = Math.abs(currentViewportHeight - lastViewportHeight);
-        lastViewportHeight = currentViewportHeight; // Update for next resize
-
-        // Threshold for keyboard vs. genuine resize (adjust if needed)
-        const KEYBOARD_HEIGHT_THRESHOLD = 150; 
-
-        // If search bar is active and user opened it
+        // If the search bar is currently active AND the user intentionally opened it,
+        // we completely ignore resize events to prevent keyboard-related collapses.
         if (searchContainer.classList.contains('active') && userOpenedSearch) {
-            // If the height difference is small (likely keyboard appearing/disappearing)
-            if (heightDifference < KEYBOARD_HEIGHT_THRESHOLD) {
-                // Do nothing, let MutationObserver and focus handle it
-                return; 
-            } else {
-                // If the height difference is large (likely orientation change or genuine window resize)
-                // Ensure the input stays focused if it was, to keep keyboard up during orientation change
-                if (document.activeElement !== searchInput) {
-                    searchInput.focus();
-                }
-            }
-        } else {
-            // If search is NOT active, or if it's active but not user-opened (e.g., initial load)
-            // Always reset display on resize if not actively searching
-            searchContainer.classList.remove('active');
-            searchInput.value = '';
-            showMainCategories();
-            logo.classList.remove('hidden-mobile-logo'); // Ensure mobile logo is visible
-            userOpenedSearch = false; // Ensure flag is reset
-            if (window.innerWidth <= 992) { 
-                document.body.classList.remove('no-scroll'); // Restore body scrolling
-            }
+            // Optionally, you can add a check here to ensure focus is maintained
+            // if (document.activeElement !== searchInput) { searchInput.focus(); }
+            return; // Exit the function, do nothing on resize
+        } 
+        
+        // If search is NOT active, or if it's active but not user-opened (e.g., initial load or desktop)
+        // then we proceed with the standard reset to handle genuine orientation changes etc.
+        searchContainer.classList.remove('active');
+        searchInput.value = '';
+        showMainCategories();
+        logo.classList.remove('hidden-mobile-logo'); // Ensure mobile logo is visible
+        userOpenedSearch = false; // Ensure flag is reset
+        if (window.innerWidth <= 992) { 
+            document.body.classList.remove('no-scroll'); // Restore body scrolling
         }
     });
 

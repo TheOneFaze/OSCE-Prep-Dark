@@ -586,6 +586,7 @@ body.dark-mode {
         <div class="card surgery main-category-card"><a href="Main Page/pretty_surgery_stations.html">🩺 Surgery Stations</a></div>
         <div class="card community main-category-card"><a href="Main Page/pretty_community_stations.html">🏘️ Community Stations</a></div>
 
+        <!-- ***** SUB-TOPIC CARDS START HERE (CRUCIAL FOR SEARCH) ***** -->
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Abdominal Pain.html">Abdominal Pain</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Anxiety.html">Anxiety</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Breast Lump.html">Breast Lump</a></div>
@@ -661,6 +662,8 @@ body.dark-mode {
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
+        <!-- ***** SUB-TOPIC CARDS END HERE ***** -->
+
         <p class="no-results">No results found.</p>
     </div>
 
@@ -672,7 +675,7 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V2)
+    Made with ❤️ for OSCE preparation (V3)
 </footer>
 
 
@@ -750,117 +753,137 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const allCardsContainer = document.getElementById('all-cards-container');
     const mainCategoryCards = document.querySelectorAll('.main-category-card');
-    // CORRECTED: Ensure subTopicCards are selected AFTER they are present in the HTML
     const subTopicCards = document.querySelectorAll('.sub-topic-card'); 
     const noResultsMessage = document.querySelector('.no-results');
     const logo = document.querySelector('.logo');
 
-    // Your subtopic loading code remains unchanged
+    // Flag to prevent immediate closing after opening search bar
+    let isOpeningSearch = false;
 
+    // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
         mainCategoryCards.forEach(card => card.classList.add('hidden'));
         subTopicCards.forEach(card => card.classList.add('hidden'));
         noResultsMessage.style.display = 'none';
     };
 
+    // Function to show only main category cards
     const showMainCategories = () => {
-        hideAllCardsAndMessage();
+        hideAllCardsAndMessage(); // Hide everything first
         mainCategoryCards.forEach(card => card.classList.remove('hidden'));
     };
 
+    // Initial state: show main categories
     showMainCategories();
 
-    
-searchInput.addEventListener('input', () => {
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    hideAllCardsAndMessage(); // Changed from hideAll() to hideAllCardsAndMessage() for consistency
+    // Event listener for search input
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase().trim(); // Get and clean search term
+        hideAllCardsAndMessage(); // Hide all cards and message initially
 
-    if (searchTerm.length > 1) {
-        let resultsFound = false;
+        if (searchTerm.length > 1) { // Only search if more than one character
+            let resultsFound = false;
 
-        subTopicCards.forEach(card => {
-            const title = card.textContent.toLowerCase();
-            const href = card.querySelector('a')?.getAttribute('href')?.toLowerCase() || '';
-            const filename = href.split('/').pop().replace('.html', '');
+            subTopicCards.forEach(card => {
+                const title = card.textContent.toLowerCase();
+                const href = card.querySelector('a')?.getAttribute('href')?.toLowerCase() || '';
+                const filename = href.split('/').pop().replace('.html', ''); // Extract filename for search
 
-            if (title.includes(searchTerm) || href.includes(searchTerm) || filename.includes(searchTerm)) {
-                card.classList.remove('hidden');
-                resultsFound = true;
+                // Check if search term is in card title, href, or filename
+                if (title.includes(searchTerm) || href.includes(searchTerm) || filename.includes(searchTerm)) {
+                    card.classList.remove('hidden'); // Show matching sub-topic card
+                    resultsFound = true;
+                }
+            });
+
+            if (!resultsFound) {
+                noResultsMessage.style.display = 'block'; // Show "No results" message if no matches
             }
-        });
-
-        if (!resultsFound) {
-            noResultsMessage.style.display = 'block';
+        } else {
+            // If search term is empty or too short, show main categories
+            showMainCategories();
         }
-    } else {
-        showMainCategories();
-    }
-});
+    });
     
-
+    // Event listener for search icon click
     if (searchIconWrapper) {
         searchIconWrapper.addEventListener('click', () => {
             searchContainer.classList.toggle('active');
             if (searchContainer.classList.contains('active')) {
-                setTimeout(() => searchInput.focus(), 50); // Safe delay for mobile PWAs
+                // Set flag and then focus with a delay
+                isOpeningSearch = true;
+                setTimeout(() => {
+                    searchInput.focus();
+                    isOpeningSearch = false; // Clear flag after focus attempt
+                }, 200); // Increased delay to 200ms for better reliability on touch devices
+
                 if (window.innerWidth <= 768) {
-                    logo.classList.add('hidden-on-search-active');
+                    logo.classList.add('hidden-on-search-active'); // Hide logo on mobile when search is active
                 }
+                // If search input already has text, re-trigger search on activation
                 if (searchInput.value.length > 1) {
                     searchInput.dispatchEvent(new Event('input'));
                 } else {
-                    hideAllCardsAndMessage();
+                    hideAllCardsAndMessage(); // Clear results if search is activated empty
                 }
             } else {
+                // When search is deactivated, clear input, blur, and show main categories
                 searchInput.value = '';
                 searchInput.blur();
                 showMainCategories();
                 if (window.innerWidth <= 768) {
-                    logo.classList.remove('hidden-on-search-active');
+                    logo.classList.remove('hidden-on-search-active'); // Show logo again on mobile
                 }
             }
         });
     }
 
-    // ✅ FIXED: Single safe click handler
+    // Handle clicks outside the search bar and visible cards to close search
     document.addEventListener('click', (event) => {
+        // IMPORTANT: Prevent closing if we just initiated opening the search bar
+        if (isOpeningSearch) {
+            return;
+        }
+
         const isInsideSearch = searchContainer.contains(event.target);
         const isVisibleCard = event.target.closest('.card:not(.hidden)');
+        // Close search if click is outside search container, not on a visible card, and search input is not focused
         if (!isInsideSearch && !isVisibleCard && document.activeElement !== searchInput) {
             searchContainer.classList.remove('active');
             searchInput.value = '';
             searchInput.blur();
-            logo.classList.remove('hidden-on-search-active');
-            showMainCategories();
+            logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
+            showMainCategories(); // Reset to main categories view
         }
     });
 
-    // ✅ FIXED: Blur protection with timeout
+    // Blur protection with timeout to prevent immediate closing on focus loss
     let blurTimeout;
     searchInput.addEventListener('blur', () => {
         blurTimeout = setTimeout(() => {
-            if (document.activeElement !== searchInput) {
+            if (document.activeElement !== searchInput) { // Only close if focus truly left the search input
                 searchContainer.classList.remove('active');
                 searchInput.value = '';
-                logo.classList.remove('hidden-on-search-active');
-                showMainCategories();
+                logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
+                showMainCategories(); // Reset to main categories view
             }
-        }, 250);
+        }, 250); // Small delay to allow clicks within search container
     });
 
     searchInput.addEventListener('focus', () => {
-        clearTimeout(blurTimeout);
+        clearTimeout(blurTimeout); // Clear timeout if focus returns to prevent closing
     });
 
+    // Update display on window resize (e.g., orientation change)
     const updateSearchDisplay = () => {
-        searchContainer.classList.remove('active');
-        searchInput.value = '';
-        showMainCategories();
-        logo.classList.remove('hidden-mobile-logo'); // This class seems unused or a typo, assuming intended to remove mobile logo hiding.
+        searchContainer.classList.remove('active'); // Collapse search bar
+        searchInput.value = ''; // Clear search input
+        showMainCategories(); // Show main categories
+        logo.classList.remove('hidden-mobile-logo'); // Ensure mobile logo is visible (assuming this class is for hiding)
     };
 
     window.addEventListener('resize', updateSearchDisplay);
-    updateSearchDisplay();
+    updateSearchDisplay(); // Call on initial load to set correct display
 });
 </script>
 </body>

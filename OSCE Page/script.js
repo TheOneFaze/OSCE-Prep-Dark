@@ -10,22 +10,31 @@ document.addEventListener("DOMContentLoaded", function () {
     if (searchIcon && searchContainer) {
         searchIcon.addEventListener("click", function (e) {
             e.stopPropagation();
-            searchContainer.classList.add("active");
-            userOpenedSearch = true;
-            setTimeout(() => searchInput.focus(), 100);
-            logo?.classList.add("hidden-on-search-active");
-        });
+            const isOpen = searchContainer.classList.toggle("active");
+            userOpenedSearch = isOpen;
 
-        // Prevent auto-closing on resize regardless of cause
-        window.addEventListener("resize", function () {
-            if (userOpenedSearch) {
-                searchContainer.classList.add("active");
-                logo?.classList.add("hidden-on-search-active");
+            if (isOpen) {
                 setTimeout(() => searchInput.focus(), 100);
+                logo?.classList.add("hidden-on-search-active");
+                document.body.style.overflow = 'hidden'; // Prevent scroll on mobile
+            } else {
+                searchInput.value = "";
+                searchInput.blur();
+                logo?.classList.remove("hidden-on-search-active");
+                document.body.style.overflow = ''; // Restore scroll
             }
         });
 
-        // Close only on manual click outside
+        // Prevent keyboard-resize collapse
+        let lastHeight = window.innerHeight;
+        window.addEventListener("resize", () => {
+            if (userOpenedSearch) {
+                const diff = Math.abs(window.innerHeight - lastHeight);
+                if (diff < 200) return;
+            }
+            lastHeight = window.innerHeight;
+        });
+
         document.addEventListener("click", function (e) {
             if (
                 !searchContainer.contains(e.target) &&
@@ -35,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 searchContainer.classList.remove("active");
                 logo?.classList.remove("hidden-on-search-active");
                 userOpenedSearch = false;
+                document.body.style.overflow = '';
             }
         });
     }

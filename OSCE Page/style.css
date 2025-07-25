@@ -605,3 +605,24 @@ body.dark-mode {
 		font-size: 1.1em;
 	}
 }
+
+
+/* 🔒 Fixed-position search bar for mobile */
+@media (max-width: 768px) {
+  .search-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    background-color: white;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  #logo {
+    display: none !important;
+  }
+}

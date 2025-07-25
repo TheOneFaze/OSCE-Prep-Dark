@@ -179,7 +179,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-left: 5px solid transparent;
+    border-left: 5px solid transparent; /* This will be overridden by theme-specific classes */
 }
 
     .card:hover {
@@ -296,60 +296,63 @@ input:checked + .slider:before {
 }
 
 /* --- 2. Color Themes for LIGHT Mode --- */
+/* Base theme colors for header, h1, h2, a */
 .theme-blue header, .theme-blue h1, .theme-blue h2, .theme-blue a { color: #0d47a1; }
-.theme-blue .section-box { background: #e3f2fd; }
-.theme-blue h3 { color: #0d47a1; border-color: #42a5f5; }
-.theme-blue .header-container { background: linear-gradient(to right, #42a5f5, #0d47a1); }
-.theme-blue .card { border-color: #29b6f6; }
-.theme-blue .toggle-label.active, .theme-blue .toggle-container .switch.active { background-color: #42a5f5; }
-
 .theme-green header, .theme-green h1, .theme-green h2, .theme-green a { color: #1b5e20; }
-.theme-green .section-box { background: #e8f5e9; }
-.theme-green h3 { color: #1b5e20; border-color: #66bb6a; }
-.theme-green .header-container { background: linear-gradient(to right, #66bb6a, #1b5e20); }
-.theme-green .card { border-color: #66bb6a; }
-.theme-green .toggle-label.active, .theme-green .toggle-container .switch.active { background-color: #66bb6a; }
-
 .theme-orange header, .theme-orange h1, .theme-orange h2, .theme-orange a { color: #e65100; }
-.theme-orange .section-box { background: #fff3e0; }
-.theme-orange h3 { color: #e65100; border-color: #ffb74d; }
-.theme-orange .header-container { background: linear-gradient(to right, #ffb74d, #e65100); }
-.theme-orange .card { border-color: #ffa726; }
-.theme-orange .toggle-label.active, .theme-orange .toggle-container .switch.active { background-color: #ffa726; }
-
 .theme-purple header, .theme-purple h1, .theme-purple h2, .theme-purple a { color: #4a148c; }
-.theme-purple .section-box { background: #f3e5f5; }
-.theme-purple h3 { color: #4a148c; border-color: #ce93d8; }
-.theme-purple .header-container { background: linear-gradient(to right, #ce93d8, #4a148c); }
-.theme-purple .card { border-color: #ab47bc; }
-.theme-purple .toggle-label.active, .theme-purple .toggle-container .switch.active { background-color: #ab47bc; }
-
 .theme-red header, .theme-red h1, .theme-red h2, .theme-red a { color: #b71c1c; }
-.theme-red .section-box { background: #ffebee; }
-.theme-red h3 { color: #b71c1c; border-color: #ef5350; }
-.theme-red .header-container { background: linear-gradient(to right, #ef5350, #b71c1c); }
-.theme-red .card { border-color: #ef5350; }
-.theme-red .toggle-label.active, .theme-red .toggle-container .switch.active { background-color: #ef5350; }
-
 .theme-terracotta header, .theme-terracotta h1, .theme-terracotta h2, .theme-terracotta a { color: #bf360c; }
-.theme-terracotta .section-box { background: #fff3e0; }
-.theme-terracotta h3 { color: #bf360c; border-color: #ffab91; }
-.theme-terracotta .header-container { background: linear-gradient(to right, #ffab91, #bf360c); }
-.theme-terracotta .card { border-color: #ff7043; }
-.theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active { background-color: #ff7043; }
-
 .theme-teal header, .theme-teal h1, .theme-teal h2, .theme-teal a { color: #004d40; }
-.theme-teal .section-box { background: #e0f2f1; }
-.theme-teal h3 { color: #004d40; border-color: #4db6ac; }
-.theme-teal .header-container { background: linear-gradient(to right, #4db6ac, #004d40); }
-.theme-teal .card { border-color: #4db6ac; }
-.theme-teal .toggle-label.active, .theme-teal .toggle-container .switch.active { background-color: #4db6ac; }
-
 .theme-pink header, .theme-pink h1, .theme-pink h2, .theme-pink a { color: #ad1457; }
+
+/* Section box backgrounds */
+.theme-blue .section-box { background: #e3f2fd; }
+.theme-green .section-box { background: #e8f5e9; }
+.theme-orange .section-box { background: #fff3e0; }
+.theme-purple .section-box { background: #f3e5f5; }
+.theme-red .section-box { background: #ffebee; }
+.theme-terracotta .section-box { background: #fff3e0; }
+.theme-teal .section-box { background: #e0f2f1; }
 .theme-pink .section-box { background: #fce4ec; }
+
+/* h3 colors and border-colors */
+.theme-blue h3 { color: #0d47a1; border-color: #42a5f5; }
+.theme-green h3 { color: #1b5e20; border-color: #66bb6a; }
+.theme-orange h3 { color: #e65100; border-color: #ffb74d; }
+.theme-purple h3 { color: #4a148c; border-color: #ce93d8; }
+.theme-red h3 { color: #b71c1c; border-color: #ef5350; }
+.theme-terracotta h3 { color: #bf360c; border-color: #ffab91; }
+.theme-teal h3 { color: #004d40; border-color: #4db6ac; }
 .theme-pink h3 { color: #ad1457; border-color: #f06292; }
+
+/* Header container gradients */
+.theme-blue .header-container { background: linear-gradient(to right, #42a5f5, #0d47a1); }
+.theme-green .header-container { background: linear-gradient(to right, #66bb6a, #1b5e20); }
+.theme-orange .header-container { background: linear-gradient(to right, #ffb74d, #e65100); }
+.theme-purple .header-container { background: linear-gradient(to right, #ce93d8, #4a148c); }
+.theme-red .header-container { background: linear-gradient(to right, #ef5350, #b71c1c); }
+.theme-terracotta .header-container { background: linear-gradient(to right, #ffab91, #bf360c); }
+.theme-teal .header-container { background: linear-gradient(to right, #4db6ac, #004d40); }
 .theme-pink .header-container { background: linear-gradient(to right, #f06292, #ad1457); }
-.theme-pink .card { border-color: #f06292; }
+
+/* Card border-colors - Apply to both main and sub-topic cards */
+.card.history-taking { border-color: #b71c1c; } /* Red for History Taking */
+.card.diagnosis { border-color: #29b6f6; } /* Blue for Diagnosis */
+.card.medication { border-color: #66bb6a; } /* Green for Medication */
+.card.procedure { border-color: #ffa726; } /* Orange for Procedure */
+.card.post-procedure { border-color: #ab47bc; } /* Purple for Post-Procedure */
+.card.surgery { border-color: #ef5350; } /* Red for Surgery */
+.card.community { border-color: #ff7043; } /* Terracotta for Community */
+
+/* Toggle switch active colors */
+.theme-blue .toggle-label.active, .theme-blue .toggle-container .switch.active { background-color: #42a5f5; }
+.theme-green .toggle-label.active, .theme-green .toggle-container .switch.active { background-color: #66bb6a; }
+.theme-orange .toggle-label.active, .theme-orange .toggle-container .switch.active { background-color: #ffa726; }
+.theme-purple .toggle-label.active, .theme-purple .toggle-container .switch.active { background-color: #ab47bc; }
+.theme-red .toggle-label.active, .theme-red .toggle-container .switch.active { background-color: #ef5350; }
+.theme-terracotta .toggle-label.active, .theme-terracotta .toggle-container .switch.active { background-color: #ff7043; }
+.theme-teal .toggle-label.active, .theme-teal .toggle-container .switch.active { background-color: #4db6ac; }
 .theme-pink .toggle-label.active, .theme-pink .toggle-container .switch.active { background-color: #f48fb1; }
 
 
@@ -405,14 +408,14 @@ body.dark-mode {
     fill: #82b1ff;
 }
 
-/* Dark Mode Card Borders */
-.dark-mode .card.history-taking { border-color: #f48fb1; }
-.dark-mode .card.diagnosis { border-color: #82b1ff; }
-.dark-mode .card.medication { border-color: #a5d6a7; }
-.dark-mode .card.procedure { border-color: #ffcc80; }
-.dark-mode .card.post-procedure { border-color: #e1bee7; }
-.dark-mode .card.surgery { border-color: #ff8a80; }
-.dark-mode .card.community { border-color: #ffccbc; }
+/* Dark Mode Card Borders - Apply to both main and sub-topic cards */
+.dark-mode .card.history-taking { border-color: #ff8a80; } /* Lighter red for History Taking */
+.dark-mode .card.diagnosis { border-color: #82b1ff; } /* Lighter blue for Diagnosis */
+.dark-mode .card.medication { border-color: #a5d6a7; } /* Lighter green for Medication */
+.dark-mode .card.procedure { border-color: #ffcc80; } /* Lighter orange for Procedure */
+.dark-mode .card.post-procedure { border-color: #e1bee7; } /* Lighter purple for Post-Procedure */
+.dark-mode .card.surgery { border-color: #ff8a80; } /* Lighter red for Surgery */
+.dark-mode .card.community { border-color: #ffccbc; } /* Lighter terracotta for Community */
 
 .dark-mode p.no-results {
     color: #aaa;
@@ -585,8 +588,6 @@ body.dark-mode {
         <div class="card surgery main-category-card"><a href="Main Page/pretty_surgery_stations.html">🩺 Surgery Stations</a></div>
         <div class="card community main-category-card"><a href="Main Page/pretty_community_stations.html">🏘️ Community Stations</a></div>
 
-        <!-- ***** SUB-TOPIC CARDS START HERE (CRUCIAL FOR SEARCH) ***** -->
-        <!-- History Taking Sub-topics -->
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Abdominal Pain.html">Abdominal Pain</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Anxiety.html">Anxiety</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Breast Lump.html">Breast Lump</a></div>
@@ -612,7 +613,6 @@ body.dark-mode {
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Unintentional Weight Loss.html">Unintentional Weight Loss</a></div>
         <div class="card history-taking sub-topic-card hidden"><a href="Main Page/History Taking/Urological.html">Urological</a></div>
 
-        <!-- Community Sub-topics -->
         <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/alcohol_cessation_counselling.html">Alcohol Cessation Counselling</a></div>
         <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/bowel_cancer_screening_counselling.html">Bowel Cancer Screening</a></div>
         <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/community_blood_pressure_check.html">Community Blood Pressure Check</a></div>
@@ -623,7 +623,6 @@ body.dark-mode {
         <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/smoking_cessation_counselling.html">Smoking Cessation Counselling</a></div>
         <div class="card community sub-topic-card hidden"><a href="Main Page/pretty_community_stations/weight_loss_counselling.html">Weight Loss Counselling</a></div>
 
-        <!-- Diagnosis Sub-topics -->
         <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/atrial_fibrillation_counselling.html">Atrial Fibrillation Counselling</a></div>
         <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/bacterial_vaginosis_counselling.html">Bacterial Vaginosis Counselling</a></div>
         <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/chronic_kidney_disease_counselling.html">Chronic Kidney Disease Counselling</a></div>
@@ -635,7 +634,6 @@ body.dark-mode {
         <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type1_diabetes.html">Explaining a Diagnosis of Type 1 Diabetes</a></div>
         <div class="card diagnosis sub-topic-card hidden"><a href="Main Page/pretty_diagnosis_stations/explaining_diagnosis_type2_diabetes.html">Explaining a Diagnosis of Type 2 Diabetes</a></div>
 
-        <!-- Medication Sub-topics -->
         <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/ace_inhibitor_counselling.html">ACE-Inhibitor Counselling</a></div>
         <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/amitriptyline_counselling.html">Amitriptyline Counselling</a></div>
         <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/anticoagulant_counselling_pharmacy.html">Anticoagulant Counselling | Pharmacy</a></div>
@@ -653,11 +651,9 @@ body.dark-mode {
         <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/statin_counselling.html">Statin Counselling</a></div>
         <div class="card medication sub-topic-card hidden"><a href="Main Page/pretty_medication_stations/warfarin_counselling.html">Warfarin Counselling</a></div>
 
-        <!-- Post-Procedure Sub-topics -->
         <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stemi_counselling.html">Post-STEMI Counselling</a></div>
         <div class="card post-procedure sub-topic-card hidden"><a href="Main Page/pretty_post-procedure__stations/post_stroke_counselling.html">Post-stroke Counselling</a></div>
 
-        <!-- Procedure Sub-topics -->
         <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/ascitic_drain_explanation.html">Ascitic drain explanation</a></div>
         <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/blood_transfusion_counselling.html">Blood transfusion counselling</a></div>
         <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/bronchoscopy_counselling.html">Bronchoscopy Counselling</a></div>
@@ -669,13 +665,10 @@ body.dark-mode {
         <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/haemodialysis_counselling.html">Haemodialysis Counselling</a></div>
         <div class="card procedure sub-topic-card hidden"><a href="Main Page/pretty_procedure_stations/tuberculosis_treatment_counselling.html">Tuberculosis treatment counselling</a></div>
 
-        <!-- Surgery Sub-topics -->
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/appendicectomy_counselling.html">Appendicectomy Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cabg_counselling.html">Coronary Artery Bypass Graft (CABG) Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/cholecystectomy_counselling.html">Cholecystectomy Counselling</a></div>
         <div class="card surgery sub-topic-card hidden"><a href="Main Page/pretty_surgery_stations/gastrectomy_counselling.html">Gastrectomy Counselling</a></div>
-        <!-- ***** SUB-TOPIC CARDS END HERE ***** -->
-
         <p class="no-results">No results found.</p>
     </div>
 

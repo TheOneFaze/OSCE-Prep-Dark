@@ -419,7 +419,8 @@ body.dark-mode {
 }
 
 /* --- 4. Media Queries for Mobile-Friendly Layout --- */
-@media screen and (max-width: 768px) {
+/* Adjusted breakpoint to include tablets */
+@media screen and (max-width: 992px) { /* Changed from 768px to 992px */
     .container {
         padding: 20px;
     }
@@ -650,7 +651,7 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V0.2.13)
+    Made with ❤️ for OSCE preparation (V0.2.14)
 </footer>
 
 
@@ -784,7 +785,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Event listener for search icon click
     if (searchIconWrapper) {
-        searchIconWrapper.addEventListener('click', () => {
+        searchIconWrapper.addEventListener('click', (event) => {
+            // Prevent the click from propagating to the document immediately
+            event.stopPropagation(); 
+
             // Toggle the 'active' class on the search container
             searchContainer.classList.toggle('active');
 
@@ -793,10 +797,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 userOpenedSearch = true; // Set flag
                 searchInput.focus(); // Focus immediately
 
-                if (window.innerWidth <= 768) {
+                if (window.innerWidth <= 992) { // Use new breakpoint
                     logo.classList.add('hidden-on-search-active'); // Hide logo on mobile when search is active
                     // Optional: Lock body scroll if search is full-screen on mobile
-                    // document.body.classList.add('no-scroll'); 
+                    document.body.style.overflow = 'hidden'; // Prevent body scrolling when search is active
                 }
                 // If search input already has text, re-trigger search on activation
                 if (searchInput.value.length > 1) {
@@ -810,10 +814,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchInput.value = '';
                 searchInput.blur(); // Blur the input when closing
                 showMainCategories();
-                if (window.innerWidth <= 768) {
+                if (window.innerWidth <= 992) { // Use new breakpoint
                     logo.classList.remove('hidden-on-search-active'); // Show logo again on mobile
-                    // Optional: Unlock body scroll
-                    // document.body.classList.remove('no-scroll');
+                    document.body.style.overflow = ''; // Restore body scrolling
                 }
             }
         });
@@ -827,7 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!searchContainer.classList.contains('active') && userOpenedSearch) {
                     searchContainer.classList.add('active');
                     // Re-hide logo if on mobile and it was hidden
-                    if (window.innerWidth <= 768 && logo.classList.contains('hidden-on-search-active')) {
+                    if (window.innerWidth <= 992 && logo.classList.contains('hidden-on-search-active')) { // Use new breakpoint
                         logo.classList.add('hidden-on-search-active');
                     }
                     // Re-focus input if it's not focused, to bring back keyboard
@@ -857,8 +860,9 @@ document.addEventListener('DOMContentLoaded', () => {
             logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
             showMainCategories(); // Reset to main categories view
             userOpenedSearch = false; // Reset flag
-            // Optional: Unlock body scroll
-            // document.body.classList.remove('no-scroll');
+            if (window.innerWidth <= 992) { // Use new breakpoint
+                document.body.style.overflow = ''; // Restore body scrolling
+            }
         }
     });
 
@@ -868,25 +872,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const heightDifference = Math.abs(currentViewportHeight - lastViewportHeight);
         lastViewportHeight = currentViewportHeight; // Update for next resize
 
-        // If the height difference is significant (likely a genuine window resize or orientation change, not keyboard)
-        // A typical keyboard pop-up causes a height change of 150px-300px, but it's often transient.
-        // This logic is primarily for larger, persistent resizes (like orientation change).
-        if (heightDifference > 100 && !searchContainer.classList.contains('active')) { // Only act if search is NOT active
-             // If search is not active and a significant resize occurs, reset display
-             searchContainer.classList.remove('active');
-             searchInput.value = '';
-             showMainCategories();
-             logo.classList.remove('hidden-mobile-logo');
-             userOpenedSearch = false; // Ensure flag is reset
-             // document.body.classList.remove('no-scroll');
-        } else if (heightDifference > 100 && searchContainer.classList.contains('active') && userOpenedSearch) {
-            // If search is active, user opened it, and a significant height change (keyboard)
-            // Ensure the input stays focused to keep the keyboard visible
-            if (document.activeElement !== searchInput) {
-                searchInput.focus();
+        // Threshold for keyboard vs. genuine resize (adjust if needed)
+        const KEYBOARD_HEIGHT_THRESHOLD = 150; 
+
+        // If search bar is active and user opened it
+        if (searchContainer.classList.contains('active') && userOpenedSearch) {
+            // If the height difference is small (likely keyboard appearing/disappearing)
+            if (heightDifference < KEYBOARD_HEIGHT_THRESHOLD) {
+                // Do nothing, let MutationObserver and focus handle it
+                return; 
+            } else {
+                // If the height difference is large (likely orientation change or genuine window resize)
+                // Ensure the input stays focused if it was, to keep keyboard up during orientation change
+                if (document.activeElement !== searchInput) {
+                    searchInput.focus();
+                }
+            }
+        } else {
+            // If search is NOT active, or if it's active but not user-opened (e.g., initial load)
+            // Always reset display on resize if not actively searching
+            searchContainer.classList.remove('active');
+            searchInput.value = '';
+            showMainCategories();
+            logo.classList.remove('hidden-mobile-logo');
+            userOpenedSearch = false; // Ensure flag is reset
+            if (window.innerWidth <= 992) { // Use new breakpoint
+                document.body.style.overflow = ''; // Restore body scrolling
             }
         }
-        // For small height changes (often keyboard related while search is active), do nothing, let MutationObserver handle it
     });
 
     // Initial display update on load
@@ -898,7 +911,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showMainCategories();
         logo.classList.remove('hidden-mobile-logo');
         userOpenedSearch = false; // Ensure flag is reset on initial load/resize
-        // document.body.classList.remove('no-scroll');
+        if (window.innerWidth <= 992) { // Use new breakpoint
+            document.body.style.overflow = ''; // Restore body scrolling
+        }
     };
 
     window.addEventListener('resize', updateSearchDisplay);

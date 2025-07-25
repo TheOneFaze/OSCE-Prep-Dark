@@ -424,23 +424,23 @@ body.dark-mode {
         padding: 20px;
     }
     .card {
-        width: 45%;
+        width: 100%; /* Changed to 100% for better mobile stacking */
     }
 
-    /* Mobile Header Layout (No change from desktop, simplified by flexbox) */
+    /* Mobile Header Layout */
     .header-container {
         padding-top: 15px;
         padding-bottom: 15px;
-        flex-direction: row; /* Keep logo and search on one row initially */
+        flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        height: auto; /* Dynamic height */
+        height: auto;
         flex-wrap: nowrap;
     }
 
     .logo {
         margin: 0;
-        max-height: 50px; /* Reduce logo size slightly on mobile */
+        max-height: 50px;
         flex-shrink: 0;
     }
 
@@ -449,98 +449,73 @@ body.dark-mode {
         opacity: 0;
         pointer-events: none;
         visibility: hidden;
-        width: 0; /* Collapse width */
-        margin: 0; /* Ensure no space taken */
+        width: 0;
+        margin: 0;
     }
 
-    /* Mobile Search Bar Behavior */
+    /* Mobile Search Bar Behavior (Initial/Collapsed State) */
     .search-container {
-        position: absolute; /* Absolute position for icon in top-right */
+        position: absolute; /* Keep initial state absolute relative to header */
         right: 20px;
         top: 50%;
         transform: translateY(-50%);
-        width: 40px; /* Start as just the icon width */
-        height: 40px; /* Start as just the icon height */
-        overflow: hidden; /* Hide overflowing input */
-        transition: width 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease, border-radius 0.3s ease, 
-                    top 0.3s ease, left 0.3s ease, right 0.3s ease, transform 0.3s ease, height 0.3s ease; /* Added position transitions for mobile */
-        flex-shrink: 0;
-        justify-content: flex-end; /* Align icon to the right */
-    }
-
-    .search-container.active { /* State when search input is open/active */
-        width: calc(100% - 40px); /* Expand within the available header space */
-        position: absolute; /* Takes absolute positioning for expansion */
-        top: 50%; /* Center vertically within the header */
-        transform: translateY(-50%);
-        left: 20px; /* Start from left with padding */
-        right: 20px; /* Expand to right with padding */
-        margin: auto; /* Center horizontally */
-        border-radius: 25px; /* Keep consistent rounding */
-    }
-    
-    .search-icon-wrapper {
-        display: flex; /* Show icon wrapper */
         width: 40px;
         height: 40px;
-        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.3s ease; /* Keep transition for opening/closing animation */
         flex-shrink: 0;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 0.3s ease, margin-right 0.3s ease;
+        justify-content: flex-end;
+    }
+    
+    /* Mobile Search Bar Behavior (Active/Expanded State) */
+    .search-container.active { 
+        position: fixed; /* Make it fixed to the viewport */
+        top: 0; /* Align to the top */
+        left: 0; /* Align to the left */
+        right: 0; /* Align to the right */
+        width: 100%; /* Full width */
+        height: 60px; /* Fixed height for the bar */
+        transform: none; /* No translateY */
+        border-radius: 0; /* No rounded corners when full width */
+        padding: 0 20px; /* Add some horizontal padding */
+        box-sizing: border-box; /* Include padding in width */
+        background-color: #ffffff; /* White background for expanded bar */
+        border: none; /* No border when full width */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        justify-content: flex-start; /* Align icon/input to the left */
+        align-items: center; /* Vertically center content */
+        z-index: 200; /* Ensure it's on top */
+        /* IMPORTANT: Disable transitions when active to prevent layout issues with keyboard */
+        transition: none !important; 
     }
 
+    /* Dark Mode specific for the fixed active search bar */
+    .dark-mode .search-container.active {
+        background-color: #3f4147;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    /* Adjust elements inside active search container for mobile fixed view */
     .search-container.active .search-icon-wrapper {
-        margin-right: 10px; /* Space between icon and input when expanded */
-    }
-
-    #searchInput {
-        width: 0; /* Hidden by default on mobile */
-        padding: 10px 0px; /* No padding initially */
-        opacity: 0;
-        pointer-events: none; /* Disable interaction when hidden */
-        flex-grow: 1; /* Allow it to grow when active */
+        margin-left: 0; /* Remove left margin */
+        margin-right: 10px; /* Space between icon and input */
     }
 
     .search-container.active #searchInput {
-        width: calc(100% - 40px - 10px); /* Fill remaining space, minus icon and margin */
-        padding: 10px 15px;
+        width: calc(100% - 40px - 10px); /* Fill remaining space */
+        padding: 10px 0; /* Adjust padding as container has padding */
         opacity: 1;
         pointer-events: auto;
+        margin-left: 0; /* Remove left margin */
     }
 }
 
-
-    .search-container.active {
-        width: 100% !important;
-        height: 100% !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        transform: none !important;
-        border-radius: 0 !important;
-        z-index: 200 !important;
-    }
-
-    .search-container.active .search-icon-wrapper {
-        margin-left: 15px;
-        margin-right: 10px;
-    }
-
-    .search-container.active #searchInput {
-        width: 100% !important;
-        padding: 20px 15px !important;
-        margin-left: 10px;
-    }
 
 @media screen and (max-width: 480px) {
     .container {
         padding: 15px;
     }
-    .card {
-        width: 100%;
-    }
-
     .content-section {
         padding: 20px;
         margin: 0 auto 30px;
@@ -573,7 +548,7 @@ body.dark-mode {
                     <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
             </div>
-            <input type="text" id="searchInput" placeholder="">
+            <input type="text" id="searchInput" placeholder="Search OSCE topics...">
         </div>
     </div>
 
@@ -675,7 +650,7 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V0.2.12)
+    Made with ❤️ for OSCE preparation (V0.2.13)
 </footer>
 
 
@@ -757,8 +732,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const noResultsMessage = document.querySelector('.no-results');
     const logo = document.querySelector('.logo');
 
-    // Flag to prevent immediate closing after opening search bar
-    let isOpeningSearch = false;
+    // Flag to track if the search was intentionally opened by user click
+    let userOpenedSearch = false; 
+    // Store initial viewport height to detect keyboard appearance
+    let lastViewportHeight = window.innerHeight;
 
     // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
@@ -808,17 +785,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for search icon click
     if (searchIconWrapper) {
         searchIconWrapper.addEventListener('click', () => {
+            // Toggle the 'active' class on the search container
             searchContainer.classList.toggle('active');
+
             if (searchContainer.classList.contains('active')) {
-                // Set flag and then focus with a delay
-                isOpeningSearch = true;
-                setTimeout(() => {
-                    searchInput.focus();
-                    isOpeningSearch = false; // Clear flag after focus attempt
-                }, 200); // Increased delay to 200ms for better reliability on touch devices
+                // Search bar is opening
+                userOpenedSearch = true; // Set flag
+                searchInput.focus(); // Focus immediately
 
                 if (window.innerWidth <= 768) {
                     logo.classList.add('hidden-on-search-active'); // Hide logo on mobile when search is active
+                    // Optional: Lock body scroll if search is full-screen on mobile
+                    // document.body.classList.add('no-scroll'); 
                 }
                 // If search input already has text, re-trigger search on activation
                 if (searchInput.value.length > 1) {
@@ -827,59 +805,100 @@ document.addEventListener('DOMContentLoaded', () => {
                     hideAllCardsAndMessage(); // Clear results if search is activated empty
                 }
             } else {
-                // When search is deactivated, clear input, blur, and show main categories
+                // Search bar is closing
+                userOpenedSearch = false; // Clear flag
                 searchInput.value = '';
-                searchInput.blur();
+                searchInput.blur(); // Blur the input when closing
                 showMainCategories();
                 if (window.innerWidth <= 768) {
                     logo.classList.remove('hidden-on-search-active'); // Show logo again on mobile
+                    // Optional: Unlock body scroll
+                    // document.body.classList.remove('no-scroll');
                 }
             }
         });
     }
 
+    // MutationObserver to re-add 'active' class if it's removed unexpectedly (e.g., by keyboard layout shifts)
+    const observer = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                // If 'active' class was removed AND user intentionally opened search
+                if (!searchContainer.classList.contains('active') && userOpenedSearch) {
+                    searchContainer.classList.add('active');
+                    // Re-hide logo if on mobile and it was hidden
+                    if (window.innerWidth <= 768 && logo.classList.contains('hidden-on-search-active')) {
+                        logo.classList.add('hidden-on-search-active');
+                    }
+                    // Re-focus input if it's not focused, to bring back keyboard
+                    if (document.activeElement !== searchInput) {
+                        searchInput.focus();
+                    }
+                }
+            }
+        }
+    });
+
+    // Start observing the searchContainer for class attribute changes
+    observer.observe(searchContainer, { attributes: true, attributeFilter: ['class'] });
+
+
     // Handle clicks outside the search bar and visible cards to close search
     document.addEventListener('click', (event) => {
-        // IMPORTANT: Prevent closing if we just initiated opening the search bar
-        if (isOpeningSearch) {
-            return;
-        }
-
-        const isInsideSearch = searchContainer.contains(event.target);
+        const isInsideSearchContainer = searchContainer.contains(event.target);
         const isVisibleCard = event.target.closest('.card:not(.hidden)');
-        // Close search if click is outside search container, not on a visible card, and search input is not focused
-        if (!isInsideSearch && !isVisibleCard && document.activeElement !== searchInput) {
+        
+        // Only close if search container is active, click is outside it, 
+        // AND the search input is NOT the active element (prevents closing when keyboard is up and input is focused)
+        if (searchContainer.classList.contains('active') && !isInsideSearchContainer && document.activeElement !== searchInput) {
             searchContainer.classList.remove('active');
             searchInput.value = '';
-            searchInput.blur();
+            searchInput.blur(); // Explicitly blur when closing via click outside
             logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
             showMainCategories(); // Reset to main categories view
+            userOpenedSearch = false; // Reset flag
+            // Optional: Unlock body scroll
+            // document.body.classList.remove('no-scroll');
         }
     });
 
-    // Blur protection with timeout to prevent immediate closing on focus loss
-    let blurTimeout;
-    searchInput.addEventListener('blur', () => {
-        blurTimeout = setTimeout(() => {
-            if (document.activeElement !== searchInput) { // Only close if focus truly left the search input
-                searchContainer.classList.remove('active');
-                searchInput.value = '';
-                logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
-                showMainCategories(); // Reset to main categories view
+    // Handle window resize events, specifically to differentiate keyboard from actual window resize
+    window.addEventListener('resize', () => {
+        const currentViewportHeight = window.innerHeight;
+        const heightDifference = Math.abs(currentViewportHeight - lastViewportHeight);
+        lastViewportHeight = currentViewportHeight; // Update for next resize
+
+        // If the height difference is significant (likely a genuine window resize or orientation change, not keyboard)
+        // A typical keyboard pop-up causes a height change of 150px-300px, but it's often transient.
+        // This logic is primarily for larger, persistent resizes (like orientation change).
+        if (heightDifference > 100 && !searchContainer.classList.contains('active')) { // Only act if search is NOT active
+             // If search is not active and a significant resize occurs, reset display
+             searchContainer.classList.remove('active');
+             searchInput.value = '';
+             showMainCategories();
+             logo.classList.remove('hidden-mobile-logo');
+             userOpenedSearch = false; // Ensure flag is reset
+             // document.body.classList.remove('no-scroll');
+        } else if (heightDifference > 100 && searchContainer.classList.contains('active') && userOpenedSearch) {
+            // If search is active, user opened it, and a significant height change (keyboard)
+            // Ensure the input stays focused to keep the keyboard visible
+            if (document.activeElement !== searchInput) {
+                searchInput.focus();
             }
-        }, 250); // Small delay to allow clicks within search container
+        }
+        // For small height changes (often keyboard related while search is active), do nothing, let MutationObserver handle it
     });
 
-    searchInput.addEventListener('focus', () => {
-        clearTimeout(blurTimeout); // Clear timeout if focus returns to prevent closing
-    });
-
-    // Update display on window resize (e.g., orientation change)
+    // Initial display update on load
     const updateSearchDisplay = () => {
-        searchContainer.classList.remove('active'); // Collapse search bar
-        searchInput.value = ''; // Clear search input
-        showMainCategories(); // Show main categories
-        logo.classList.remove('hidden-mobile-logo'); // Ensure mobile logo is visible (assuming this class is for hiding)
+        // This function is now mainly for initial setup and full resets,
+        // as resize listener handles dynamic behavior.
+        searchContainer.classList.remove('active');
+        searchInput.value = '';
+        showMainCategories();
+        logo.classList.remove('hidden-mobile-logo');
+        userOpenedSearch = false; // Ensure flag is reset on initial load/resize
+        // document.body.classList.remove('no-scroll');
     };
 
     window.addEventListener('resize', updateSearchDisplay);

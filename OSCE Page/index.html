@@ -586,7 +586,20 @@ body.dark-mode {
         font-size: 1.1em;
     }
 }
-    </style>
+    
+@media screen and (max-width: 600px) {
+    .logo {
+        max-height: 40px; /* Smaller logo for small screens */
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .logo {
+        max-height: 30px; /* Extra small logo for very narrow screens */
+    }
+}
+
+</style>
 </head>
 <body class="theme-blue">
 <main>

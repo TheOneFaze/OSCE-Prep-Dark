@@ -657,7 +657,7 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V0.2.1.8)
+    Made with ❤️ for OSCE preparation (V0.2.1.9)
 </footer>
 
 
@@ -795,10 +795,10 @@ document.addEventListener('DOMContentLoaded', () => {
             event.stopPropagation(); 
 
             // Toggle the 'active' class on the search container
+            const isActivating = !searchContainer.classList.contains('active');
             searchContainer.classList.toggle('active');
 
-            if (searchContainer.classList.contains('active')) {
-                // Search bar is opening
+            if (isActivating) { // Search bar is opening
                 userOpenedSearch = true; // Set flag
                 searchInput.focus(); // Focus immediately
 
@@ -814,9 +814,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     hideAllCardsAndMessage(); // Clear results if search is activated empty
                 }
-            } else {
-                // Search bar is closing
-                userOpenedSearch = false; // Clear flag
+
+                // NEW: Set a timeout to clear userOpenedSearch flag after a brief moment
+                // This prevents the document click listener from immediately closing the search bar
+                // if a "ghost click" or keyboard-related event fires right after opening.
+                setTimeout(() => {
+                    userOpenedSearch = false;
+                }, 300); // 300ms is a common safe delay for touch events
+            } else { // Search bar is closing
+                userOpenedSearch = false; // Clear flag immediately on explicit close
                 searchInput.value = '';
                 searchInput.blur(); // Blur the input when closing
                 showMainCategories();
@@ -834,6 +840,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 // If 'active' class was removed AND user intentionally opened search
+                // The userOpenedSearch flag is crucial here to ensure we only re-add if it was meant to be open.
                 if (!searchContainer.classList.contains('active') && userOpenedSearch) {
                     searchContainer.classList.add('active');
                     // Re-hide logo if it was hidden
@@ -855,6 +862,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle clicks outside the search bar and visible cards to close search
     document.addEventListener('click', (event) => {
+        // NEW: If userOpenedSearch is true, it means we just opened the search bar
+        // and are waiting for the initial "ghost click" or keyboard event to pass.
+        // In this brief period, we ignore clicks to prevent immediate closing.
+        if (userOpenedSearch) {
+            return; 
+        }
+
         const isInsideSearchContainer = searchContainer.contains(event.target);
         const isVisibleCard = event.target.closest('.card:not(.hidden)');
         
@@ -866,7 +880,7 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.blur(); // Explicitly blur when closing via click outside
             logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
             showMainCategories(); // Reset to main categories view
-            userOpenedSearch = false; // Reset flag
+            // userOpenedSearch is already false from the setTimeout in click handler or previous close
             if (window.innerWidth <= 992) { 
                 document.body.classList.remove('no-scroll'); // Unlock body scroll
             }
@@ -877,6 +891,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
         // If the search bar is currently active AND the user intentionally opened it,
         // we completely ignore resize events to prevent keyboard-related collapses.
+        // The userOpenedSearch flag here ensures that even if the MutationObserver re-adds 'active',
+        // this resize listener doesn't immediately counter it.
         if (searchContainer.classList.contains('active') && userOpenedSearch) {
             // We don't want resize to trigger any closing or resetting while active.
             // The MutationObserver will re-assert 'active' if needed, and focus should be maintained.

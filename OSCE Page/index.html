@@ -657,7 +657,7 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V0.2.1.7)
+    Made with ❤️ for OSCE preparation (V0.2.1.8)
 </footer>
 
 
@@ -742,8 +742,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Flag to track if the search was intentionally opened by user click
     let userOpenedSearch = false; 
-    // Store initial viewport height to detect keyboard appearance
-    let lastViewportHeight = window.innerHeight; // Keep this for initial check, but less critical now
 
     // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
@@ -875,13 +873,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // MODIFIED: window.addEventListener('resize') to be more passive when search is active
+    // MODIFIED: window.addEventListener('resize') to be completely passive when search is active
     window.addEventListener('resize', () => {
         // If the search bar is currently active AND the user intentionally opened it,
         // we completely ignore resize events to prevent keyboard-related collapses.
         if (searchContainer.classList.contains('active') && userOpenedSearch) {
-            // Optionally, you can add a check here to ensure focus is maintained
-            // if (document.activeElement !== searchInput) { searchInput.focus(); }
+            // We don't want resize to trigger any closing or resetting while active.
+            // The MutationObserver will re-assert 'active' if needed, and focus should be maintained.
             return; // Exit the function, do nothing on resize
         } 
         
@@ -890,8 +888,9 @@ document.addEventListener('DOMContentLoaded', () => {
         searchContainer.classList.remove('active');
         searchInput.value = '';
         showMainCategories();
-        logo.classList.remove('hidden-mobile-logo'); // Ensure mobile logo is visible
-        userOpenedSearch = false; // Ensure flag is reset
+        logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears correctly
+        logo.classList.remove('hidden-mobile-logo'); // Ensure this is also handled
+        userOpenedSearch = false; // Reset flag
         if (window.innerWidth <= 992) { 
             document.body.classList.remove('no-scroll'); // Restore body scrolling
         }
@@ -902,7 +901,8 @@ document.addEventListener('DOMContentLoaded', () => {
         searchContainer.classList.remove('active');
         searchInput.value = '';
         showMainCategories();
-        logo.classList.remove('hidden-mobile-logo'); 
+        logo.classList.remove('hidden-on-search-active'); // Ensure logo is visible on initial load
+        logo.classList.remove('hidden-mobile-logo'); // Also ensure this is handled on load
         userOpenedSearch = false; // Ensure flag is reset on initial load
         if (window.innerWidth <= 992) { 
             document.body.classList.remove('no-scroll'); // Ensure body scrolling is enabled on load

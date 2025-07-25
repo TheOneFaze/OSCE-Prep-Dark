@@ -55,16 +55,17 @@ body {
     align-items: center; /* Vertically center content */
     flex-wrap: nowrap; /* Prevent wrapping initially */
     height: 130px; /* Fixed height to accommodate logo and search */
-    padding: 0 20px; /* Add padding to sides for spacing */
+    padding: 0 15px; /* Add padding to sides for spacing - ADJUSTED */
 }
 
 .logo {
-    max-width: 100%;
-    height: auto;
-    max-height: 80px;
+    max-width: 100%; /* Keep this to ensure it scales down */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 35px; /* Significantly reduce default max-height for all screens - ADJUSTED */
     display: block; /* Important for flex-item behavior */
     flex-shrink: 0; /* Prevent logo from shrinking */
-    margin: 0 auto; /* Removed auto margins for flex item, will re-center with specific rules or flex properties */
+    /* Add horizontal margin to separate it from other elements - ADJUSTED */
+    margin: 0 15px; /* Top/Bottom 0, Left/Right 15px */
     transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for hiding */
 }
 /* Re-center logo for larger screens */
@@ -73,6 +74,7 @@ body {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
+        margin: 0; /* Remove horizontal margin when absolutely positioned - ADJUSTED */
     }
 }
 
@@ -254,6 +256,8 @@ footer {
     align-items: center;
     justify-content: center;
     /* margin-bottom: 0; REMOVED as it's no longer in footer */
+    flex-shrink: 0; /* Prevent it from shrinking - ADJUSTED */
+    padding-right: 10px; /* Add some padding to the right of the switch - ADJUSTED */
 }
 
 .theme-switch {
@@ -456,11 +460,11 @@ body.dark-mode {
     }
 
     .logo {
-        margin: 0;
-        max-height: 50px; /* Reduce logo size slightly on mobile */
+        margin: 0 10px; /* Adjust margin for mobile - ADJUSTED */
+        max-height: 30px; /* Further reduce for tablets/larger phones - ADJUSTED */
         flex-shrink: 0;
         position: static; /* Remove absolute positioning for mobile */
-        transform: none; /* Remove transform for mobile */
+        transform: none;
     }
 
     /* Hide the logo when search is active on mobile */
@@ -589,13 +593,15 @@ body.dark-mode {
     
 @media screen and (max-width: 600px) {
     .logo {
-        max-height: 40px; /* Smaller logo for small screens */
+        max-height: 25px; /* Smaller logo for small screens - ADJUSTED */
+        margin: 0 8px; /* Further adjust margin - ADJUSTED */
     }
 }
 
 @media screen and (max-width: 400px) {
     .logo {
-        max-height: 30px; /* Extra small logo for very narrow screens */
+        max-height: 20px; /* Extra small logo for very narrow screens - ADJUSTED */
+        margin: 0 5px; /* Minimal margin for very small screens - ADJUSTED */
     }
 }
 

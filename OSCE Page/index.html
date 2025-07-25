@@ -51,10 +51,11 @@ body {
     position: relative; /* Essential for absolute positioning of search icon */
     box-sizing: border-box;
     display: flex; /* Use flexbox to align content within header */
-    justify-content: center; /* Center logo by default */
+    justify-content: space-between; /* Change to space-between to push items to ends */
     align-items: center; /* Vertically center content */
     flex-wrap: nowrap; /* Prevent wrapping initially */
     height: 130px; /* Fixed height to accommodate logo and search */
+    padding: 0 20px; /* Add padding to sides for spacing */
 }
 
 .logo {
@@ -63,18 +64,24 @@ body {
     max-height: 80px;
     display: block; /* Important for flex-item behavior */
     flex-shrink: 0; /* Prevent logo from shrinking */
-    margin: 0 auto; /* CENTER LOGO USING AUTO MARGINS IN FLEX CONTAINER */
+    margin: 0 auto; /* Removed auto margins for flex item, will re-center with specific rules or flex properties */
     transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for hiding */
 }
+/* Re-center logo for larger screens */
+@media screen and (min-width: 769px) {
+    .logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
 
 /* --- Search Bar Styling (Universal: Starts as Icon, Expands on Click) --- */
 
 /* The outer container of the search bar (collapsed state) */
 .search-container {
-    position: absolute; /* Absolute position for icon in top-right */
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: relative; /* Change from absolute to relative to flow with flexbox */
     z-index: 100;
 
     width: 40px; /* Initial width for icon only */
@@ -94,12 +101,19 @@ body {
 
 /* State when search input is active/expanded (Desktop Specific) */
 .search-container.active {
-    width: 250px; /* Expanded width for desktop */
+    position: absolute; /* IMPORTANT: Ensure this is absolute to header-container */
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%; /* This will now correctly span the full width of the header-container */
+    height: 100%; /* This will now correctly span the full height of the header-container */
+    
     background-color: #ffffff; /* White background for expanded bar */
-    border-radius: 25px; /* Match input border-radius */
+    border-radius: 0; /* Make it sharp corners for full page span */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: 2px solid #42a5f5; /* Border for expanded bar */
     justify-content: flex-start; /* Move icon to left, input expands right */
+    z-index: 200; /* Ensure it's on top */
 }
 
 .search-icon-wrapper { /* Magnifying glass icon wrapper (always visible) */
@@ -239,7 +253,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 0;
+    /* margin-bottom: 0; REMOVED as it's no longer in footer */
 }
 
 .theme-switch {
@@ -445,6 +459,8 @@ body.dark-mode {
         margin: 0;
         max-height: 50px; /* Reduce logo size slightly on mobile */
         flex-shrink: 0;
+        position: static; /* Remove absolute positioning for mobile */
+        transform: none; /* Remove transform for mobile */
     }
 
     /* Hide the logo when search is active on mobile */
@@ -458,10 +474,7 @@ body.dark-mode {
 
     /* Mobile Search Bar Behavior */
     .search-container {
-        position: absolute; /* Absolute position for icon in top-right */
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        position: relative; /* Change from absolute to relative for mobile */
         width: 40px; /* Start as just the icon width */
         height: 40px; /* Start as just the icon height */
         overflow: hidden; /* Hide overflowing input */
@@ -514,6 +527,7 @@ body.dark-mode {
 }
 
 
+    /* This rule makes the search-container cover the whole header when active */
     .search-container.active {
         width: 100% !important;
         height: 100% !important;
@@ -535,6 +549,15 @@ body.dark-mode {
         padding: 20px 15px !important;
         margin-left: 10px;
     }
+
+/* New class to hide elements when search is active */
+.hidden-on-search-active {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    width: 0; /* Collapse width */
+    margin: 0; /* Ensure no space taken */
+}
 
 @media screen and (max-width: 480px) {
     .container {
@@ -569,6 +592,12 @@ body.dark-mode {
 <main>
 
     <div class="header-container">
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="darkModeToggle">
+                <input type="checkbox" id="darkModeToggle" />
+                <span class="slider round"></span>
+            </label>
+        </div>
         <img src="OSCE SPARK.png" alt="OSCE Spark Logo" class="logo">
         <div class="search-container">
             <div class="search-icon-wrapper">
@@ -577,7 +606,8 @@ body.dark-mode {
                 </svg>
             </div>
             <input type="text" id="searchInput" placeholder="Search OSCE topics...">
-        </div></div>
+        </div>
+    </div>
 
     <div id="all-cards-container" class="container">
         <div class="card history-taking main-category-card"><a href="Main Page/pretty_history_taking.html">🧠 History Taking</a></div>
@@ -674,12 +704,6 @@ body.dark-mode {
 
 </main>
 <footer>
-    <div class="theme-switch-wrapper">
-        <label class="theme-switch" for="darkModeToggle">
-            <input type="checkbox" id="darkModeToggle" />
-            <span class="slider round"></span>
-        </label>
-    </div>
     Made with ❤️ for OSCE preparation (V0.2.1.12)
 </footer>
 
@@ -761,6 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const subTopicCards = document.querySelectorAll('.sub-topic-card'); 
     const noResultsMessage = document.querySelector('.no-results');
     const logo = document.querySelector('.logo');
+    const themeSwitchWrapper = document.querySelector('.theme-switch-wrapper'); // Get reference to the theme switch wrapper
 
     // Flag to track if events should be ignored temporarily (e.g., after opening search)
     let ignoreEventsTemporarily = false; 
@@ -823,10 +848,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ignoreEventsTemporarily = true; // Start ignoring events
                 searchInput.focus(); // Focus immediately
 
-                // Hide logo on mobile when search is active
-                if (window.innerWidth <= 992) { // Use 992px for tablet breakpoint
-                    logo.classList.add('hidden-on-search-active'); 
-                    document.body.classList.add('no-scroll'); // Lock body scroll
+                // Hide logo and theme switch when search is active
+                logo.classList.add('hidden-on-search-active'); 
+                if (themeSwitchWrapper) { // Hide theme switch
+                    themeSwitchWrapper.classList.add('hidden-on-search-active');
+                }
+                if (window.innerWidth <= 992) { // Lock body scroll on mobile
+                    document.body.classList.add('no-scroll'); 
                 }
                 
                 // If search input already has text, re-trigger search on activation
@@ -845,10 +873,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchInput.value = '';
                 searchInput.blur(); // Blur the input when closing
                 showMainCategories();
-                // Show logo when search closes
-                if (window.innerWidth <= 992) { // Use 992px for tablet breakpoint
-                    logo.classList.remove('hidden-on-search-active'); 
-                    document.body.classList.remove('no-scroll'); // Unlock body scroll
+                // Show logo and theme switch when search closes
+                logo.classList.remove('hidden-on-search-active'); 
+                if (themeSwitchWrapper) { // Show theme switch
+                    themeSwitchWrapper.classList.remove('hidden-on-search-active');
+                }
+                if (window.innerWidth <= 992) { // Unlock body scroll on mobile
+                    document.body.classList.remove('no-scroll'); 
                 }
             }
         });
@@ -862,9 +893,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!searchContainer.classList.contains('active') && document.activeElement === searchInput) {
                     // Re-add 'active' class
                     searchContainer.classList.add('active');
-                    // Re-hide logo if it was hidden
-                    if (window.innerWidth <= 992 && logo.classList.contains('hidden-on-search-active')) { 
+                    // Re-hide logo and theme switch if they were hidden
+                    if (logo.classList.contains('hidden-on-search-active')) {
                         logo.classList.add('hidden-on-search-active');
+                    }
+                    if (themeSwitchWrapper && themeSwitchWrapper.classList.contains('hidden-on-search-active')) {
+                        themeSwitchWrapper.classList.add('hidden-on-search-active');
                     }
                     // Re-focus input (might be redundant but safe)
                     searchInput.focus();
@@ -894,6 +928,9 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.value = '';
             searchInput.blur(); // Explicitly blur when closing via click outside
             logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
+            if (themeSwitchWrapper) { // Ensure theme switch reappears
+                themeSwitchWrapper.classList.remove('hidden-on-search-active');
+            }
             showMainCategories(); // Reset to main categories view
             if (window.innerWidth <= 992) { 
                 document.body.classList.remove('no-scroll'); // Unlock body scroll
@@ -914,6 +951,9 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.value = '';
         showMainCategories();
         logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears correctly
+        if (themeSwitchWrapper) { // Ensure theme switch reappears
+            themeSwitchWrapper.classList.remove('hidden-on-search-active');
+        }
         logo.classList.remove('hidden-mobile-logo'); // Ensure this is also handled
         if (window.innerWidth <= 992) { 
             document.body.classList.remove('no-scroll'); // Restore body scrolling
@@ -926,6 +966,9 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.value = '';
         showMainCategories();
         logo.classList.remove('hidden-on-search-active'); // Ensure logo is visible on initial load
+        if (themeSwitchWrapper) { // Ensure theme switch is visible on initial load
+            themeSwitchWrapper.classList.remove('hidden-on-search-active');
+        }
         logo.classList.remove('hidden-mobile-logo'); // Also ensure this is handled on load
         if (window.innerWidth <= 992) { 
             document.body.classList.remove('no-scroll'); // Ensure body scrolling is enabled on load

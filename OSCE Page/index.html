@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <!-- MODIFIED: Locked viewport scale to prevent resizing -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <!-- REVERTED: Standard responsive viewport for scrolling and responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSCE Spark</title>
 
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -27,10 +27,11 @@
 
 /* --- 0. Base HTML and Body Setup (Crucial for full background) --- */
 html, body {
-    /* These will be set dynamically by JS to lock size */
+    height: 100%; /* Ensure both html and body take full height of the viewport */
     margin: 0;
     padding: 0; /* Remove default browser padding/margin */
-    /* overflow-x: hidden; is now handled by JS for both x and y */
+    overflow-x: hidden; /* Prevent horizontal scrollbar from overflow */
+    /* REMOVED: Fixed width/height and overflow:hidden from previous attempt */
 }
 
 /* --- 1. Main Site Layout & Structure --- */
@@ -40,6 +41,12 @@ body {
     color: #333; /* Default light text color */
     transition: background-color 0.3s, color 0.3s;
 }
+
+/* ADDED: Class to prevent body scrolling when search overlay is active */
+body.no-scroll {
+    overflow: hidden;
+}
+
 
 .header-container { /* Original header-container */
     text-align: center;
@@ -652,25 +659,12 @@ body.dark-mode {
             <span class="slider round"></span>
         </label>
     </div>
-    Made with ❤️ for OSCE preparation (V0.2.1.5)
+    Made with ❤️ for OSCE preparation (V0.2.1.6)
 </footer>
 
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Page Size Locking Logic (NEW) ---
-    // Capture initial viewport dimensions
-    const initialWidth = window.innerWidth;
-    const initialHeight = window.innerHeight;
-
-    // Apply fixed dimensions and overflow to html and body
-    document.documentElement.style.width = `${initialWidth}px`;
-    document.documentElement.style.height = `${initialHeight}px`;
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.width = `${initialWidth}px`;
-    document.body.style.height = `${initialHeight}px`;
-    document.body.style.overflow = 'hidden';
-
     // --- Dark Mode Toggle Logic (UNCHANGED) ---
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
@@ -750,6 +744,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Flag to track if the search was intentionally opened by user click
     let userOpenedSearch = false; 
+    // Store initial viewport height to detect keyboard appearance
+    let lastViewportHeight = window.innerHeight;
 
     // Function to hide all cards and the "no results" message
     const hideAllCardsAndMessage = () => {
@@ -810,9 +806,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 userOpenedSearch = true; // Set flag
                 searchInput.focus(); // Focus immediately
 
-                // Always hide logo when search is active, regardless of screen size, since page is fixed
-                logo.classList.add('hidden-on-search-active'); 
-                // Body overflow is already hidden globally by the locking script
+                // Hide logo on mobile when search is active
+                if (window.innerWidth <= 992) { 
+                    logo.classList.add('hidden-on-search-active'); 
+                    document.body.classList.add('no-scroll'); // Lock body scroll
+                }
                 
                 // If search input already has text, re-trigger search on activation
                 if (searchInput.value.length > 1) {
@@ -826,9 +824,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchInput.value = '';
                 searchInput.blur(); // Blur the input when closing
                 showMainCategories();
-                // Always show logo when search closes, regardless of screen size
-                logo.classList.remove('hidden-on-search-active'); 
-                // Body overflow is already hidden globally by the locking script
+                // Show logo when search closes
+                if (window.innerWidth <= 992) { 
+                    logo.classList.remove('hidden-on-search-active'); 
+                    document.body.classList.remove('no-scroll'); // Unlock body scroll
+                }
             }
         });
     }
@@ -841,7 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!searchContainer.classList.contains('active') && userOpenedSearch) {
                     searchContainer.classList.add('active');
                     // Re-hide logo if it was hidden
-                    if (logo.classList.contains('hidden-on-search-active')) {
+                    if (window.innerWidth <= 992 && logo.classList.contains('hidden-on-search-active')) { 
                         logo.classList.add('hidden-on-search-active');
                     }
                     // Re-focus input if it's not focused, to bring back keyboard
@@ -871,24 +871,62 @@ document.addEventListener('DOMContentLoaded', () => {
             logo.classList.remove('hidden-on-search-active'); // Ensure logo reappears
             showMainCategories(); // Reset to main categories view
             userOpenedSearch = false; // Reset flag
+            if (window.innerWidth <= 992) { 
+                document.body.classList.remove('no-scroll'); // Unlock body scroll
+            }
         }
     });
 
-    // REMOVED: window.addEventListener('resize') as the page size is now locked.
-    // The previous logic for differentiating keyboard from actual resize is no longer needed
-    // because the page itself won't resize.
-    // The MutationObserver and focus handling will still ensure the search bar stays open with the keyboard.
+    // RE-INTRODUCED: window.addEventListener('resize') to handle keyboard appearance and orientation changes
+    window.addEventListener('resize', () => {
+        const currentViewportHeight = window.innerHeight;
+        const heightDifference = Math.abs(currentViewportHeight - lastViewportHeight);
+        lastViewportHeight = currentViewportHeight; // Update for next resize
 
-    // Initial display update on load (Simplified as resize listener is gone)
-    const updateSearchDisplayOnLoad = () => {
+        // Threshold for keyboard vs. genuine resize (adjust if needed)
+        const KEYBOARD_HEIGHT_THRESHOLD = 150; 
+
+        // If search bar is active and user opened it
+        if (searchContainer.classList.contains('active') && userOpenedSearch) {
+            // If the height difference is small (likely keyboard appearing/disappearing)
+            if (heightDifference < KEYBOARD_HEIGHT_THRESHOLD) {
+                // Do nothing, let MutationObserver and focus handle it
+                return; 
+            } else {
+                // If the height difference is large (likely orientation change or genuine window resize)
+                // Ensure the input stays focused if it was, to keep keyboard up during orientation change
+                if (document.activeElement !== searchInput) {
+                    searchInput.focus();
+                }
+            }
+        } else {
+            // If search is NOT active, or if it's active but not user-opened (e.g., initial load)
+            // Always reset display on resize if not actively searching
+            searchContainer.classList.remove('active');
+            searchInput.value = '';
+            showMainCategories();
+            logo.classList.remove('hidden-mobile-logo'); // Ensure mobile logo is visible
+            userOpenedSearch = false; // Ensure flag is reset
+            if (window.innerWidth <= 992) { 
+                document.body.classList.remove('no-scroll'); // Restore body scrolling
+            }
+        }
+    });
+
+    // Initial display update on load
+    const updateSearchDisplay = () => {
         searchContainer.classList.remove('active');
         searchInput.value = '';
         showMainCategories();
-        logo.classList.remove('hidden-mobile-logo'); // This class might not be strictly needed now, but harmless.
+        logo.classList.remove('hidden-mobile-logo'); 
         userOpenedSearch = false; // Ensure flag is reset on initial load
+        if (window.innerWidth <= 992) { 
+            document.body.classList.remove('no-scroll'); // Ensure body scrolling is enabled on load
+        }
     };
 
-    updateSearchDisplayOnLoad(); // Call on initial load to set correct display
+    window.addEventListener('resize', updateSearchDisplay); // Re-attach resize listener
+    updateSearchDisplay(); // Call on initial load to set correct display
 });
 </script>
 </body>
